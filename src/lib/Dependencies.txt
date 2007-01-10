@@ -1,0 +1,14 @@
+ Volume in drive C is SYSTEM
+ Volume Serial Number is A401-024E
+
+ Directory of C:\local\workspace_CVS\JDFUtility\src\lib
+
+22.12.2005  21:57            31.825 commons-fileupload-1.1.jar
+10.10.2005  21:59            61.562 commons-io-1.1.jar
+12.06.2005  06:19           207.723 commons-lang.jar
+10.05.2006  09:10         2.237.528 JDFLib.jar
+08.10.2004  18:12            77.977 servletapi-2.3.jar
+26.07.2005  17:10         1.203.860 xercesImpl.jar
+26.07.2005  17:10           194.205 xml-apis.jar
+               7 File(s)      4.014.680 bytes
+               0 Dir(s)   8.952.659.968 bytes free
