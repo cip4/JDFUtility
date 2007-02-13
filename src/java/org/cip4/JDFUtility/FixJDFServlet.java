@@ -201,7 +201,10 @@ public class FixJDFServlet extends HttpServlet {
             
             File outFile=JDFServletUtil.getTmpFile("FixJDFTmp",fileItem,"jdf"+versionField,".jdf");
             String outFileName=outFile.getName();
-            d.write2File(outFile.getAbsolutePath(), 2, true);
+            if(d!=null)
+            {
+                d.write2File(outFile.getAbsolutePath(), 2, true);
+            }
             
             // very basic html output
             if(success)

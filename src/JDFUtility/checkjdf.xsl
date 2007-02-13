@@ -20,21 +20,6 @@
 			<tbl:str lang="DE">Checker Version: </tbl:str>
 			<tbl:str lang="FR">Checker Version: in French</tbl:str>
 		</tbl:loc>
-		<tbl:loc key="DeviceCapTest">
-			<tbl:str lang="EN">Device Capabilities Test: </tbl:str>
-			<tbl:str lang="DE">Geräteeigenschaftstest: </tbl:str>
-			<tbl:str lang="FR">Checker Version: in French</tbl:str>
-		</tbl:loc>
-		<tbl:loc key="ExecutableNodes">
-			<tbl:str lang="EN">List of Executable nodes </tbl:str>
-			<tbl:str lang="DE">Liste der ausführbaren JDF Knoten: </tbl:str>
-			<tbl:str lang="FR">Checker Version: in French</tbl:str>
-		</tbl:loc>
-		<tbl:loc key="ExecutableNode">
-			<tbl:str lang="EN">Executable node</tbl:str>
-			<tbl:str lang="DE">Ausführbarer JDF Knoten: </tbl:str>
-			<tbl:str lang="FR">Checker Version: in French</tbl:str>
-		</tbl:loc>
 		<tbl:loc key="TestFile">
 			<tbl:str lang="EN">Testing File: </tbl:str>
 			<tbl:str lang="DE">Überprüfung der Datei: </tbl:str>
@@ -97,7 +82,7 @@
 		</tbl:loc>
 		<tbl:loc key="InvalidLink">
 			<tbl:str lang="EN">Invalid ResourceLink: </tbl:str>
-			<tbl:str lang="DE">Unzul?iger ResourceLink: </tbl:str>
+			<tbl:str lang="DE">Unzul㲳iger ResourceLink: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MultiID">
@@ -361,7 +346,6 @@
 		</H3>
 		<xsl:apply-templates/>
 	</xsl:template>
-		
 	<!-- =============================================== -->
 	<xsl:template match="SchemaValidationOutput/Error">
 		<font color="#ff3333">
@@ -400,8 +384,6 @@
 				</xsl:call-template>
 			</font>
 		</H3>
-		<xsl:apply-templates/>
-
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="CheckJDFOutput">
@@ -757,43 +739,7 @@
 		</xsl:for-each>
 	</xsl:template>
 	<!-- =============================================== -->
-      <!-- =============================================== -->
-	<xsl:template match="DeviceCapTest">
-		<hr/>
-		<H3>
-			<xsl:call-template name="localize">
-				<xsl:with-param name="string" select="'DeviceCapTest'"/>
-			</xsl:call-template>
-		</H3>
-		<xsl:apply-templates/>
-	</xsl:template>
-	
-	<!-- =============================================== -->
-	<xsl:template match="ExecutableNodes">
-		<hr/>
-		<H4>
-			<xsl:call-template name="localize">
-				<xsl:with-param name="string" select="'ExecutableNodes'"/>
-			</xsl:call-template>
-		</H4>
-		<xsl:apply-templates/>
-	</xsl:template>
-	
-	<!-- =============================================== -->
-	
-	<xsl:template match="ExecutableNode">
-	<H5>
-			<xsl:call-template name="localize">
-				<xsl:with-param name="string" select="'ExecutableNode'"/>				
-			</xsl:call-template>
-				<xsl:value-of select="@DescriptiveName"/>
-	</H5>
-				ID = <xsl:value-of select="@ID"/>
-				; XPath = <xsl:value-of select="@XPath"/>
-	<xsl:apply-templates/>
-	
-	</xsl:template>
-	
+	<xsl:template match="DeviceCapTest"/>
 	<!-- =============================================== -->
 	<xsl:template match="TestElement">
 		<!-- =============================================== 
@@ -1035,7 +981,6 @@
 	<!-- =============================================== -->
 	<xsl:template match="*">
 		<H4>
-snafu!
 			<Font color="#ff3333">
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string" select="'Unmatched element: TODO fix xslt for this'"/>
