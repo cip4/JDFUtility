@@ -674,7 +674,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:element name="FlushResourceParams" type="jdf:FlushResourceParams_m" substitutionGroup="jdf:CommandTypeObj">
+
+	<xs:element name="FlushResourceParams" type="jdf:FlushResourceParams_m" substitutionGroup="jdf:CommandOrQueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.2"/>
@@ -691,7 +692,7 @@
 	</xs:element>
 	<xs:complexType name="FlushResourceParams_m" mixed="false">
 		<xs:complexContent mixed="false">
-			<xs:extension base="jdf:CommandTypeObj_">
+			<xs:extension base="jdf:CommandOrQueryTypeObj_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element ref="jdf:QueueFilter" minOccurs="0"/>
@@ -709,7 +710,82 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:element name="ModifyNodeCmdParams" type="jdf:ModifyNodeCmdParams_m" substitutionGroup="jdf:CommandTypeObj">
+	
+
+
+	<xs:complexType name="AcknowledgeModifyNode" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="ModifyNodeCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractAcknowledge_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:ModifyNodeCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommandModifyNode" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="ModifyNodeCmdParams" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractCommand_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:ModifyNodeCmdParams" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ResponseModifyNode" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="ModifyNodeCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractResponse_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:ModifyNodeCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SignalModifyNode" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="ModifyNodeCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Trigger" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractSignal_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:ModifyNodeCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+					<xs:element name="Trigger" type="jdf:TriggerElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+      <xs:element name="ModifyNodeCmdParams" type="jdf:ModifyNodeCmdParams_m" substitutionGroup="jdf:CommandOrQueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.3"/>
@@ -719,7 +795,7 @@
 	</xs:element>
 	<xs:complexType name="ModifyNodeCmdParams_m" mixed="false">
 		<xs:complexContent mixed="false">
-			<xs:extension base="jdf:CommandTypeObj_">
+			<xs:extension base="jdf:CommandOrQueryTypeObj_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element name="NewComment" minOccurs="0">
@@ -739,6 +815,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+
 	<xs:complexType name="AcknowledgeNewJDF" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
@@ -1190,6 +1268,23 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="RegistrationResource" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="ResourceCmdParams" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="Subscription" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractRegistration_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:ResourceCmdParams" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="QueryResource" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
@@ -1259,10 +1354,15 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@ActualAmount" First="1.2"/>
+				<Version Path="@ModuleIndex" First="1.3"/>
+				<Version Path="@ModuleID" First="1.3"/>
 				<Version Path="@ProductID" First="1.2"/>
 				<Version Path="@Status" First="1.2"/>
+				<Version Path="@Usage" First="1.3"/>
+				<Version Path="AmountPool" First="1.3"/>
 				<Version Path="MISDetails" First="1.2"/>
 				<Version Path="Part" First="1.2"/>
+				<Constraint Path="AmountPool" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="CostCenter" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="MISDetails" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
@@ -1279,7 +1379,6 @@
 				<Version Path="@Status" First="1.2"/>
 				<Version Path="@UpdateIDs" First="1.1"/>
 				<Version Path="MISDetails" First="1.2"/>
-				<Version Path="MISDerailsRef" First="1.2"/>
 				<Version Path="Part" First="1.2"/>
 				<Constraint Path="MISDetails" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
@@ -1324,11 +1423,14 @@
 				<xs:attribute name="Level" type="jdftyp:eResourceInfo_m_Level_" default="OK"/>
 				<xs:attribute name="Location" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="ModuleID" type="jdftyp:string" use="optional"/>
-				<xs:attribute name="ResourceName" type="jdftyp:NMTOKEN" use="optional"/>
+				<xs:attribute name="ModuleIndex" type="jdftyp:IntegerRangeList" use="optional"/>
 				<xs:attribute name="ProcessUsage" type="jdftyp:NMTOKEN" use="optional"/>
 				<xs:attribute name="ProductID" type="jdftyp:shortString" use="optional"/>
+				<xs:attribute name="ResourceID" type="jdftyp:NMTOKEN" use="optional"/>
+				<xs:attribute name="ResourceName" type="jdftyp:NMTOKEN" use="optional"/>
 				<xs:attribute name="Status" type="jdftyp:eResourceStatus_" use="optional"/>
 				<xs:attribute name="Unit" type="jdftyp:string" use="optional"/>
+				<xs:attribute name="Usage" type="jdftyp:eUsage_" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1391,6 +1493,25 @@
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element name="ResourcePullParams" type="jdf:ResourcePullParams_m" minOccurs="0"/>
 					<xs:element name="QueueFilter" type="jdf:QueueFilter_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RegistrationResourcePull" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="ResourcePullParams" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="QueueFilter" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="Subscription" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractRegistration_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="ResourcePullParams" type="jdf:ResourcePullParams_m" minOccurs="0"/>
+					<xs:element name="QueueFilter" type="jdf:QueueFilter_m" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1506,6 +1627,8 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+<!-- should be removed! -->
+<!--
 	<xs:complexType name="SignalShutDown" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
@@ -1532,6 +1655,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+-->
 	<xs:element name="ShutDownCmdParams" type="jdf:ShutDownCmdParams_m" substitutionGroup="jdf:CommandTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
@@ -1823,7 +1947,82 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:element name="UpdateJDFCmdParams" type="jdf:UpdateJDFCmdParams_m" substitutionGroup="jdf:CommandTypeObj">
+
+
+	<xs:complexType name="AcknowledgeUpdateJDF" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="UpdateJDFCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractAcknowledge_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:UpdateJDFCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommandUpdateJDF" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="UpdateJDFCmdParams" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractCommand_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:UpdateJDFCmdParams" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ResponseUpdateJDF" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="UpdateJDFCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractResponse_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:UpdateJDFCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SignalUpdateJDF" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="UpdateJDFCmdParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Trigger" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractSignal_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:UpdateJDFCmdParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+					<xs:element name="Trigger" type="jdf:TriggerElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="UpdateJDFCmdParams" type="jdf:UpdateJDFCmdParams_m" substitutionGroup="jdf:CommandOrQueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@ProjectID" First="1.2"/>
@@ -1839,7 +2038,7 @@
 	</xs:attributeGroup>
 	<xs:complexType name="UpdateJDFCmdParams_m" mixed="false">
 		<xs:complexContent mixed="false">
-			<xs:extension base="jdf:CommandTypeObj_">
+			<xs:extension base="jdf:CommandOrQueryTypeObj_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element name="CreateLink" minOccurs="0">
@@ -2054,6 +2253,23 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="RegistrationPipePull" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="Subscription" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="PipeParams" minOccurs="1" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractRegistration_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:PipeParams" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ResponsePipePull" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
@@ -2099,6 +2315,23 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element ref="jdf:PipeParams" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RegistrationPipePush" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="PipeParams" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="Subscription" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractRegistration_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:PipeParams" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

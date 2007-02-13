@@ -599,28 +599,28 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_r" substitutionGroup="jdf:Resource"/>
-	<xs:element name="AutomatedOverprintParamsRef" type="jdf:ResourceRef" substitutionGroup="jdf:ResourceRef"/>
-	<xs:element name="AutomatedOverprintParamsLink" type="jdf:ParameterLink" substitutionGroup="jdf:ResourceLink"/>
-	<xs:attributeGroup name="AutomatedOverprintParamsAttribs_c">
+	<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_r" substitutionGroup="jdf:Resource"/>
+	<xs:element name="AutomatedOverPrintParamsRef" type="jdf:ResourceRef" substitutionGroup="jdf:ResourceRef"/>
+	<xs:element name="AutomatedOverPrintParamsLink" type="jdf:ParameterLink" substitutionGroup="jdf:ResourceLink"/>
+	<xs:attributeGroup name="AutomatedOverPrintParamsAttribs_c">
 		<xs:attribute name="LineArtBlackLevel" type="jdftyp:double" use="optional"/>
 		<xs:attribute name="TextSizeThreshold" type="jdftyp:Integer" use="optional"/>
 	</xs:attributeGroup>
-	<xs:attributeGroup name="AutomatedOverprintParamsAttribs_u">
-		<xs:attributeGroup ref="jdf:AutomatedOverprintParamsAttribs_c"/>
+	<xs:attributeGroup name="AutomatedOverPrintParamsAttribs_u">
+		<xs:attributeGroup ref="jdf:AutomatedOverPrintParamsAttribs_c"/>
 		<xs:attribute name="KnockOutCMYKWhite" type="jdftyp:boolean" use="optional"/>
 		<xs:attribute name="OverPrintBlackText" type="jdftyp:boolean" use="optional"/>
 		<xs:attribute name="OverPrintBlackLineArt" type="jdftyp:boolean" use="optional"/>
 		<xs:attribute name="TextBlackLevel" type="jdftyp:double" use="optional"/>
 	</xs:attributeGroup>
-	<xs:attributeGroup name="AutomatedOverprintParamsAttribs_r">
-		<xs:attributeGroup ref="jdf:AutomatedOverprintParamsAttribs_c"/>
+	<xs:attributeGroup name="AutomatedOverPrintParamsAttribs_r">
+		<xs:attributeGroup ref="jdf:AutomatedOverPrintParamsAttribs_c"/>
 		<xs:attribute name="KnockOutCMYKWhite" type="jdftyp:boolean" default="false"/>
 		<xs:attribute name="OverPrintBlackText" type="jdftyp:boolean" default="false"/>
 		<xs:attribute name="OverPrintBlackLineArt" type="jdftyp:boolean" default="false"/>
 		<xs:attribute name="TextBlackLevel" type="jdftyp:double" default="1"/>
 	</xs:attributeGroup>
-	<xs:complexType name="AutomatedOverprintParams_r" mixed="false">
+	<xs:complexType name="AutomatedOverPrintParams_r" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="KnockOutCMYKWhite" First="1.3"/>
@@ -631,36 +631,36 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParamsUpdate" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_rp" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParamsUpdate" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_rp" minOccurs="0"/>
 				</xs:sequence>
-				<xs:attributeGroup ref="jdf:AutomatedOverprintParamsAttribs_r"/>
+				<xs:attributeGroup ref="jdf:AutomatedOverPrintParamsAttribs_r"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AutomatedOverprintParams_re" mixed="false">
+	<xs:complexType name="AutomatedOverPrintParams_re" mixed="false">
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:ParameterResourceElement">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
 				</xs:sequence>
-				<xs:attributeGroup ref="jdf:AutomatedOverprintParamsAttribs_r"/>
+				<xs:attributeGroup ref="jdf:AutomatedOverPrintParamsAttribs_r"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AutomatedOverprintParams_rp" mixed="false">
+	<xs:complexType name="AutomatedOverPrintParams_rp" mixed="false">
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:ParameterResourceLeaf">
 				<xs:choice>
 					<xs:sequence minOccurs="0" maxOccurs="unbounded">
 						<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 						<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-						<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_rp" minOccurs="0"/>
+						<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_rp" minOccurs="0"/>
 					</xs:sequence>
 					<xs:element name="Identical" type="jdf:Identical" minOccurs="0"/>
 				</xs:choice>
-				<xs:attributeGroup ref="jdf:AutomatedOverprintParamsAttribs_u"/>
+				<xs:attributeGroup ref="jdf:AutomatedOverPrintParamsAttribs_u"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -2165,9 +2165,6 @@
 				<Constraint Path="DeviceColorantOrder" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="DeviceColorantOrder/SeparationSpec" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="ColorSpaceSubstitute" minOccurs="0" maxOccurs="unbounded"/>
-				<Constraint Path="ColorSpaceSubstitute/PDLResourceAlias" minOccurs="1" maxOccurs="1"/>
-				<Constraint Path="ColorSpaceSubstitute/PDLResourceAliasRef" minOccurs="1" maxOccurs="1"/>
-				<Constraint Path="ColorSpaceSubstitute/SeparationSpec" minOccurs="1" maxOccurs="unbounded"/>
 				<Constraint Path="DeviceNSpace" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="DeviceNSpaceRef" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
@@ -2197,6 +2194,13 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ColorantControl_ColorSpaceSubstitute_lr" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="PDLResourceAlias" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="PDLResourceAliasRef" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="SeparationSpec" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:appinfo>
+		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:BaseElement_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -4975,8 +4979,8 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.3"/>
-				<Constraint Path="FileSpec" minOccurs="1" maxOccurs="1"/>
-				<Constraint Path="FileSpecRef" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="FileSpec" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="FileSpecRef" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Station" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
 		</xs:annotation>
@@ -5445,8 +5449,8 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.2"/>
-				<Constraint Path="AutomatedOverprintParams" minOccurs="0" maxOccurs="1"/>
-				<Constraint Path="AutomatedOverprintParamsRef" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParamsRef" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="ColorantAlias" MinOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="ColorantAliasRef" MinOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="ColorSpaceConversionOp" minOccurs="0" maxOccurs="1"/>
@@ -5475,8 +5479,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="ColorantAlias" type="jdf:ColorantAlias_re" minOccurs="0"/>
 					<xs:element ref="jdf:ColorantAliasRef" minOccurs="0"/>
 					<xs:element name="ColorSpaceConversionOp" type="jdf:ColorSpaceConversionOp_re" minOccurs="0"/>
@@ -5495,8 +5499,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="ColorantAlias" type="jdf:ColorantAlias_re" minOccurs="0"/>
 					<xs:element ref="jdf:ColorantAliasRef" minOccurs="0"/>
 					<xs:element name="ColorSpaceConversionOp" type="jdf:ColorSpaceConversionOp_re" minOccurs="0"/>
@@ -5514,8 +5518,8 @@
 					<xs:sequence minOccurs="0" maxOccurs="unbounded">
 						<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 						<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-						<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-						<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+						<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+						<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 						<xs:element name="ColorantAlias" type="jdf:ColorantAlias_re" minOccurs="0"/>
 						<xs:element ref="jdf:ColorantAliasRef" minOccurs="0"/>
 						<xs:element name="ColorSpaceConversionOp" type="jdf:ColorSpaceConversionOp_re" minOccurs="0"/>
@@ -8441,6 +8445,7 @@
 				<Version Path="@OCGIntent" First="1.3"/>
 				<Version Path="@OCGProcess" First="1.3"/>
 				<Version Path="@OCGZoom" First="1.3"/>
+				<Version Path="@PrintTrapAnnotations" First="1.3"/>
 				<Version Path="OCGControl" First="1.3"/>
 				<Constraint Path="OCGControl" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
@@ -8462,6 +8467,7 @@
 				<xs:attribute name="OCGProcess" type="jdftyp:eOCGProcess_" use="optional"/>
 				<xs:attribute name="OCGZoom" type="jdftyp:double" default="1.0"/>
 				<xs:attribute name="PrintPDFAnnotations" type="jdftyp:boolean" default="false"/>
+				<xs:attribute name="PrintTrapAnnotations" type="jdftyp:boolean" default="false"/>
 				<xs:attribute name="TransparencyRenderingQuality" type="jdftyp:double" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -9288,11 +9294,6 @@
 			<xs:appinfo>
 				<Version Path="." First="1.3"/>
 				<Constraint Path="LayoutElementPart" minOccurs="0" maxOccurs="unbounded"/>
-				<Constraint Path="LayoutElementPart/BarcodeProductionParams" minOccurs="0" maxOccurs="unbounded"/>
-				<Constraint Path="LayoutElementPart/BarcodeProductionParams/BarcodeReproParams" minOccurs="0" maxOccurs="1"/>
-				<Constraint Path="LayoutElementPart/BarcodeProductionParams/BarcodeReproParamsRef" minOccurs="0" maxOccurs="1"/>
-				<Constraint Path="LayoutElementPart/BarcodeProductionParams/IdentificationField" minOccurs="1" maxOccurs="1"/>
-				<Constraint Path="LayoutElementPart/BarcodeProductionParams/IdentificationFieldRef" minOccurs="1" maxOccurs="1"/>
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
@@ -9348,16 +9349,31 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="LayoutElementProductionParams_LayoutElementPart_lr" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="BarcodeProductionParams" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:appinfo>
+		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:BaseElement_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
-					<xs:element name="BarcodeProductionParams" type="jdf:LayoutElementProductionParams_LayoutElementPart_Barcode_lr" minOccurs="0"/>
+					<xs:element name="BarcodeProductionParams" type="jdf:LayoutElementProductionParams_LayoutElementPart_BarcodeProductionParams_lr" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="LayoutElementProductionParams_LayoutElementPart_Barcode_lr" mixed="false">
+	<xs:complexType name="LayoutElementProductionParams_LayoutElementPart_BarcodeProductionParams_lr" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.3"/>
+				<Constraint Path="BarcodeReproParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="BarcodeReproParamsRef" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="IdentificationField" minOccurs="1" maxOccurs="1"/>
+				<Constraint Path="IdentificationFieldRef" minOccurs="1" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:BaseElement_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -11723,6 +11739,7 @@
 			<xs:extension base="jdf:BaseElement_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:Test" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -11853,16 +11870,16 @@
 	<xs:element name="PreflightReportRef" type="jdf:ResourceRef" substitutionGroup="jdf:ResourceRef"/>
 	<xs:element name="PreflightReportLink" type="jdf:ParameterLink" substitutionGroup="jdf:ResourceLink"/>
 	<xs:attributeGroup name="PreflightReportAttribs_c">
-		<xs:attribute name="ErrorCount" type="jdftyp:Integer" use="optional"/>
+		<xs:attribute name="ErrorState" type="jdftyp:eErrorState_" use="optional"/>
 	</xs:attributeGroup>
 	<xs:attributeGroup name="PreflightReportAttribs_u">
 		<xs:attributeGroup ref="jdf:PreflightReportAttribs_c"/>
-		<xs:attribute name="ErrorState" type="jdftyp:eErrorState_" use="optional"/>
+		<xs:attribute name="ErrorCount" type="jdftyp:Integer" use="optional"/>
 		<xs:attribute name="WarningCount" type="jdftyp:Integer" use="optional"/>
 	</xs:attributeGroup>
 	<xs:attributeGroup name="PreflightReportAttribs_r">
 		<xs:attributeGroup ref="jdf:PreflightReportAttribs_c"/>
-		<xs:attribute name="ErrorState" type="jdftyp:eErrorState_" use="required"/>
+		<xs:attribute name="ErrorCount" type="jdftyp:Integer" use="required"/>
 		<xs:attribute name="WarningCount" type="jdftyp:Integer" use="required"/>
 	</xs:attributeGroup>
 	<xs:complexType name="PreflightReport_PRItem_lr" mixed="false">
@@ -12035,11 +12052,9 @@
 	</xs:attributeGroup>
 	<xs:attributeGroup name="PreflightReportRulePoolAttribs_u">
 		<xs:attributeGroup ref="jdf:PreflightReportRulePoolAttribs_c"/>
-		<xs:attribute name="ActionPools" type="jdftyp:IDREFS" use="optional"/>
 	</xs:attributeGroup>
 	<xs:attributeGroup name="PreflightReportRulePoolAttribs_r">
 		<xs:attributeGroup ref="jdf:PreflightReportRulePoolAttribs_c"/>
-		<xs:attribute name="ActionPools" type="jdftyp:IDREFS" use="required"/>
 	</xs:attributeGroup>
 	<xs:complexType name="PRRP_PRRule_lr" mixed="false">
 		<xs:complexContent mixed="false">
@@ -13379,8 +13394,8 @@
 			<xs:appinfo>
 				<Version Path="Media" First="1.1" Last="1.1"/>
 				<Version Path="MediaRef" First="1.1" Last="1.1"/>
-				<Constraint Path="AutomatedOverprintParams" minOccurs="0" maxOccurs="1"/>
-				<Constraint Path="AutomatedOverprintParamsRef" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParamsRef" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="ObjectResolution" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="ObjectResolutionRef" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="Media" minOccurs="0" maxOccurs="1"/>
@@ -13409,8 +13424,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="ObjectResolution" type="jdf:ObjectResolution_re" minOccurs="0"/>
 					<xs:element ref="jdf:ObjectResolutionRef" minOccurs="0"/>
 					<xs:element name="Media" type="jdf:Media_re" minOccurs="0"/>
@@ -13428,8 +13443,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="ObjectResolution" type="jdf:ObjectResolution_re" minOccurs="0"/>
 					<xs:element ref="jdf:ObjectResolutionRef" minOccurs="0"/>
 					<xs:element name="Media" type="jdf:Media_re" minOccurs="0"/>
@@ -13446,8 +13461,8 @@
 					<xs:sequence minOccurs="0" maxOccurs="unbounded">
 						<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 						<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-						<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-						<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+						<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+						<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 						<xs:element name="ObjectResolution" type="jdf:ObjectResolution_re" minOccurs="0"/>
 						<xs:element ref="jdf:ObjectResolutionRef" minOccurs="0"/>
 						<xs:element name="Media" type="jdf:Media_re" minOccurs="0"/>
@@ -14206,7 +14221,7 @@
 	<xs:element name="SeparationControlParams" type="jdf:SeparationControlParams_r" substitutionGroup="jdf:Resource">
 		<xs:annotation>
 			<xs:appinfo>
-				<Constraint Path="AutomatedOverprintParams AutomatedOverprintParamsRef" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParams AutomatedOverPrintParamsRef" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="TransferFunctionControl TransferFunctionControlRef" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
 		</xs:annotation>
@@ -14215,8 +14230,8 @@
 	<xs:element name="SeparationControlParamsLink" type="jdf:ParameterLink" substitutionGroup="jdf:ResourceLink">
 		<xs:annotation>
 			<xs:appinfo>
-				<Constraint Path="AutomatedOverprintParams" minOccurs="0" maxOccurs="1"/>
-				<Constraint Path="AutomatedOverprintParamsRef" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParams" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="AutomatedOverPrintParamsRef" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="TransferFunctionControl" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="TransferFunctionControlRef" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
@@ -14235,8 +14250,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="TransferFunctionControl" type="jdf:TransferFunctionControl_re" minOccurs="0"/>
 					<xs:element ref="jdf:TransferFunctionControlRef" minOccurs="0"/>
 					<xs:element name="SeparationControlParamsUpdate" type="jdf:SeparationControlParams_re" minOccurs="0"/>
@@ -14252,8 +14267,8 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-					<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-					<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+					<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+					<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 					<xs:element name="TransferFunctionControl" type="jdf:TransferFunctionControl_re" minOccurs="0"/>
 					<xs:element ref="jdf:TransferFunctionControlRef" minOccurs="0"/>
 				</xs:sequence>
@@ -14268,8 +14283,8 @@
 					<xs:sequence minOccurs="0" maxOccurs="unbounded">
 						<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 						<xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
-						<xs:element name="AutomatedOverprintParams" type="jdf:AutomatedOverprintParams_re" minOccurs="0"/>
-						<xs:element ref="jdf:AutomatedOverprintParamsRef" minOccurs="0"/>
+						<xs:element name="AutomatedOverPrintParams" type="jdf:AutomatedOverPrintParams_re" minOccurs="0"/>
+						<xs:element ref="jdf:AutomatedOverPrintParamsRef" minOccurs="0"/>
 						<xs:element name="TransferFunctionControl" type="jdf:TransferFunctionControl_re" minOccurs="0"/>
 						<xs:element ref="jdf:TransferFunctionControlRef" minOccurs="0"/>
 						<xs:element name="SeparationControlParams" type="jdf:SeparationControlParams_rp" minOccurs="0"/>
@@ -16420,7 +16435,7 @@
 	</xs:attributeGroup>
 	<xs:attributeGroup name="UsageCounterAttribs_r">
 		<xs:attributeGroup ref="jdf:UsageCounterAttribs_c"/>
-		<xs:attribute name="CounterID" type="jdftyp:string" use="required"/>
+		<xs:attribute name="CounterID" type="jdftyp:string" use="optional"/>
 		<xs:attribute name="Scope" type="jdftyp:eScope_" use="required"/>
 	</xs:attributeGroup>
 	<xs:complexType name="UsageCounter_r" mixed="false">
@@ -17607,7 +17622,7 @@
 	</xs:attributeGroup>
 	<xs:attributeGroup name="DeliveryIntentAttribs_r">
 		<xs:attributeGroup ref="jdf:DeliveryIntentAttribs_c"/>
-		<xs:attribute name="Accepted" type="jdftyp:boolean" default="false"/>
+		<xs:attribute name="Accepted" type="jdftyp:boolean" use="optional"/>
 		<xs:attribute name="AdditionalAmount" type="jdftyp:Integer" use="optional"/>
 		<xs:attribute name="Ownership" type="jdftyp:eOwnership_" default="Origin"/>
 	</xs:attributeGroup>
@@ -17758,6 +17773,7 @@
 	<xs:complexType name="DeliveryIntent_r" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
+				<Version Path="@Accepted" First="1.0" Last="1.2"/>
 				<Version Path="@AdditionalAmount" First="1.2" Last="1.2"/>
 				<Version Path="@BuyerAccount" First="1.0"/>
 				<Version Path="DeliveryCharge" First="1.1"/>
