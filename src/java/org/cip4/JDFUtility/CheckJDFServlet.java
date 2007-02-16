@@ -225,6 +225,7 @@ public class CheckJDFServlet extends HttpServlet {
             checker.bQuiet=true;
             checker.setIgnorePrivate(bIgnorePrivate);
             checker.level=EnumValidationLevel.Complete;
+            checker.xslStyleSheet="./checkjdf.xsl";
             
             if(bUseSchema) // using schema
             {
