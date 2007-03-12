@@ -21,24 +21,24 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class JDFServletUtil extends Object {
 
-    
+
     final static public String cwd =System.getProperty("user.dir");
     final static public String baseDir =System.getProperty("catalina.base")+"/webapps/JDFUtility/";
 
-    
+
     public static File getTmpFile(String dirName, FileItem fileItem, String prefix, String extension)
     {
         if(fileItem==null)
             return null;
         // we are in bin, which is a sibling directory of JDFUtilitys
         File tmpDir=new File(baseDir+dirName);
-        
+
         if(!tmpDir.isDirectory())
             tmpDir.mkdir();
-        
+
         String tmpName = fileItem.getName();
         char[] tmp=tmpName.toCharArray();
-         for(int i=0;i<tmp.length;i++)
+        for(int i=0;i<tmp.length;i++)
         {
             if((tmp[i]>127)||(tmp[i]<=32))
                 tmp[i]='_';
@@ -46,7 +46,7 @@ public class JDFServletUtil extends Object {
         tmpName=String.valueOf(tmp);
         tmpName=prefix+StringUtil.pathToName(tmpName);            
         tmpName=tmpName.substring(0,tmpName.lastIndexOf("."));
-        
+
         File outFile;
         try
         {
@@ -57,31 +57,31 @@ public class JDFServletUtil extends Object {
             return null;
         }
         return outFile;
-        
+
     }	
-    
+
     public static List getFileList(HttpServletRequest request) throws ServletException
     {
         //      Create a factory for disk-based file items
-                FileItemFactory factory = new DiskFileItemFactory();
-                
+        FileItemFactory factory = new DiskFileItemFactory();
+
         //      Create a new file upload handler
-                ServletFileUpload upload = new ServletFileUpload(factory);
-                
-                List fileItems = null;
-                try
-                {
-                    fileItems = upload.parseRequest(request);       
-                    upload.setSizeMax(1024*1024*20); // 20 MB   
-                }
-                catch (FileUploadException fue)
-                {
-                    throw new ServletException("Could not parse multipart request.", fue);
-                }
+        ServletFileUpload upload = new ServletFileUpload(factory);
+
+        List fileItems = null;
+        try
+        {
+            fileItems = upload.parseRequest(request);       
+            upload.setSizeMax(1024*1024*20); // 20 MB   
+        }
+        catch (FileUploadException fue)
+        {
+            throw new ServletException("Could not parse multipart request.", fue);
+        }
         return fileItems;
     }
-    
-    
+
+
     /**
      * cleanup previous junk that is older than an hour
      */
@@ -99,11 +99,11 @@ public class JDFServletUtil extends Object {
         }
         Runtime.getRuntime().gc(); // clean up memory
     }
-    
+
     public static boolean isWindows()
     {
         return System.getProperty("os.name").startsWith("Win");
     }
 
-    
+
 }

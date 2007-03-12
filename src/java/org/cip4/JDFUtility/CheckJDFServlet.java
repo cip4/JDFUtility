@@ -176,14 +176,16 @@ public class CheckJDFServlet extends HttpServlet {
         boolean bUseSchema=false;
         boolean bIgnorePrivate=false;
         String language="EN";
+        String devcapName=null;
+        File devcapFile=null;
         for(int i=0;i<fileItems.size();i++)
         {
             Runtime.getRuntime().gc(); // clean up before loading
             FileItem item = (FileItem) fileItems.get(i);
+            final String fieldName = item.getFieldName();
+            System.out.println("Foo Form name: " + fieldName);
             if(item.isFormField())
             {
-                final String fieldName = item.getFieldName();
-                System.out.println("Form name: " + fieldName);
                 if(fieldName.equals("UseSchema"))
                 {
                     if(item.getString().equals("true"))
@@ -201,6 +203,12 @@ public class CheckJDFServlet extends HttpServlet {
                     language=language.substring(0,2).toUpperCase();
                     System.out.println("Language: " + language);
                 }        
+            }
+            else if("devcapFile".equals(fieldName))
+            {
+                System.out.println("Language: " + language);
+                devcapName=item.getName();
+                devcapFile = createTmpFile(item,"devcap");
             }
             else if (item.getSize()<20 || item.getName().length()==0)
             {
@@ -226,6 +234,12 @@ public class CheckJDFServlet extends HttpServlet {
             checker.setIgnorePrivate(bIgnorePrivate);
             checker.level=EnumValidationLevel.Complete;
             checker.xslStyleSheet="./checkjdf.xsl";
+            if(devcapFile!=null && devcapFile.canRead())
+            {
+                checker.devCapFile=devcapFile.getAbsolutePath();
+                System.out.println(devcapFile.getAbsolutePath());
+                
+            }
             
             if(bUseSchema) // using schema
             {
@@ -242,7 +256,7 @@ public class CheckJDFServlet extends HttpServlet {
                 System.out.println("FIName: "+fileItemName);
                 if(fileItemName.toLowerCase().endsWith(".zip"))
                 {
-                    File zipFile = createTmpZipFile(fileItem);
+                    File zipFile = createTmpFile(fileItem,"zip");
                     d=checker.processZipFile(zipFile);
                 }
                 else if(fileItemName.toLowerCase().endsWith(".mjm"))
@@ -297,15 +311,15 @@ public class CheckJDFServlet extends HttpServlet {
 
     ////////////////////////////////////////////////////////////////////
     
-    private File createTmpZipFile(FileItem fileItem) throws FileNotFoundException, IOException
+    private File createTmpFile(FileItem fileItem, String ext) throws FileNotFoundException, IOException
     {
         InputStream s = fileItem.getInputStream();
-        File zipFile=JDFServletUtil.getTmpFile("CheckJDFTmp",fileItem,"zip_",".zip");
+        File zipFile=JDFServletUtil.getTmpFile("CheckJDFTmp",fileItem,ext+"_","."+ext);
         FileOutputStream fos=new FileOutputStream(zipFile);
         int n=IOUtils.copy(s,fos);
         fos.flush();
         fos.close();
-        System.out.println("ZIP file name: "+zipFile.toString()+" size: "+n);
+        System.out.println(ext+" file name: "+zipFile.toString()+" size: "+n);
         return zipFile;
     }
     

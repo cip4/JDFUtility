@@ -160,7 +160,7 @@
 			<tbl:str lang="DE">Unbekanntes Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
 		</tbl:loc>
-		<tbl:loc>
+		<tbl:loc key="MissingAttribute">
 			<tbl:str lang="EN">Missing Required Attribute </tbl:str>
 			<tbl:str lang="DE">Fehlendes erforderliches Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
@@ -258,6 +258,51 @@
 		<tbl:loc>
 			<tbl:str lang="EN">Last Valid Version: </tbl:str>
 			<tbl:str lang="DE">Letzte gültige Version: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="DeviceCapTest">
+			<tbl:str lang="EN">Device Capability Test </tbl:str>
+			<tbl:str lang="DE">Test der Geätefähigkeiten: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="ExecutableNodes">
+			<tbl:str lang="EN">Executable node list</tbl:str>
+			<tbl:str lang="DE">Liste der Ausführbaren Knoten: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="RejectedNode">
+			<tbl:str lang="EN">Rejected node</tbl:str>
+			<tbl:str lang="DE">Verworfener Knoten: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="BugReport">
+			<tbl:str lang="EN">Bug Report</tbl:str>
+			<tbl:str lang="DE">Fehlerbericht </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="CapsType">
+			<tbl:str lang="EN">Valid Type in Capabilties: </tbl:str>
+			<tbl:str lang="DE">Erlaubte Typen in den Geätefähigkeiten: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="MissingElement">
+			<tbl:str lang="EN">Missing Sub-Element: </tbl:str>
+			<tbl:str lang="DE">Fehlendes Subelement: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="MinOccurs">
+			<tbl:str lang="EN">Minimum number of occurrences: </tbl:str>
+			<tbl:str lang="DE">Minimale Anzahl: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="MaxOccurs">
+			<tbl:str lang="EN">Maximum number of occurrences: </tbl:str>
+			<tbl:str lang="DE">Maximale Anzahl: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+		</tbl:loc>
+		<tbl:loc key="Occurs">
+			<tbl:str lang="EN">Occurrences: </tbl:str>
+			<tbl:str lang="DE">Anzahl: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
 		</tbl:loc>
 	</tbl:lang>
@@ -739,25 +784,130 @@
 		</xsl:for-each>
 	</xsl:template>
 	<!-- =============================================== -->
-	<xsl:template match="DeviceCapTest"/>
 	<!-- =============================================== -->
-	<xsl:template match="TestElement">
-		<!-- =============================================== 
-<H4>
-
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'General Invalid Element: '"/>
-                                </xsl:call-template>
-<xsl:value-of select="@NodeName"/> 
- at: <xsl:value-of select="@XPath"/></H4>
-<xsl:text>Error Type: </xsl:text> <xsl:value-of select="@ErrorType"/>
-<br/>
-<xsl:text>Message: </xsl:text> <xsl:value-of select="@Message"/>
- =============================================== 
--->
+	<!-- =============================================== -->
+	<xsl:template match="DeviceCapTest">
+		<hr/>
+		<H3>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'DeviceCapTest'"/>
+				</xsl:call-template>
+		</H3>
+Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
+	<xsl:template match="ExecutableNodes">
+		<H4>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'ExecutableNodes'"/>
+				</xsl:call-template>
+		</H4>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="BugReport">
+		<H4>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'BugReport'"/>
+				</xsl:call-template>
+		</H4>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="RejectedNode">
+		<H3>
+			<font>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'RejectedNode'"/>
+				</xsl:call-template>
+			</font>
+		</H3>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'CapsType'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@CapsType"/>
+		<br/>
+<xsl:value-of select="@NodeType"/> 
+                                <xsl:call-template name="localize">
+                                        <xsl:with-param name="string" select="'at'"/>
+                                </xsl:call-template>
+<xsl:value-of select="@XPath"/> 
+; ID= <xsl:value-of select="@ID"/>
+<br/>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'message'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@Message"/>
+		<xsl:apply-templates/>
+	</xsl:template>
+
+	<!-- =============================================== -->
+	<!-- =============================================== -->
+	<xsl:template match="RejectedChildNode">
+	<xsl:apply-templates/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="MissingElement">
+		<H4>
+			<font>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'MissingElement'"/>
+				</xsl:call-template>
+		<xsl:value-of select="@Name"/>
+			</font>
+		</H4>
+		# Occurrences: <xsl:value-of select="@FoundElements"/>; 
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'MinOccurs'"/>
+		</xsl:call-template>
+<xsl:value-of select="@MinOccurs"/>
+                                <xsl:call-template name="localize">
+                                        <xsl:with-param name="string" select="'at'"/>
+                                </xsl:call-template>
+<xsl:value-of select="@XPath"/> 
+
+	<xsl:apply-templates/>
+	</xsl:template>
+
+	<!-- =============================================== -->
+	<xsl:template match="MissingAttribute">
+		<H4>
+			<font>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'MissingAttribute'"/>
+				</xsl:call-template>
+		<xsl:value-of select="@Name"/>
+			</font>
+		</H4>
+                                <xsl:call-template name="localize">
+                                        <xsl:with-param name="string" select="'at'"/>
+                                </xsl:call-template>
+<xsl:value-of select="@XPath"/> 
+
+	<xsl:apply-templates/>
+	</xsl:template>
+
+	<!-- =============================================== -->
+	<xsl:template match="Evaluation">
+		<H4>
+			<font>
+				<xsl:call-template name="localize">
+					<xsl:with-param name="string" select="'MissingAttribute'"/>
+				</xsl:call-template>
+		<xsl:value-of select="@Name"/>
+			</font>
+		</H4>
+                                <xsl:call-template name="localize">
+                                        <xsl:with-param name="string" select="'at'"/>
+                                </xsl:call-template>
+<xsl:value-of select="@XPath"/> 
+
+	<xsl:apply-templates/>
+	</xsl:template>
+
+	<!-- =============================================== -->
+
 	<xsl:template match="TestFile/Error">
 		<H3>
 			<font color="#ff0000">
@@ -907,7 +1057,7 @@
 	<xsl:template match="TestAttribute[@ErrorType='MissingAttribute']">
 		<H5>
 			<xsl:call-template name="localize">
-				<xsl:with-param name="string" select="'Missing Required Attribute '"/>
+				<xsl:with-param name="string" select="'MissingAttribute'"/>
 			</xsl:call-template>
 			<xsl:value-of select="@NodeName"/>
 			<xsl:call-template name="localize">
@@ -973,6 +1123,43 @@
 		</xsl:call-template>
 		<xsl:value-of select="@Message"/>
 		<br/>
+		<xsl:apply-templates/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="not">
+		&lt; not &gt; = <xsl:value-of select="@Value"/>
+		[ <br/><xsl:apply-templates/><br/>]
+		<br/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="or">
+		&lt; or &gt; = <xsl:value-of select="@Value"/>
+		[ <br/><xsl:apply-templates/><br/>]
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="and">
+		&lt; and &gt; = <xsl:value-of select="@Value"/><br/>
+		[ <br/><xsl:apply-templates/><br/>]
+	</xsl:template>
+	<!-- =============================================== -->
+	<!-- =============================================== -->
+	<!-- =============================================== -->
+	<!-- =============================================== -->
+	<xsl:template match="TestElement">
+	<!--  dummy to remove duplicate invalid elements -->
+		<xsl:apply-templates/>
+	</xsl:template>
+	<!-- =============================================== -->
+	<xsl:template match="InvalidResources">
+	<!--  dummy to remove duplicate invalid elements -->
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="MissingAttributes">
+	<!--  dummy to remove lists -->
+		<xsl:apply-templates/>
+	</xsl:template>
+	<xsl:template match="ActionReportList">
+	<!--  dummy to remove lists -->
 		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
