@@ -254,14 +254,14 @@ public class CheckJDFServlet extends HttpServlet {
             {
                 final String fileItemName = fileItem.getName();
                 System.out.println("FIName: "+fileItemName);
-                if(fileItemName.toLowerCase().endsWith(".zip"))
+                final String lower = fileItemName.toLowerCase();
+                if(lower.endsWith(".zip"))
                 {
                     File zipFile = createTmpFile(fileItem,"zip");
                     d=checker.processZipFile(zipFile);
                 }
-                else if(fileItemName.toLowerCase().endsWith(".mjm"))
+                else if(lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
                 {
-                    
                     System.out.println("processing MIME file");
                     InputStream s = fileItem.getInputStream();
                     d=checker.processMimeStream(s);
