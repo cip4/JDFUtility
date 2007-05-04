@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2007 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -200,13 +200,15 @@ public class CheckJDFServlet extends HttpServlet {
                 else if(fieldName.equals("Language"))
                 {
                     language=item.getString();
+                    if(language.equalsIgnoreCase("nederlands"))
+                        language="nl";
                     language=language.substring(0,2).toUpperCase();
                     System.out.println("Language: " + language);
                 }        
             }
             else if("devcapFile".equals(fieldName))
             {
-                System.out.println("Language: " + language);
+                System.out.println("devcapFile: " + language);
                 devcapName=item.getName();
                 devcapFile = createTmpFile(item,"devcap");
             }
