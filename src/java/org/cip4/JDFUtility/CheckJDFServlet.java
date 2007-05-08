@@ -208,9 +208,12 @@ public class CheckJDFServlet extends HttpServlet {
             }
             else if("devcapFile".equals(fieldName))
             {
-                System.out.println("devcapFile: " + language);
                 devcapName=item.getName();
-                devcapFile = createTmpFile(item,"devcap");
+                System.out.println("devcapFile: " + devcapName);
+                if(devcapFile!=null && devcapFile.length()>0)
+                    devcapFile = createTmpFile(item,"devcap");
+                else
+                    devcapFile=null;
             }
             else if (item.getSize()<20 || item.getName().length()==0)
             {

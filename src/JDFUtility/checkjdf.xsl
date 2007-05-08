@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:tbl="urn:TheLanguageTable" exclude-result-prefixes="tbl">
 	<xsl:output method="html"/>
 	<!-- A variable to hold the current language, default to English -->
+	<!-- Nederlandse vertaling door Koen Van de Poel, Agfa -->
 	<xsl:param name="lang" select="//CheckOutput/@Language"/>
 	<!-- here is the language table -->
 	<tbl:lang>
@@ -9,301 +10,371 @@
 			<tbl:str lang="EN">CIP4 CheckJDF Output</tbl:str>
 			<tbl:str lang="DE">CIP4 CheckJDF Output </tbl:str>
 			<tbl:str lang="FR">CIP4 CheckJDF Output in French</tbl:str>
+			<tbl:str lang="NL">CIP4 CheckJDF Output </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="output">
 			<tbl:str lang="EN">CheckJDF Validation Output</tbl:str>
 			<tbl:str lang="DE">CheckJDF Validierungsoutput </tbl:str>
 			<tbl:str lang="FR">CheckJDF Validation Output in French</tbl:str>
+			<tbl:str lang="NL">CheckJDF Validatie Output</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="version">
 			<tbl:str lang="EN">Checker Version: </tbl:str>
 			<tbl:str lang="DE">Checker Version: </tbl:str>
 			<tbl:str lang="FR">Checker Version: in French</tbl:str>
+			<tbl:str lang="NL">Checker Versie: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="TestFile">
 			<tbl:str lang="EN">Testing File: </tbl:str>
 			<tbl:str lang="DE">Überprüfung der Datei: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Testen van de File: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="PrivateElement">
 			<tbl:str lang="EN">Private Element: </tbl:str>
 			<tbl:str lang="DE">Privates Element: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Prive Element: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="PrivateContent">
 			<tbl:str lang="EN">Private Element Content: </tbl:str>
 			<tbl:str lang="DE">Privater ElementenInhalt: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Prive Element: Inhoud</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="PrivateAttribute">
 			<tbl:str lang="EN">Private Attribute: </tbl:str>
 			<tbl:str lang="DE">Privates Attribut: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Prive Attribuut: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="at">
 			<tbl:str lang="EN"> at: </tbl:str>
 			<tbl:str lang="DE"> in: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL"> in: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="value">
 			<tbl:str lang="EN"> value: </tbl:str>
 			<tbl:str lang="DE"> Wert: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL"> waarde: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="UnknownElement">
 			<tbl:str lang="EN"> Unknown Element: </tbl:str>
 			<tbl:str lang="DE"> Unbekanntes Element: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL"> Onbekend Element: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DeprecatedElement">
 			<tbl:str lang="EN">Warning: Deprecated Element: </tbl:str>
 			<tbl:str lang="DE"> Warnung: Veraltetes Element: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL"> Waarschuwing: oubollig Element:</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="PrereleaseElement">
 			<tbl:str lang="EN">Prerelease Element: </tbl:str>
 			<tbl:str lang="DE">Zu neues Element: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Prerelease Element: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="SwapElement">
 			<tbl:str lang="EN">Attribute written as Element: </tbl:str>
 			<tbl:str lang="DE">Attribut wurde als Element geschrieben: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Attribuut als Element geschreven: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MissLink">
 			<tbl:str lang="EN">Missing ResourceLink: </tbl:str>
 			<tbl:str lang="DE">Fehlender ResourceLink: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Missende ResourceLink: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MissProcUsage">
 			<tbl:str lang="EN">Missing ProcessUsage for ResourceLink: </tbl:str>
 			<tbl:str lang="DE">Fehlende ProcessUsage für ResourceLink: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Missende ProcessUsage voor ResourceLink: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="InvalidLink">
 			<tbl:str lang="EN">Invalid ResourceLink: </tbl:str>
 			<tbl:str lang="DE">Unzul㲳iger ResourceLink: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Ongeldige ResourceLink</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MultiID">
 			<tbl:str lang="EN"> refers to multiply defined ID: at: </tbl:str>
 			<tbl:str lang="DE"> Bezieht sich auf mehrfach definierte ID: an: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL"> verwijst naar herhaaldelijk gedefinieerde ID: in: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DangleLink">
 			<tbl:str lang="EN">Dangling ResourceLink </tbl:str>
 			<tbl:str lang="DE">Unverknüpfter ResourceLink </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Hangende (dangling) ResourceLink </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DanglePartLink">
 			<tbl:str lang="EN">Dangling Partitioned ResourceLink </tbl:str>
 			<tbl:str lang="DE">Unverknüpfter Partitionierter ResourceLink </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Hangende (dangling) gepartitioneerde ResourceLink: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DangleRefElem">
 			<tbl:str lang="EN">Dangling RefElement </tbl:str>
 			<tbl:str lang="DE">Unverknüpfter RefElement</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Hangend (dangling) RefElement </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DanglePartRefElem">
 			<tbl:str lang="EN">Dangling Partitioned RefElement </tbl:str>
 			<tbl:str lang="DE">Unverknüpfter Partitioniertes RefElement </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Hangend (dangling) gepartitioneerd RefElement: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="InvResPosition">
 			<tbl:str lang="EN">Invalid position of Resource and ResourceLink </tbl:str>
 			<tbl:str lang="DE">Unzulässige Position der Ressource und des RecourceLinks </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Ongeldige positie van Resource end ResourceLink: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="UnlinkedRes">
 			<tbl:str lang="EN">Warning: Unlinked and Unreferenced Resource: </tbl:str>
 			<tbl:str lang="DE">Warnung: Unverlinkte und Unreferenzierte Ressource: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Waarschuwing: Unlinked en Unreferenced Resource: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="InvRefElem">
 			<tbl:str lang="EN">Invalid RefElement: </tbl:str>
 			<tbl:str lang="DE">Unzulässiges RefElement: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Ongeldig RefElement: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">General Invalid Element: </tbl:str>
 			<tbl:str lang="DE">Allgemein unzulässiges Element: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Algemeen ongeldig Element: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Separation not defined in ColorPool: </tbl:str>
 			<tbl:str lang="DE">Separation im ColorPool nicht definiert: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Separatie niet gedefinieerd in ColorPool: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Separation defined in ColorPool but never referenced: </tbl:str>
 			<tbl:str lang="DE">Separation im ColorPool definiert aber nie referenziert: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Separatie gedefinieerd in ColorPool maar nooit gebruikt: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Multiple ID Attribute at: </tbl:str>
 			<tbl:str lang="DE">Mehrfaches ID Attribut vorhanden in: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Herhaald ID Attribuut in: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Prerelease Attribute </tbl:str>
 			<tbl:str lang="DE">Zu neues Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Prerelease Attribuut </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Deprecated Attribute </tbl:str>
 			<tbl:str lang="DE">Veraltetes Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Oubollig Attribuut </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Unknown Attribute </tbl:str>
 			<tbl:str lang="DE">Unbekanntes Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Onbekend Attribuut </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MissingAttribute">
 			<tbl:str lang="EN">Missing Required Attribute </tbl:str>
 			<tbl:str lang="DE">Fehlendes erforderliches Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Missend verplicht Attribuut </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Element written as Attribute: </tbl:str>
 			<tbl:str lang="DE">Element als Attribut gechrieben: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Element geschreven als Attribuut: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Tested Attribute </tbl:str>
 			<tbl:str lang="DE">Getestetes Attribut </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Getest Attribuut </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Error Type: </tbl:str>
 			<tbl:str lang="DE">Fehlertyp: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Fouttype: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="message">
 			<tbl:str lang="EN">Message: </tbl:str>
 			<tbl:str lang="DE">Nachricht: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Boodschap: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Unmatched element: TODO fix xslt for this</tbl:str>
 			<tbl:str lang="DE">Unangepasstes Element: Aufgabe xsl reparieren</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Unmatched Element: TODO fix xslt hiervoor</tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Resource PartUsage: </tbl:str>
 			<tbl:str lang="DE">Resource PartUsage: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Resource PartUsage: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="SchemaSuccess">
 			<tbl:str lang="EN">XML Schema Validation Successful: </tbl:str>
 			<tbl:str lang="DE">XML Validierung erfolgreich :</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">XML Schema Validation geslaagd: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="SchemaError">
 			<tbl:str lang="EN">XML Schema Validation Error: </tbl:str>
 			<tbl:str lang="DE">XML Validierungsfehler:</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">XML Schema Validation fout: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="prefix">
 			<tbl:str lang="EN">XML Namespace prefix: </tbl:str>
 			<tbl:str lang="DE">XML Namespace präfix: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">XML Namespace prefix: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="SchemaOut">
 			<tbl:str lang="EN">XML Schema Validation Output: </tbl:str>
 			<tbl:str lang="DE">XML Schema Validierungs Output: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">XML Schema Validatie Output: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Schema Error: </tbl:str>
 			<tbl:str lang="DE">Fehler im Schema: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Fout in Schema: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Schema Fatal Error: </tbl:str>
 			<tbl:str lang="DE">Fataler Fehler im Schema: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Fatale fout in Schema: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Schema Warning: </tbl:str>
 			<tbl:str lang="DE">Schemawarnung: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Schema waarschuwing: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">CheckJDF Validation Output: </tbl:str>
 			<tbl:str lang="DE">Validierungsoutput der Überprüfung</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">CheckJDF Validatie Output: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">CheckJDF Validation Successful: </tbl:str>
 			<tbl:str lang="DE">Überprüfung der JDF Validation war erfolgreich: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">CheckJDF Validatie geslaagd: </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">XML Schema Validation Output: </tbl:str>
 			<tbl:str lang="DE">Schema Validierungs Output:</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">XML Schema Validatie Output: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="rawout">
 			<tbl:str lang="EN">Raw XML Checker Output for: </tbl:str>
 			<tbl:str lang="DE">CheckJDF Output als XML: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">CheckJDF Output als XML </tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Checker Version:</tbl:str>
 			<tbl:str lang="DE">Checkerversion</tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Checker Versie:</tbl:str>
 		</tbl:loc>
 		<tbl:loc>
 			<tbl:str lang="EN">Last Valid Version: </tbl:str>
 			<tbl:str lang="DE">Letzte gültige Version: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Laatste geldige Versie:</tbl:str>
+		</tbl:loc>
+		<!-- KVDP added mssing First Valid Version -->
+		<tbl:loc>
+			<tbl:str lang="EN">First Valid Version: </tbl:str>
+			<!-- KVDP translate for German -->
+			<tbl:str lang="DE">Letzte gültige Version: </tbl:str>
+			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Eerste geldige Versie:</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="DeviceCapTest">
 			<tbl:str lang="EN">Device Capability Test </tbl:str>
-			<tbl:str lang="DE">Test der Geätefähigkeiten: </tbl:str>
+			<!-- KVDP corrected German string -->
+			<tbl:str lang="DE">Test der Gerätefähigkeiten: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Device Capability Test </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="ExecutableNodes">
 			<tbl:str lang="EN">Executable node list</tbl:str>
 			<tbl:str lang="DE">Liste der Ausführbaren Knoten: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Lijst met uitvoerbare nodes</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="RejectedNode">
 			<tbl:str lang="EN">Rejected node</tbl:str>
 			<tbl:str lang="DE">Verworfener Knoten: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Geweigerde node</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="BugReport">
 			<tbl:str lang="EN">Bug Report</tbl:str>
 			<tbl:str lang="DE">Fehlerbericht </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Foutbericht</tbl:str>
 		</tbl:loc>
 		<tbl:loc key="CapsType">
-			<tbl:str lang="EN">Valid Type in Capabilties: </tbl:str>
-			<tbl:str lang="DE">Erlaubte Typen in den Geätefähigkeiten: </tbl:str>
+			<!-- KVDP fixed error in English and German string-->
+			<tbl:str lang="EN">Valid Type in Capabilities: </tbl:str>
+			<tbl:str lang="DE">Erlaubte Typen in den Gerätefähigkeiten: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Toegelaten Type in Capabilties: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MissingElement">
 			<tbl:str lang="EN">Missing Sub-Element: </tbl:str>
 			<tbl:str lang="DE">Fehlendes Subelement: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Missend Sub-Element: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MinOccurs">
 			<tbl:str lang="EN">Minimum number of occurrences: </tbl:str>
 			<tbl:str lang="DE">Minimale Anzahl: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Minimaal aantal: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="MaxOccurs">
 			<tbl:str lang="EN">Maximum number of occurrences: </tbl:str>
 			<tbl:str lang="DE">Maximale Anzahl: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Maximaal aantal: </tbl:str>
 		</tbl:loc>
 		<tbl:loc key="Occurs">
 			<tbl:str lang="EN">Occurrences: </tbl:str>
 			<tbl:str lang="DE">Anzahl: </tbl:str>
 			<tbl:str lang="FR">Testing File: in French </tbl:str>
+			<tbl:str lang="NL">Aantal: </tbl:str>
 		</tbl:loc>
 	</tbl:lang>
 	<!-- get a pointer to the language table -->
@@ -443,19 +514,20 @@
 	<!-- =============================================== -->
 	<!-- =============================================== -->
 	<xsl:template match="TestElement[@ErrorType='InvalidElement']">
-		<!-- ===============================================
-<H4>
-
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="Invalid Element: ''"/>
-                                </xsl:call-template>
-<xsl:value-of select="@NodeName"/> 
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'at'"/>
-                                </xsl:call-template>
-<xsl:value-of select="@XPath"/> 
-</H4>
-<xsl:text>Message: </xsl:text> <xsl:value-of select="@Message"/>
+		<!-- KVDP comment end was missing? -->
+		<!-- =============================================== 
+		<H4>
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="Invalid Element: ''"/>
+			</xsl:call-template>
+			<xsl:value-of select="@NodeName"/>
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="'at'"/>
+			</xsl:call-template>
+			<xsl:value-of select="@XPath"/>
+		</H4>
+		<xsl:text>Message: </xsl:text>
+		<xsl:value-of select="@Message"/>
  =============================================== -->
 		<xsl:apply-templates/>
 	</xsl:template>
@@ -789,9 +861,9 @@
 	<xsl:template match="DeviceCapTest">
 		<hr/>
 		<H3>
-				<xsl:call-template name="localize">
-					<xsl:with-param name="string" select="'DeviceCapTest'"/>
-				</xsl:call-template>
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="'DeviceCapTest'"/>
+			</xsl:call-template>
 		</H3>
 Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 		<xsl:apply-templates/>
@@ -799,18 +871,18 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 	<!-- =============================================== -->
 	<xsl:template match="ExecutableNodes">
 		<H4>
-				<xsl:call-template name="localize">
-					<xsl:with-param name="string" select="'ExecutableNodes'"/>
-				</xsl:call-template>
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="'ExecutableNodes'"/>
+			</xsl:call-template>
 		</H4>
 		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="BugReport">
 		<H4>
-				<xsl:call-template name="localize">
-					<xsl:with-param name="string" select="'BugReport'"/>
-				</xsl:call-template>
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="'BugReport'"/>
+			</xsl:call-template>
 		</H4>
 		<xsl:apply-templates/>
 	</xsl:template>
@@ -828,24 +900,23 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 		</xsl:call-template>
 		<xsl:value-of select="@CapsType"/>
 		<br/>
-<xsl:value-of select="@NodeType"/> 
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'at'"/>
-                                </xsl:call-template>
-<xsl:value-of select="@XPath"/> 
+		<xsl:value-of select="@NodeType"/>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'at'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@XPath"/> 
 ; ID= <xsl:value-of select="@ID"/>
-<br/>
+		<br/>
 		<xsl:call-template name="localize">
 			<xsl:with-param name="string" select="'message'"/>
 		</xsl:call-template>
 		<xsl:value-of select="@Message"/>
 		<xsl:apply-templates/>
 	</xsl:template>
-
 	<!-- =============================================== -->
 	<!-- =============================================== -->
 	<xsl:template match="RejectedChildNode">
-	<xsl:apply-templates/>
+		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="MissingElement">
@@ -854,22 +925,20 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string" select="'MissingElement'"/>
 				</xsl:call-template>
-		<xsl:value-of select="@Name"/>
+				<xsl:value-of select="@Name"/>
 			</font>
 		</H4>
 		# Occurrences: <xsl:value-of select="@FoundElements"/>; 
 		<xsl:call-template name="localize">
 			<xsl:with-param name="string" select="'MinOccurs'"/>
 		</xsl:call-template>
-<xsl:value-of select="@MinOccurs"/>
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'at'"/>
-                                </xsl:call-template>
-<xsl:value-of select="@XPath"/> 
-
-	<xsl:apply-templates/>
+		<xsl:value-of select="@MinOccurs"/>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'at'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@XPath"/>
+		<xsl:apply-templates/>
 	</xsl:template>
-
 	<!-- =============================================== -->
 	<xsl:template match="MissingAttribute">
 		<H4>
@@ -877,17 +946,15 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string" select="'MissingAttribute'"/>
 				</xsl:call-template>
-		<xsl:value-of select="@Name"/>
+				<xsl:value-of select="@Name"/>
 			</font>
 		</H4>
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'at'"/>
-                                </xsl:call-template>
-<xsl:value-of select="@XPath"/> 
-
-	<xsl:apply-templates/>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'at'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@XPath"/>
+		<xsl:apply-templates/>
 	</xsl:template>
-
 	<!-- =============================================== -->
 	<xsl:template match="Evaluation">
 		<H4>
@@ -895,19 +962,16 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string" select="'MissingAttribute'"/>
 				</xsl:call-template>
-		<xsl:value-of select="@Name"/>
+				<xsl:value-of select="@Name"/>
 			</font>
 		</H4>
-                                <xsl:call-template name="localize">
-                                        <xsl:with-param name="string" select="'at'"/>
-                                </xsl:call-template>
-<xsl:value-of select="@XPath"/> 
-
-	<xsl:apply-templates/>
+		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'at'"/>
+		</xsl:call-template>
+		<xsl:value-of select="@XPath"/>
+		<xsl:apply-templates/>
 	</xsl:template>
-
 	<!-- =============================================== -->
-
 	<xsl:template match="TestFile/Error">
 		<H3>
 			<font color="#ff0000">
@@ -985,9 +1049,16 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 				<xsl:with-param name="string" select="'Prerelease Attribute '"/>
 			</xsl:call-template>
 			<xsl:value-of select="@NodeName"/> at: <xsl:value-of select="@XPath"/>
-		</H5> First Valid Version:
-                        <xsl:value-of select="@FirstVersion"/>
+		</H5>
+		<!-- KVDP first valid version was not translated -->
 		<xsl:call-template name="localize">
+			<xsl:with-param name="string" select="'First Valid Version: '"/>
+		</xsl:call-template>
+		<xsl:value-of select="@FirstVersion"/>
+			<!-- KVDP added break as for last version -->
+					<br/>
+		<xsl:call-template name="localize">
+
 			<xsl:with-param name="string" select="'message'"/>
 		</xsl:call-template>
 		<xsl:value-of select="@Message"/>
@@ -1073,7 +1144,12 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 			<xsl:call-template name="localize">
 				<xsl:with-param name="string" select="'Invalid Attribute Value '"/>
 			</xsl:call-template>
-			<xsl:value-of select="@NodeName"/> at: <xsl:value-of select="@XPath"/>
+			<xsl:value-of select="@NodeName"/>
+			<!-- KVDP translated at -->
+			<xsl:call-template name="localize">
+				<xsl:with-param name="string" select="'at'"/>
+			</xsl:call-template>
+			<xsl:value-of select="@XPath"/>
 		</H5>
 		<xsl:call-template name="localize">
 			<xsl:with-param name="string" select="'message'"/>
@@ -1128,38 +1204,45 @@ Execution time: 		<xsl:value-of select="@DeviceCapTestTime"/>
 	<!-- =============================================== -->
 	<xsl:template match="not">
 		&lt; not &gt; = <xsl:value-of select="@Value"/>
-		[ <br/><xsl:apply-templates/><br/>]
+		[ <br/>
+		<xsl:apply-templates/>
+		<br/>]
 		<br/>
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="or">
 		&lt; or &gt; = <xsl:value-of select="@Value"/>
-		[ <br/><xsl:apply-templates/><br/>]
+		[ <br/>
+		<xsl:apply-templates/>
+		<br/>]
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="and">
-		&lt; and &gt; = <xsl:value-of select="@Value"/><br/>
-		[ <br/><xsl:apply-templates/><br/>]
+		&lt; and &gt; = <xsl:value-of select="@Value"/>
+		<br/>
+		[ <br/>
+		<xsl:apply-templates/>
+		<br/>]
 	</xsl:template>
 	<!-- =============================================== -->
 	<!-- =============================================== -->
 	<!-- =============================================== -->
 	<!-- =============================================== -->
 	<xsl:template match="TestElement">
-	<!--  dummy to remove duplicate invalid elements -->
+		<!--  dummy to remove duplicate invalid elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
 	<xsl:template match="InvalidResources">
-	<!--  dummy to remove duplicate invalid elements -->
+		<!--  dummy to remove duplicate invalid elements -->
 		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="MissingAttributes">
-	<!--  dummy to remove lists -->
+		<!--  dummy to remove lists -->
 		<xsl:apply-templates/>
 	</xsl:template>
 	<xsl:template match="ActionReportList">
-	<!--  dummy to remove lists -->
+		<!--  dummy to remove lists -->
 		<xsl:apply-templates/>
 	</xsl:template>
 	<!-- =============================================== -->
