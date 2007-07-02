@@ -10,10 +10,10 @@
    	<property name="JDFUtility.name" value="JDFUtility" />
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />
-		<property name="web.src.dir" value="${src.dir}/JDFUtility" />
+		<property name="web.src.dir" value="./WebContent" />
 		<property name="test.src.dir" value="${src.dir}/test" />
 		<property name="sendjmf.src.dir" value="${src.dir}/sendjmf" />
-		<property name="lib.dir" value="./src/lib" />
+		<property name="lib.dir" value="./WebContent/WEB-INF/lib" />
 		<property name="bin.dir" value="./bin" />
 		<property name="dist.dir" value="./dist" />
 		<property name="build.debug" value="true" />
