@@ -2,7 +2,7 @@
 <!--	The CIP4 Software License, Version 1.0
 	
 	
-	Copyright (c) 2001-2006 The International Cooperation for the Integration of 
+	Copyright (c) 2001-2007 The International Cooperation for the Integration of 
 	Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without modification, 
@@ -214,6 +214,7 @@
 	</xs:simpleType>
 	<xs:simpleType name="JDFJMFVersion">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="1.0"/>
 			<xs:enumeration value="1.1"/>
 			<xs:enumeration value="1.2"/>
 			<xs:enumeration value="1.3"/>
@@ -1306,7 +1307,7 @@
 	</xs:simpleType>
 	<xs:simpleType name="eElementType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="Auxilliary"/>
+			<xs:enumeration value="Auxiliary"/>
 			<xs:enumeration value="Barcode"/>
 			<xs:enumeration value="Composed"/>
 			<xs:enumeration value="Document"/>
@@ -1339,7 +1340,8 @@
 	</xs:simpleType>
 	<xs:simpleType name="eEmbossingType">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="BlinedEmbossing"/>
+			<xs:enumeration value="BlindEmbossing"/>
+			<xs:enumeration value="Braille"/>
 			<xs:enumeration value="EmbossedFinish"/>
 			<xs:enumeration value="FoilEmbossing"/>
 			<xs:enumeration value="FoilStamping"/>
@@ -1562,6 +1564,8 @@
 	<xs:simpleType name="eHoleType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="R2-generic"/>
+			<xs:enumeration value="S1-generic"/>
+			<xs:enumeration value="S-generic"/>
 			<xs:enumeration value="R2m-DIN"/>
 			<xs:enumeration value="R2m-ISO"/>
 			<xs:enumeration value="R2m-MIB"/>
@@ -1600,6 +1604,8 @@
 	<xs:simpleType name="eHoleType1_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="None"/>
+			<xs:enumeration value="S1-generic"/>
+			<xs:enumeration value="S-generic"/>
 			<xs:enumeration value="R2-generic"/>
 			<xs:enumeration value="R2m-DIN"/>
 			<xs:enumeration value="R2m-ISO"/>
@@ -2288,6 +2294,7 @@
 			<xs:enumeration value="SheetName"/>
 			<xs:enumeration value="Side"/>
 			<xs:enumeration value="SignatureName"/>
+	  	<xs:enumeration value="StationName"/>
 			<xs:enumeration value="SubRun"/>
 			<xs:enumeration value="TileID"/>
 			<xs:enumeration value="WebName"/>
@@ -3260,6 +3267,9 @@
 	</xs:simpleType>
 	<xs:simpleType name="pSortAmount">
 		<xs:restriction base="jdftyp:boolean"/>
+	</xs:simpleType>
+	<xs:simpleType name="pStationName">
+		<xs:restriction base="jdftyp:string"/>
 	</xs:simpleType>
 	<xs:simpleType name="pSubRun">
 		<xs:restriction base="jdftyp:NMTOKEN"/>
