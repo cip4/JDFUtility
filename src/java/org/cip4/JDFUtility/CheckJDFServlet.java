@@ -137,7 +137,7 @@ public class CheckJDFServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
-        // foo
+        System.out.println("Processing get");
     }
     
     /** Handles the HTTP <code>POST</code> method.
@@ -147,7 +147,6 @@ public class CheckJDFServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
-        System.out.println();
         System.out.println("Processing request...");
         
         // Check that we have a file upload request

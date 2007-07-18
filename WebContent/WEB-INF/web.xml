@@ -50,6 +50,18 @@
       </init-param>
       <load-on-startup>1</load-on-startup>
    </servlet>
+      <servlet>
+	       <servlet-name>Bambi</servlet-name>
+	       <display-name>Device JDF</display-name>
+	       <description/>
+	       <servlet-class>org.cip4.bambi.DeviceServlet</servlet-class>
+	       <init-param>
+	          <param-name/>
+	          <param-value/>
+	          <description/>
+	       </init-param>
+	       <load-on-startup>1</load-on-startup>
+	    </servlet>
    <servlet-mapping>
       <servlet-name>CheckJDFServlet</servlet-name>
       <url-pattern>/CheckJDFServlet</url-pattern>
@@ -58,6 +70,10 @@
       <servlet-name>FixJDFServlet</servlet-name>
       <url-pattern>/FixJDFServlet</url-pattern>
    </servlet-mapping>
+   	    <servlet-mapping>
+	 	       <servlet-name>Bambi</servlet-name>
+	 	       <url-pattern>/Bambi/*</url-pattern>
+	 	    </servlet-mapping>
    <session-config>
       <session-timeout>120</session-timeout>
    </session-config>

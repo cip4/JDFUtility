@@ -8,16 +8,18 @@
 		<!-- Sets properties -->
 		<tstamp />
    	<property name="JDFUtility.name" value="JDFUtility" />
+		<property file="version.properties"/>
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />
 		<property name="web.src.dir" value="./WebContent" />
 		<property name="test.src.dir" value="${src.dir}/test" />
 		<property name="sendjmf.src.dir" value="${src.dir}/sendjmf" />
-		<property name="lib.dir" value="./WebContent/WEB-INF/lib" />
+		<property name="lib.dir" value="${src.dir}/lib" />
 		<property name="bin.dir" value="./bin" />
 		<property name="dist.dir" value="./dist" />
 		<property name="build.debug" value="true" />
 		<property name="base.filename" value="${JDFUtility.name}-${DSTAMP}" />
+		<property name="major.filename" value="${JDFUtility.name}-${major.version}" />		
 
 		<property name="verbose" value="true" />
 		<!-- Sets class path -->
@@ -49,6 +51,11 @@
 		<echo>Building JAR file...</echo>
 		<jar jarfile="${dist.dir}/${base.filename}.jar" basedir="${bin.dir}" />
 	</target>
+	<target name="major_jar" depends="jar" description="Builds a JAR archive containing the JDFLib-J binaries.">
+		<echo>Copying JAR file: ${dist.dir}/${major.filename}.jar</echo>
+		<copy file="${dist.dir}/${base.filename}.jar" tofile="${dist.dir}/${major.filename}.jar"/>
+	</target>
+
 	<target name="clean" depends="-init" description="Cleans the build.">
 		<echo>Cleaning...</echo>
 		<delete dir="${bin.dir}" />
