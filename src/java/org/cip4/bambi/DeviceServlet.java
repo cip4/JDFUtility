@@ -94,6 +94,7 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
+import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
@@ -126,6 +127,8 @@ public class DeviceServlet extends HttpServlet
     private JMFHandler jmfHandler=null;
     private IQueueProcessor theQueue=null;
     private IDeviceProcessor theDevice=null;
+    private IStatusListener theStatusListener=null;
+    private ISignalDispatcher theSignalDispatcher=null;
 
     /** Initializes the servlet.
      */
@@ -136,9 +139,14 @@ public class DeviceServlet extends HttpServlet
         // TODO make configurable
         jmfHandler=new JMFHandler();
         JDFJMF.setTheSenderID("bambi");
+        theSignalDispatcher=new SignalDispatcher(jmfHandler);
+        jmfHandler.addHandler((SignalDispatcher)theSignalDispatcher);
+        
         log.info("Initializing DeviceServlet");
-        theQueue=new QueueProcessor();
-        theDevice=new DeviceProcessor(theQueue);
+        theQueue=new QueueProcessor(theStatusListener, theSignalDispatcher);
+        theStatusListener=new StatusListener(theSignalDispatcher);
+        
+        theDevice=new DeviceProcessor(theQueue, theStatusListener);
         log.info("Starting device thread");
         new Thread(theDevice).start();
         log.info("device thread started");
@@ -271,7 +279,7 @@ public class DeviceServlet extends HttpServlet
             // create a simple dummy sqe and subit to myself
             JDFQueueSubmissionParams qsp=command.getCreateQueueSubmissionParams(0);
             qsp.setPriority(50);
-            theQueue.addEntry(command, doc);            
+            JDFResponse r=theQueue.addEntry(command, doc);
         }        
     }
 
@@ -282,10 +290,6 @@ public class DeviceServlet extends HttpServlet
     throws IOException
     {
         InputStream inStream=request.getInputStream();
-//        String prefix="MIME-Version: 1.0\n"+request.getContentType()+"\n";
-//        log.info("multipart content type: "+request.getContentType());
-//
-//        PrefixInputStream pis=new PrefixInputStream(prefix,inStream);
         BodyPart bp[]=MimeUtil.extractMultipartMime(inStream);
         log.info("Body Parts: "+((bp==null) ? 0 : bp.length));
         if(bp==null || bp.length==0)
@@ -346,7 +350,7 @@ public class DeviceServlet extends HttpServlet
             processError(request, response, EnumType.Notification, 2,"proccessMultipleDocuments- queue rejected submission");
             return;
         }
-
+        
         try
         {
             r.getOwnerDocument_KElement().write2Stream(response.getOutputStream(),2,true);

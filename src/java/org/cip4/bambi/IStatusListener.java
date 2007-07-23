@@ -1,15 +1,4 @@
 /**
- * 
- */
-package org.cip4.bambi;
-
-import org.cip4.jdflib.auto.JDFAutoQueueEntry.EnumQueueEntryStatus;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.jmf.JDFCommand;
-import org.cip4.jdflib.jmf.JDFQueue;
-import org.cip4.jdflib.jmf.JDFResponse;
-
-/**
  * The CIP4 Software License, Version 1.0
  *
  *
@@ -78,40 +67,58 @@ import org.cip4.jdflib.jmf.JDFResponse;
  *  
  * 
  */
+package org.cip4.bambi;
+
+import org.cip4.jdflib.auto.JDFAutoDeviceInfo.EnumDeviceStatus;
+import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
+import org.cip4.jdflib.node.JDFNode;
+
+
 /**
  * @author prosirai
  *
  */
-public interface IQueueProcessor
+public interface IStatusListener
 {
     /**
-     * get the next waiting entry
-     * @return
-     */
-    public IQueueEntry getNextEntry();
-    
-    /**
-     * get the jdf representation of this queue
-     * @return JDFQueue the jdf representation of this queue
-     */
-    public JDFQueue getQueue();
-    
-    /**
-     * add a new entry to the queue
+     * updates the amount for a given resource
+     * the amounts are collected but not signalled until setstatus is called
      * 
-     * @param sumitQueueEntry queuesubmission command
-     * @param theJDF the referenced jdf doc
-     * @return 
+     * @param queueEntryID the queuentry id of the process stepp being processed
+     * @param workstepID the workstep id of the process stepp being processed, 
+     * set to null if the all partitions of the root are being processed
+     * @param resID the resource id of the tracked resource
+     * @param good the number of good copies
+     * @param waste the number of waste copies, negative values specify that waste should be ignored
      */
-    public JDFResponse addEntry(JDFCommand sumitQueueEntry, JDFDoc theJDF);
+    void updateAmount(String queueEntryID,String workstepID, String resID, double good, double waste);
     
     /**
-     * updated an entry in the queue 
-     * @param queueEntryID the queuentryid to update
-     * @param status the queuentry status
+     * update the status information by starting a new phase
+     * all amounts that have been accumulated are linked to the prior phase
+     * should be called after all amounts have been appropriately set
+     * @param queueEntryID the queuentry id of the process stepp being processed
+     * @param workstepID the workstep id of the process stepp being processed, 
+     * set to null if the all partitions of the root are being processed
+     * @param deviceStatus
+     * @param deviceStatusDetails
+     * @param nodeStatus
+     * @param nodeStatusDetails
      */
-    public void updateEntry(String queueEntryID, EnumQueueEntryStatus status);
-    
-    public void addListener(Object o);
+    void signalStatus(String queueEntryID, String workstepID, EnumDeviceStatus deviceStatus, String deviceStatusDetails, EnumNodeStatus nodeStatus, String nodeStatusDetails);
 
+    /**
+     * setup the map of queueentryid and node
+     * 
+     * @param queueEntryID the queueentryid is associated to the node
+     * if {@link QueueEntry}==null, the entire list is cleared
+     * @param workStepID the workstep id that is being tracked
+     * @param vPartMap the vector of partitions taht are being tracked
+     * @param trackResourceID the id of the "major" resource to be counted for phasetimes
+     * @param node the jfd node that will be processed. this may be a group node with 
+     * additional sub nodes
+     * if node==null the queuentryid is removed from the map
+     */
+     public void setNode(String queueEntryID, String workStepID, JDFNode node, VJDFAttributeMap vPartMap, String trackResourceID);
 }

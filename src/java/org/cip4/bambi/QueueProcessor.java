@@ -74,20 +74,20 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Vector;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.JDFUtility.JDFServletUtil;
 import org.cip4.jdflib.auto.JDFAutoQueue.EnumQueueStatus;
 import org.cip4.jdflib.auto.JDFAutoQueueEntry.EnumQueueEntryStatus;
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFQueue;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFResponse;
+import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.util.UrlUtil;
 
 
@@ -105,14 +105,18 @@ public class QueueProcessor implements IQueueProcessor
     private static final long serialVersionUID = -876551736245089033L;
     private JDFQueue myQueue;
     private Vector listeners;
+    private IStatusListener statusListener;
+    private ISignalDispatcher signalDispatcher;
     private static final String jdfDir=DeviceServlet.baseDir+"JDFDir"+File.separator;
     /**
      * 
      *
      */
-    public QueueProcessor()
+    public QueueProcessor(IStatusListener _statusListener, ISignalDispatcher _signalDispatcher)
     {
         super();
+        statusListener=_statusListener;
+        signalDispatcher=_signalDispatcher;
         log.info("QueueProcessor construct");
         queueFile=new File(DeviceServlet.baseDir+File.separator+"theQueue.xml");
         queueFile.getParentFile().mkdirs();
@@ -190,7 +194,18 @@ public class QueueProcessor implements IQueueProcessor
         }
         persist();
 
+        VJDFAttributeMap vPartMap=newQE.getPartMapVector();
+        JDFNode node=theJDF.getJDFRoot();
+        JDFAttributeMap partMap=vPartMap==null ? null : vPartMap.elementAt(0);
+        final String workStepID = node.getWorkStepID(partMap);
+        final String queueEntryID = newQE.getQueueEntryID();
+        statusListener.setNode(queueEntryID, workStepID, node, vPartMap, null);        
+        if(queueEntryID!=null)
+        {
+            signalDispatcher.addSubscriptions(node,queueEntryID);
+        }
         notifyListeners();
+
         return r;
     }
 

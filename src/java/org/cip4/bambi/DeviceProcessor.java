@@ -78,10 +78,14 @@ import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFResourceLink;
 import org.cip4.jdflib.core.VElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
+import org.cip4.jdflib.core.JDFResourceLink.EnumUsage;
+import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.JDFResource.EnumResourceClass;
+import org.cip4.jdflib.util.StatusCounter;
 import org.cip4.jdflib.util.StatusUtil;
 
 
@@ -98,18 +102,20 @@ public class DeviceProcessor implements IDeviceProcessor
     private static final long serialVersionUID = -876551736245089033L;
     private boolean bCancel=false;
     private IQueueProcessor queueProcessor;
+    private IStatusListener statusListener;
     private Object myListener; // the mutex for waiting and reawakening
     /**
      * 
      *
      */
-    public DeviceProcessor(IQueueProcessor _queueProcessor)
+    public DeviceProcessor(IQueueProcessor _queueProcessor, IStatusListener _statusListener)
     {
         super();
         log.info("DeviceProcessor construct");
         queueProcessor=_queueProcessor;
         myListener=new Object();
         queueProcessor.addListener(myListener);
+        statusListener=_statusListener;
     }
 
     /* (non-Javadoc)
@@ -188,33 +194,54 @@ public class DeviceProcessor implements IDeviceProcessor
             log.error("proccessing null job");
             return EnumQueueEntryStatus.Aborted;
         }
-        log.info("Processing queueentry"+qe.getQueueEntryID());
+        final String queueEntryID = qe.getQueueEntryID();
+        log.info("Processing queueentry"+queueEntryID);
         JDFNode node=doc.getJDFRoot();
         VElement v=node.getResourceLinks(null);
         int vSiz=v==null ? 0 : v.size();
-        for(int i=vSiz-1;i>=0;i--)
+        String inConsume=null;
+        String outQuantity=null;
+        for(int i=0;i<vSiz;i++)
         {
             JDFResourceLink rl=(JDFResourceLink) v.elementAt(i);
             JDFResource r=rl.getLinkRoot();
             EnumResourceClass c=r.getResourceClass();
-            if(!EnumResourceClass.Consumable.equals(c)
-                    &&! EnumResourceClass.Handling.equals(c)
-                    &&! EnumResourceClass.Quantity.equals(c) )
+            if(EnumResourceClass.Consumable.equals(c)
+                    || EnumResourceClass.Handling.equals(c)
+                    || EnumResourceClass.Quantity.equals(c) )
             {
-                v.remove(i);
+                EnumUsage inOut=rl.getUsage();
+                if(EnumUsage.Input.equals(inOut))
+                {
+                    if(EnumResourceClass.Consumable.equals(c))
+                        inConsume=rl.getrRef();
+                }
+                else
+                {
+                    outQuantity=rl.getrRef();
+                }
             }
 
         }
-        StatusUtil su=new StatusUtil(node,qe.getPartMapVector(),v);
-        su.setPhase(EnumNodeStatus.Setup, null, EnumDeviceStatus.Setup, null, null);
-        StatusUtil.sleep(1000);
-        su.setPhase(EnumNodeStatus.InProgress, null, EnumDeviceStatus.Running, null, null);
-        StatusUtil.sleep(1000);
-        su.setPhase(EnumNodeStatus.Cleanup, null, EnumDeviceStatus.Cleanup, null, null);
-        StatusUtil.sleep(1000);
-        su.setPhase(EnumNodeStatus.Completed, null, EnumDeviceStatus.Idle, null, null);
+        String trackResourceID= inConsume !=null ? inConsume : outQuantity;
+        VJDFAttributeMap vPartMap=qe.getPartMapVector();
+        JDFAttributeMap partMap=vPartMap==null ? null : vPartMap.elementAt(0);
+        final String workStepID = node.getWorkStepID(partMap);
+        statusListener.setNode(queueEntryID, workStepID, node, vPartMap, trackResourceID);
+        statusListener.signalStatus(queueEntryID, workStepID, EnumDeviceStatus.Setup,"setup", EnumNodeStatus.Setup, "node steup");
+        StatusCounter.sleep(1000);
+        for(int i=0;i<5;i++)
+        {
+            statusListener.signalStatus(queueEntryID, workStepID, EnumDeviceStatus.Running,"device running", EnumNodeStatus.InProgress, "moving");
+            StatusCounter.sleep(1000);
+            statusListener.signalStatus(queueEntryID, workStepID, EnumDeviceStatus.Running,"device running", EnumNodeStatus.Stopped, "paused");
+            StatusCounter.sleep(1000);
+        }
+        statusListener.signalStatus(queueEntryID, workStepID, EnumDeviceStatus.Idle,"device completed", EnumNodeStatus.Completed, "done");
+        StatusCounter.sleep(1000);
         //TODO more
-        log.info("Completed processing queueentry"+qe.getQueueEntryID());
+        //TODO better cleanup fuctionality - us cleanup thread
+        log.info("Completed processing queueentry"+queueEntryID);
 
         return EnumQueueEntryStatus.Completed;
 

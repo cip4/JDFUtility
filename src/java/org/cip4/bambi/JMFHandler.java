@@ -114,7 +114,7 @@ public class JMFHandler implements IMessageHandler
     private HashMap messageMap; // key = type , value = IMessageHandler
     private HashMap familyMap; // key = type , value = families handled
     private HashMap subscriptionMap; // key = type , value = subscriptions handled
-       
+    private HashMap jmfHandlerMap;   
     /**
      * 
      *
@@ -125,7 +125,9 @@ public class JMFHandler implements IMessageHandler
         messageMap=new HashMap();
         familyMap=new HashMap();
         subscriptionMap=new HashMap();
-        addHandler(EnumType.KnownMessages, new EnumFamily[]{EnumFamily.Query},this);
+        jmfHandlerMap=new HashMap();
+        jmfHandlerMap.put(EnumType.KnownMessages,new EnumFamily[]{EnumFamily.Query});
+        addHandler(this);
     }
     /**
      * add a message handler
@@ -133,10 +135,20 @@ public class JMFHandler implements IMessageHandler
      * @param families an array of families that the handler handles
      * @param handler the handler associated with the event
      */
-    public void addHandler(EnumType typ, EnumFamily[] families, IMessageHandler handler)
+    public void addHandler(IMessageHandler handler)
     {
-        messageMap.put(typ, handler);
-        familyMap.put(typ, families);
+        Iterator types=handler.getMessageTypes();
+        if(types!=null)
+        {
+            while (types.hasNext())
+            {
+                EnumType typ=(EnumType)types.next();
+                messageMap.put(typ, handler);
+                EnumFamily[] families = handler.getFamilies(typ);
+                familyMap.put(typ, families);
+            }
+            
+        }
     }
     /**
      * @param typ the message type
@@ -210,7 +222,7 @@ public class JMFHandler implements IMessageHandler
         IMessageHandler handler=getHandler(m.getEnumType(), fam);
         boolean handled=handler!=null;
         if(handler!=null)
-            handled=handler.handleMessage(m, resp);
+            handled=handler.handleMessage(m, resp, null, null);
         if(!handled)
             unhandledMessage(m,resp);
     }
@@ -241,10 +253,12 @@ public class JMFHandler implements IMessageHandler
     /* (non-Javadoc)
      * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
      */
-    public boolean handleMessage(JDFMessage m, JDFMessage resp)
+    public boolean handleMessage(JDFMessage m, JDFMessage resp, String queueEntryID, String workstepID)
     {
         if(m==null || resp==null)
+        {
             return false;
+        }
         log.debug("Handling"+m.getType());
         EnumType typ=m.getEnumType();
         if(EnumType.KnownMessages.equals(typ))
@@ -274,6 +288,20 @@ public class JMFHandler implements IMessageHandler
                ms.setPersistent(true);
        }
        return true;
+    }
+    /* (non-Javadoc)
+     * @see org.cip4.bambi.IMessageHandler#getFamilies(org.cip4.jdflib.jmf.JDFMessage.EnumType)
+     */
+    public EnumFamily[] getFamilies(EnumType typ)
+    {
+        return (EnumFamily[]) jmfHandlerMap.get(typ);
+    }
+    /* (non-Javadoc)
+     * @see org.cip4.bambi.IMessageHandler#getMessageTypes()
+     */
+    public Iterator getMessageTypes()
+    {
+       return jmfHandlerMap.keySet().iterator();
     }
     
 }
