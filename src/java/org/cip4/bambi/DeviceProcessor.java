@@ -86,7 +86,6 @@ import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.resource.JDFResource;
 import org.cip4.jdflib.resource.JDFResource.EnumResourceClass;
 import org.cip4.jdflib.util.StatusCounter;
-import org.cip4.jdflib.util.StatusUtil;
 
 
 /**
@@ -104,6 +103,7 @@ public class DeviceProcessor implements IDeviceProcessor
     private IQueueProcessor queueProcessor;
     private IStatusListener statusListener;
     private Object myListener; // the mutex for waiting and reawakening
+    
     /**
      * 
      *
@@ -147,7 +147,7 @@ public class DeviceProcessor implements IDeviceProcessor
      * check the queue for any waiting entries and process the first
      * waiting entry in the queue
      * 
-     * @return true if an entry was processed
+     * @return true if an entry was processed, false if no waiting qe is found
      */
     private boolean processQueueEntry()
     {

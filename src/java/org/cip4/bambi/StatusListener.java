@@ -74,13 +74,16 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.bambi.SignalDispatcher.StopPersistentChannelHandler;
 import org.cip4.jdflib.auto.JDFAutoDeviceInfo.EnumDeviceStatus;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFNodeInfo;
+import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.JDFElement.EnumNodeStatus;
 import org.cip4.jdflib.datatypes.VJDFAttributeMap;
 import org.cip4.jdflib.jmf.JDFMessage;
 import org.cip4.jdflib.jmf.JDFResponse;
+import org.cip4.jdflib.jmf.JDFStopPersChParams;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.node.JDFNode;
@@ -90,22 +93,113 @@ import org.cip4.jdflib.util.StatusCounter;
  * @author prosirai
  *
  */
-public class StatusListener implements IStatusListener, IMessageHandler
+public class StatusListener implements IStatusListener
 {
 
     private static Log log = LogFactory.getLog(StatusListener.class.getName());
     private HashMap queueEntryMap;
     private ISignalDispatcher dispatcher;
-    private HashMap jmfHandlerMap;
     private StatusCounter lastCounter; // for time based subscriptions ...
+    
+    /**
+     * 
+     * handler for the StopPersistentChannel command
+     */
+    public class StatusHandler implements IMessageHandler
+    {
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
+         */
+        public boolean handleMessage(JDFMessage inputMessage, JDFResponse response, String queueEntryID, String workstepID)
+        {
+            if(!EnumFamily.Query.equals(inputMessage.getFamily()))
+                return false;
+
+            StatusCounter sc=getSU(queueEntryID, workstepID);
+            if(sc==null)
+            {
+                if( queueEntryID!=null)
+                {
+                    response.setErrorText("No matching queuentry found");
+                    log.error("No matching queuentry found");
+                    return true;
+                }
+                response.appendDeviceInfo().setDeviceStatus(EnumDeviceStatus.Idle);
+                return true;
+            }
+            JDFDoc doc=sc.getDocJMFPhaseTime();
+
+            return false;
+        }
+
+
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getFamilies()
+         */
+        public EnumFamily[] getFamilies()
+        {
+            return new EnumFamily[]{EnumFamily.Query};
+        }
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getMessageType()
+         */
+        public EnumType getMessageType()
+        {
+            return EnumType.Status;
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////////////////
+    
+    /**
+     * 
+     * handler for the StopPersistentChannel command
+     */
+    public class ResourceHandler implements IMessageHandler
+    {
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
+         */
+        public boolean handleMessage(JDFMessage inputMessage, JDFResponse response, String queueEntryID, String workstepID)
+        {
+            if(!EnumFamily.Query.equals(inputMessage.getFamily()))
+                return false;
+
+            StatusCounter sc=getSU(queueEntryID, workstepID);
+            //TODO handle resource query
+
+            return false;
+        }
+
+
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getFamilies()
+         */
+        public EnumFamily[] getFamilies()
+        {
+            return new EnumFamily[]{EnumFamily.Query};
+        }
+
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getMessageType()
+         */
+        public EnumType getMessageType()
+        {
+            return EnumType.Resource;
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////////////////
     
     public StatusListener(ISignalDispatcher dispatch)
     {
         queueEntryMap=new HashMap();
         dispatcher=dispatch;
-        jmfHandlerMap=new HashMap();
-        jmfHandlerMap.put(EnumType.Status, new EnumFamily[]{EnumFamily.Query});
-        jmfHandlerMap.put(EnumType.Resource, new EnumFamily[]{EnumFamily.Query});
         lastCounter=null;
        
     }
@@ -215,65 +309,14 @@ public class StatusListener implements IStatusListener, IMessageHandler
         su.setQueueEntryID(queueEntryID);
         return su;
     }
- 
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#getFamilies(org.cip4.jdflib.jmf.JDFMessage.EnumType)
-     */
-    public EnumFamily[] getFamilies(EnumType typ)
-    {
-        return (EnumFamily[]) jmfHandlerMap.get(typ);
-    }
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#getMessageTypes()
-     */
-    public Iterator getMessageTypes()
-    {
-       return jmfHandlerMap.keySet().iterator();
-    }
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
-     */
-    public boolean handleMessage(JDFMessage inputMessage, JDFMessage response, String QueueEntryID, String workStepID)
-    {
-       if(inputMessage==null)
-           return false;
-       EnumType typ=inputMessage.getEnumType();
-       if(EnumType.Status.equals(typ))
-       {
-           return handleStatus(inputMessage,(JDFResponse)response, QueueEntryID,workStepID);
-       }
-//       if(EnumType.Resource.equals(typ))
-//       {
-//           return handleResource(inputMessage,response);
-//       }
-       return false;
-       
-    }
-    /**
-     * @param inputMessage
-     * @param response
-     * @return
-     */
-    private boolean handleStatus(JDFMessage inputMessage, JDFResponse response, String queueEntryID, String workstepID)
-    {
-        if(!EnumFamily.Query.equals(inputMessage.getFamily()))
-            return false;
 
-        StatusCounter sc=getSU(queueEntryID, workstepID);
-        if(sc==null)
-        {
-            if( queueEntryID!=null)
-            {
-                response.setErrorText("No matching queuentry found");
-                log.error("No matching queuentry found");
-                return true;
-            }
-            response.appendDeviceInfo().setDeviceStatus(EnumDeviceStatus.Idle);
-            return true;
-        }
-        JDFDoc doc=sc.getDocJMFPhaseTime();
-            
-        return false;
+    /**
+     * @param jmfHandler
+     */
+    public void addHandlers(IJMFHandler jmfHandler)
+    {
+        jmfHandler.addHandler(this.new ResourceHandler());        
+        jmfHandler.addHandler(this.new StatusHandler());        
     }
 
 

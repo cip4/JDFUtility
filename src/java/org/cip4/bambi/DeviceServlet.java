@@ -94,13 +94,11 @@ import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.jmf.JDFCommand;
 import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.jmf.JDFQueueEntry;
 import org.cip4.jdflib.jmf.JDFQueueSubmissionParams;
 import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.util.MimeUtil;
-import org.cip4.jdflib.util.PrefixInputStream;
 
 
 /**
@@ -139,19 +137,21 @@ public class DeviceServlet extends HttpServlet
         // TODO make configurable
         jmfHandler=new JMFHandler();
         JDFJMF.setTheSenderID("bambi");
-        theSignalDispatcher=new SignalDispatcher(jmfHandler);
-        jmfHandler.addHandler((SignalDispatcher)theSignalDispatcher);
+        
+        SignalDispatcher tmpDisp=new SignalDispatcher(jmfHandler);
+        theSignalDispatcher=tmpDisp;
+        tmpDisp.addHandlers(jmfHandler);
         
         log.info("Initializing DeviceServlet");
         theQueue=new QueueProcessor(theStatusListener, theSignalDispatcher);
-        theStatusListener=new StatusListener(theSignalDispatcher);
-        
+        StatusListener statusListener=new StatusListener(theSignalDispatcher);
+        theStatusListener=statusListener;
+        statusListener.addHandlers(jmfHandler);
+         
         theDevice=new DeviceProcessor(theQueue, theStatusListener);
         log.info("Starting device thread");
         new Thread(theDevice).start();
         log.info("device thread started");
-        
-
     }
 
     /** Destroys the servlet.
@@ -202,7 +202,7 @@ public class DeviceServlet extends HttpServlet
         }
         else 
         {
-//            boolean isMultipart = FileUploadBase.isMultipartContent(request);
+           boolean isMultipart = FileUploadBase.isMultipartContent(request);
            if (true)
             {
                 log.info("Processing multipart request..."+contentType);

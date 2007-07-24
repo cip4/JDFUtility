@@ -71,9 +71,8 @@
 
 package org.cip4.bambi;
 
-import java.util.Iterator;
-
 import org.cip4.jdflib.jmf.JDFMessage;
+import org.cip4.jdflib.jmf.JDFResponse;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 
@@ -95,16 +94,16 @@ public interface IMessageHandler
      * 
      * @return true if the message was handled, else false
      */
-     public boolean handleMessage(JDFMessage inputMessage, JDFMessage response, String queueEntryID, String workStepID);
+     public boolean handleMessage(JDFMessage inputMessage, JDFResponse response, String queueEntryID, String workStepID);
 
     /**
-     * @return an iterator of handled message types
+     * @return handled message type
      */
-    public Iterator getMessageTypes();
+    public EnumType getMessageType();
 
     /**
      * @param typ
      * @return
      */
-    public EnumFamily[] getFamilies(EnumType typ);
+    public EnumFamily[] getFamilies();
 }

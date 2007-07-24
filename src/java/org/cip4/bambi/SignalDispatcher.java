@@ -101,7 +101,7 @@ import org.cip4.jdflib.util.VectorMap;
  * @author prosirai
  *
  */
-public class SignalDispatcher implements ISignalDispatcher, IMessageHandler 
+public class SignalDispatcher implements ISignalDispatcher 
 {
 
     protected static Log log = LogFactory.getLog(SignalDispatcher.class.getName());
@@ -110,7 +110,6 @@ public class SignalDispatcher implements ISignalDispatcher, IMessageHandler
     protected IMessageHandler messageHandler;
     protected VectorMap triggers;
     protected Object mutex;
-    private HashMap jmfHandlerMap;   
 
     
     /////////////////////////////////////////////////////////////
@@ -366,6 +365,59 @@ public class SignalDispatcher implements ISignalDispatcher, IMessageHandler
         }
     }
     
+    /**
+     * 
+     * handler for the StopPersistentChannel command
+     */
+    public class StopPersistentChannelHandler implements IMessageHandler
+    {
+    
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
+         */
+        public boolean handleMessage(JDFMessage inputMessage, JDFResponse response, String s1, String s2)
+        {
+            if(!EnumType.StopPersistentChannel.equals(inputMessage.getEnumType()))
+                return false;
+            JDFStopPersChParams spcp=inputMessage.getStopPersChParams(0);
+            if(spcp==null)
+                return false;
+            String channel=spcp.getChannelID();
+            boolean bHandled=false;
+            if(!KElement.isWildCard(channel))
+            {
+                removeSubScription(channel);
+                bHandled=true;
+            }
+            String queueEntryID=spcp.getQueueEntryID();
+            if(!KElement.isWildCard(queueEntryID))
+            {
+                removeSubScription(channel);
+                bHandled=true;
+            }
+            
+            return bHandled;
+        }
+        
+
+    
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getFamilies()
+         */
+        public EnumFamily[] getFamilies()
+        {
+            return new EnumFamily[]{EnumFamily.Command};
+        }
+    
+        /* (non-Javadoc)
+         * @see org.cip4.bambi.IMessageHandler#getMessageType()
+         */
+        public EnumType getMessageType()
+        {
+             return EnumType.StopPersistentChannel;
+        }
+    }
+
     public SignalDispatcher(IMessageHandler _messageHandler)
     {        
         subscriptionMap=new HashMap();
@@ -373,8 +425,6 @@ public class SignalDispatcher implements ISignalDispatcher, IMessageHandler
         messageHandler=_messageHandler;
         triggers=new VectorMap();
         mutex = new Object();
-        jmfHandlerMap=new HashMap();
-        jmfHandlerMap.put(EnumType.StopPersistentChannel, new EnumFamily[]{EnumFamily.Command});
          
         new Thread(new Dispatcher()).start();
     }
@@ -501,45 +551,11 @@ public class SignalDispatcher implements ISignalDispatcher, IMessageHandler
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#handleMessage(org.cip4.jdflib.jmf.JDFMessage, org.cip4.jdflib.jmf.JDFMessage)
+    /**
+     * @param jmfHandler
      */
-    public boolean handleMessage(JDFMessage inputMessage, JDFMessage response, String s1, String s2)
+    public void addHandlers(IJMFHandler jmfHandler)
     {
-        if(!EnumType.StopPersistentChannel.equals(inputMessage.getEnumType()))
-            return false;
-        JDFStopPersChParams spcp=inputMessage.getStopPersChParams(0);
-        if(spcp==null)
-            return false;
-        String channel=spcp.getChannelID();
-        boolean bHandled=false;
-        if(!KElement.isWildCard(channel))
-        {
-            removeSubScription(channel);
-            bHandled=true;
-        }
-        String queueEntryID=spcp.getQueueEntryID();
-        if(!KElement.isWildCard(queueEntryID))
-        {
-            removeSubScription(channel);
-            bHandled=true;
-        }
-        
-        return bHandled;
-    }
-
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#getFamilies(org.cip4.jdflib.jmf.JDFMessage.EnumType)
-     */
-    public EnumFamily[] getFamilies(EnumType typ)
-    {
-        return (EnumFamily[]) jmfHandlerMap.get(typ);
-    }
-    /* (non-Javadoc)
-     * @see org.cip4.bambi.IMessageHandler#getMessageTypes()
-     */
-    public Iterator getMessageTypes()
-    {
-       return jmfHandlerMap.keySet().iterator();
+        jmfHandler.addHandler(this.new StopPersistentChannelHandler());        
     }
 }
