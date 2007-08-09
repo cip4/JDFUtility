@@ -14,6 +14,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  *
@@ -21,14 +22,15 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class JDFServletUtil extends Object {
 
-
+    static int fileCounter=1000; 
     final static public String cwd =System.getProperty("user.dir");
     final static public String baseDir =System.getProperty("catalina.base")+"/webapps/JDFUtility/";
 
     public static File getTmpFile(String dirName, String tmpName, String prefix, String extension)
     {
         if(tmpName==null)
-            return null;
+            tmpName="File"+fileCounter++;
+           
         // we are in bin, which is a sibling directory of JDFUtilitys
         File tmpDir=new File(baseDir+dirName);
 
@@ -43,7 +45,7 @@ public class JDFServletUtil extends Object {
         }
         tmpName=String.valueOf(tmp);
         tmpName=prefix+StringUtil.pathToName(tmpName);            
-        tmpName=tmpName.substring(0,tmpName.lastIndexOf("."));
+        tmpName=UrlUtil.removeExtension(tmpName);
 
         File outFile;
         try
