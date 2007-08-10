@@ -177,7 +177,7 @@ public class FixJDFServlet extends HttpServlet {
                     {
                         if(versionField.equals("Retain")&&theRoot.hasAttribute(AttributeName.VERSION))
                         {
-                            version=theRoot.getVersion();
+                            version=theRoot.getVersion(true);
                             versionField=version.getName();
                         }
                         JDFAuditPool ap=theRoot.getCreateAuditPool();
@@ -189,7 +189,7 @@ public class FixJDFServlet extends HttpServlet {
                         JDFJMF theJMF=d.getJMFRoot();
                         if(theJMF!=null && versionField.equals("Retain")&& theJMF.hasAttribute(AttributeName.VERSION))
                         {
-                            version=theJMF.getVersion();
+                            version=theJMF.getVersion(true);
                             versionField=version.getName();
                         }
                     }

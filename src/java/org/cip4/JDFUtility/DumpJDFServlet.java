@@ -4,9 +4,8 @@ package org.cip4.JDFUtility;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,21 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.log4j.lf5.util.StreamUtils;
-import org.cip4.jdflib.core.AttributeName;
-import org.cip4.jdflib.core.JDFAudit;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement;
-import org.cip4.jdflib.core.JDFParser;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.jmf.JDFJMF;
-import org.cip4.jdflib.node.JDFNode;
-import org.cip4.jdflib.pool.JDFAuditPool;
-import org.cip4.jdflib.resource.JDFModified;
 
 /**
  *
@@ -64,7 +49,8 @@ public class DumpJDFServlet extends HttpServlet {
     }
     
     
-    /** Handles the HTTP <code>GET</code> method.
+    /** 
+     * Handles all HTTP <code>GET / POST etc.</code> methods.
      * @param request servlet request
      * @param response servlet response
      */
@@ -84,32 +70,25 @@ public class DumpJDFServlet extends HttpServlet {
         w.println("-------------------------------------------------");
         w.flush();
         StreamUtils.copyThenClose(request.getInputStream(), fs);
-        }
+        OutputStream os=response.getOutputStream();
+        w=new PrintWriter(os);
+        w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
+        w.print("<H1>Request Dump</H1><Body>");
+        w.println("Context Path:"+request.getContextPath()+"<BR/>");
+        w.println("Context Type:"+request.getContentType()+"<BR/>");
+        w.print("</Body></HTML>");
+        w.flush();
+       }
         catch (Exception e) {
             System.out.println("dump service - snafu"+e);
        }
+         
     }
     
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
         return "DumpJDF Servlet";
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    protected void doGet(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException
-    {
-       //doService(arg0, arg1,"get");
-    }
-
-    /* (non-Javadoc)
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    protected void doPost(HttpServletRequest arg0, HttpServletResponse arg1) throws ServletException, IOException
-    {
-        //doService(arg0, arg1,"post");
     }
     
 }
