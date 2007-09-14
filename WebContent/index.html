@@ -46,7 +46,6 @@ Updates a JDF File to a selected version, replacing deprecated syntax with recom
 <hr/>
 <form method="post" enctype="multipart/form-data" action="FixJDFServlet">
 	File: <input type="file" name="file1" />
-<input value="update JDF File" type="submit" /><br/>
 <br/>
 <input type="radio" name="Version" value="Retain"/>Update to Version specified in JDF root<br/>
 <input type="radio" name="Version" value="General"/>Generic Fixes only<br/>
@@ -54,14 +53,31 @@ Updates a JDF File to a selected version, replacing deprecated syntax with recom
 <input type="radio" name="Version" value="1.1"/> JDF 1.1<br/>
 <input type="radio" name="Version" value="1.2"/> JDF 1.2<br/>
 <input type="radio" name="Version" value="1.3" checked="checked"/> JDF 1.3<br/>
+<br/>
+<input value="update JDF File" type="submit" /><br/>
 
+</form>
+
+<hr/>
+<!-- SendDF starts here -->
+
+<hr size="5" noshade="noshade"/>
+<h2> SendJDF </h2>
+Sends a JDF File to a selected URL.
+<hr/>
+<form method="post" enctype="multipart/form-data" action="SendJDFServlet">
+	File: <input type="file" name="file2" />
+<br/>
+URL:<br/><input name="sendURL" type="text" size="80" maxlength="80"><br/>
+<br/>
+<input value="send JDF File" type="submit" /><br/>
 </form>
 
 <hr/>
 
 
 <p>Utility Internal Build @build.number@, @build.timestamp@</p>
-<p>JDFLib Build 43, Schema JDF 1.3</p>
+<p>JDFLib Build 47, Schema JDF 1.3</p>
 
 </body>
 </html>

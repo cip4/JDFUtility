@@ -53,6 +53,18 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet>
+		<servlet-name>SendJDFServlet</servlet-name>
+		<display-name>JDF Proxy Sender Servlet</display-name>
+		<description />
+		<servlet-class>org.cip4.JDFUtility.SendJDFServlet</servlet-class>
+		<init-param>
+			<param-name />
+			<param-value />
+			<description />
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
 		<servlet-name>DumpJDFServlet</servlet-name>
 		<display-name>JDF Logging Servlet</display-name>
 		<description>logs any received data in a temp file</description>
@@ -71,6 +83,10 @@
 	<servlet-mapping>
 		<servlet-name>FixJDFServlet</servlet-name>
 		<url-pattern>/FixJDFServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SendJDFServlet</servlet-name>
+		<url-pattern>/SendJDFServlet</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>DumpJDFServlet</servlet-name>
