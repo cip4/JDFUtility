@@ -19,11 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
 
 /**
  *
@@ -38,6 +39,7 @@ import org.cip4.jdflib.core.JDFElement.EnumVersion;
  */
 public class SendJDFServlet extends HttpServlet {
 
+    private static Log log = LogFactory.getLog(SendJDFServlet.class.getName());
 
     /**
      * 
@@ -64,7 +66,7 @@ public class SendJDFServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
-        // foo
+        log.warn("get not implemented");
     }
 
     /** Handles the HTTP <code>POST</code> method.
@@ -74,15 +76,18 @@ public class SendJDFServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
-        System.out.println();
-        System.out.println("Processing request...");
+        log.debug("Processing request...");
 
         // Check that we have a file upload request
         boolean isMultipart = FileUploadBase.isMultipartContent(request);
         if (isMultipart)
         {
-            System.out.println("Processing multipart request...");
+            log.debug("Processing multipart request...");
             processMultipartRequest(request, response);
+        }
+        else
+        {
+            log.warn("Not a multipart request!");
         }
     }
 
@@ -96,7 +101,6 @@ public class SendJDFServlet extends HttpServlet {
         List fileItems = JDFServletUtil.getFileList(request);
 
         FileItem fileItem=null;
-        EnumVersion version=null;
         int nFiles=0;
         String urlToSend=null;
         for(int i=0;i<fileItems.size();i++)
@@ -152,7 +156,7 @@ public class SendJDFServlet extends HttpServlet {
             InputStream ins = fileItem.getInputStream();
             JDFParser p=new JDFParser();
             JDFDoc d=p.parseStream(ins);
-            if(d!=null && urlToSend!=null)
+            if(d!=null && urlToSend!=null && (d.getJDFRoot()!=null || d.getJMFRoot()!=null))
             {
                 final URL url         = new URL(urlToSend);
 
@@ -235,7 +239,7 @@ public class SendJDFServlet extends HttpServlet {
             }
             else
             {
-                html.appendText("No file to send to  "+urlToSend+". Submission failed!!! ");                                
+                html.appendText("file:"+fileItem.getName() +" not sent to  "+urlToSend+". Submission failed!!! ");                                
             }
         }
 
@@ -247,7 +251,6 @@ public class SendJDFServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
         out.println(htmlDoc.write2String(0));
-
     }
 
 
