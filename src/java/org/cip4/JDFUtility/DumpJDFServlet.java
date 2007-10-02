@@ -3,7 +3,6 @@ package org.cip4.JDFUtility;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
@@ -80,7 +79,7 @@ public class DumpJDFServlet extends HttpServlet {
         w.flush();
        }
         catch (Exception e) {
-            System.out.println("dump service - snafu"+e);
+            System.out.println("dump service - snafu: "+e);
        }
          
     }
