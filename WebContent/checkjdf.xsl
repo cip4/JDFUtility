@@ -1060,6 +1060,11 @@
         <xsl:apply-templates/>
     </xsl:template>
     <!-- =============================================== -->
+    <!-- Ignore purely informative separation list -->
+    <xsl:template match="SeparationPool/Separation">
+        <xsl:apply-templates/>
+    </xsl:template>
+    <!-- =============================================== -->
     <xsl:template
         match="SeparationPool/Warning[@ErrorType='UnreferencedSeparation']">
         <h4>
@@ -1310,12 +1315,10 @@
             <xsl:call-template name="localize">
                 <xsl:with-param name="string"
                     select="'Unmatched element: TODO fix xslt for this'"/>
-            </xsl:call-template>
+            </xsl:call-template>: &lt;<xsl:value-of select="name()"/>&gt;
+            
         </h4>
-        <p>
-            <xsl:value-of select="name()"/>
-        </p>
-        <xsl:apply-templates/>
+         <xsl:apply-templates/>
     </xsl:template>
     <!-- =============================================== -->
 </xsl:stylesheet>
