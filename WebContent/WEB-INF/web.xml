@@ -70,9 +70,21 @@
 		<description>logs any received data in a temp file</description>
 		<servlet-class>org.cip4.JDFUtility.DumpJDFServlet</servlet-class>
 		<init-param>
-			<param-name />
-			<param-value />
-			<description />
+			<param-name>rootDir</param-name>
+			<param-value>C:/Dump</param-value>
+			<description>Local location (root) of the directory to dump to</description>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>GetFileServlet</servlet-name>
+		<display-name>Generic File dipatcher Servlet</display-name>
+		<description>serves up any file in a directory</description>
+		<servlet-class>org.cip4.JDFUtility.GetFileServlet</servlet-class>
+		<init-param>
+			<param-name>rootDir</param-name>
+			<param-value>C:/FileServer</param-value>
+			<description>Local location (root) of the directory to serve</description>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -91,6 +103,10 @@
 	<servlet-mapping>
 		<servlet-name>DumpJDFServlet</servlet-name>
 		<url-pattern>/dump</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>GetFileServlet</servlet-name>
+		<url-pattern>/grab/*</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>120</session-timeout>

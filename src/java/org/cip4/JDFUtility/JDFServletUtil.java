@@ -26,13 +26,13 @@ public class JDFServletUtil extends Object {
     final static public String cwd =System.getProperty("user.dir");
     final static public String baseDir =System.getProperty("catalina.base")+"/webapps/JDFUtility/";
 
-    public static File getTmpFile(String dirName, String tmpName, String prefix, String extension)
+    public static File getTmpFile(String dirName, String tmpName, String prefix, String extension, boolean bCatalina)
     {
         if(tmpName==null)
             tmpName="File"+fileCounter++;
            
         // we are in bin, which is a sibling directory of JDFUtilitys
-        File tmpDir=new File(baseDir+dirName);
+        File tmpDir=new File(bCatalina ? baseDir+dirName : dirName);
 
         if(!tmpDir.isDirectory())
             tmpDir.mkdirs();
@@ -64,7 +64,7 @@ public class JDFServletUtil extends Object {
         if(fileItem==null)
             return null;
         String tmpName = fileItem.getName();        
-        return getTmpFile(dirName, tmpName, prefix, extension);
+        return getTmpFile(dirName, tmpName, prefix, extension, true);
     }	
 
     public static List getFileList(HttpServletRequest request) throws ServletException

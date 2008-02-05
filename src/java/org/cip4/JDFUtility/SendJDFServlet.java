@@ -257,7 +257,7 @@ public class SendJDFServlet extends HttpServlet {
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "FixJDF Servlet";
+        return "SendJDF Servlet";
     }
 
 }

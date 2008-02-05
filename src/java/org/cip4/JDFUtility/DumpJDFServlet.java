@@ -31,7 +31,7 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class DumpJDFServlet extends HttpServlet {
 
-
+    private File baseDir=null;
     /**
      * 
      */
@@ -42,6 +42,10 @@ public class DumpJDFServlet extends HttpServlet {
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        final String root = config.getInitParameter("rootDir");
+        System.out.println("Config root: "+root);
+        baseDir=new File(root);
+        baseDir.mkdir(); // create if it aint there
 
     }
 
@@ -61,7 +65,7 @@ public class DumpJDFServlet extends HttpServlet {
     {
         System.out.println("dump service");
 
-        File f=JDFServletUtil.getTmpFile("dump", (String)null, "d", ".txt");
+        File f=JDFServletUtil.getTmpFile(baseDir.getAbsolutePath(), null, "d", ".txt",false);
 
         try
         {
