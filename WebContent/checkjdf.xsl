@@ -287,14 +287,21 @@
       <tbl:str lang="NL">XML Schema Validatie Output</tbl:str>
     </tbl:loc>
     <tbl:loc key="SchemaErrors">
-      <tbl:str lang="EN">Schema Errors:</tbl:str>
+      <tbl:str lang="EN">Schema Errors: </tbl:str>
+      <tbl:str lang="DE">Schema Fehler: </tbl:str>
     </tbl:loc>
     <tbl:loc key="SchemaWarnings">
-      <tbl:str lang="EN">Schema Warnings:</tbl:str>
+      <tbl:str lang="EN">Schema Warnings: </tbl:str>
+      <tbl:str lang="DE">Schema Warnungen: </tbl:str>
     </tbl:loc>
     <tbl:loc key="CheckJDFErrors">
-      <tbl:str lang="EN">CheckJDF Errors:</tbl:str>
+      <tbl:str lang="EN">CheckJDF Errors: </tbl:str>
+      <tbl:str lang="DE">CheckJDF Fehler: </tbl:str>
     </tbl:loc>
+   <tbl:loc key="CheckJDFWarnings">
+      <tbl:str lang="EN">CheckJDF Warnings: </tbl:str>
+      <tbl:str lang="DE">CheckJDF Warnungen: </tbl:str>
+   </tbl:loc>
     <tbl:loc key="SchemaError">
       <tbl:str lang="EN">Schema Error:</tbl:str>
       <tbl:str lang="DE">Fehler im Schema:</tbl:str>
@@ -478,7 +485,10 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="checkjdfErrors">
-      <xsl:value-of select="count(//TestFile/CheckJDFOutput//*[@IsValid='false' and not(*)])"/>
+      <xsl:value-of select="count(//TestFile/CheckJDFOutput//*[@IsValid='false' and not(*)]) - count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])"/>
+    </xsl:variable>
+    <xsl:variable name="checkjdfWarnings">
+      <xsl:value-of select="count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])"/>
     </xsl:variable>
     <!-- XHTML -->
     <html>
@@ -558,36 +568,50 @@
                 </span>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="$schemaWarnings"/>
+                <xsl:value-of select="$checkjdfErrors"/>
               </xsl:otherwise>
             </xsl:choose>
           </strong>
           <br/>
-          <!--<xsl:call-template name="localize">
-                        <xsl:with-param name="string" select="'CheckJDFVersion'"
-                        />
-                    </xsl:call-template>
-
-                    <xsl:value-of select="@Version"/>
-                    <br/>-->
-          <!--
-                    <xsl:call-template name="localize">
-                        <xsl:with-param name="string" select="'version'"/>
-                    </xsl:call-template>
-                    <xsl:value-of select="@Version"/>
-                    <br/>
-                    <xsl:call-template name="localize">
-                        <xsl:with-param name="string" select="'rawout'"/>
-                    </xsl:call-template>
-                    <br/>
-                    <xsl:element name="a">
-                        <xsl:attribute name="href">
-                            <xsl:value-of select="@XMLUrl"/>
-                        </xsl:attribute>
-                        <xsl:value-of select="@XMLFile"/>
-                    </xsl:element>
-                    -->
-        </p>
+          <xsl:call-template name="localize">
+            <xsl:with-param name="string" select="'CheckJDFWarnings'"/>
+          </xsl:call-template>
+          <strong>
+            <xsl:choose>
+              <xsl:when test="$checkjdfWarnings=0">
+                <span class="valid">
+                  <xsl:value-of select="$checkjdfWarnings"/>
+                </span>
+              </xsl:when>
+              <xsl:when test="$checkjdfWarnings>0">
+                <span class="invalid">
+                  <xsl:value-of select="$checkjdfWarnings"/>
+                </span>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$checkjdfWarnings"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </strong>
+          <br/><hr/>
+          <xsl:call-template name="localize">
+          <xsl:with-param name="string" select="'CheckJDFVersion'"/>
+          </xsl:call-template>     
+         <xsl:call-template name="localize">
+         <xsl:with-param name="string" select="'version'"/>
+         </xsl:call-template>
+         <xsl:value-of select="@Version"/>
+         <br/>
+         <xsl:call-template name="localize">
+         <xsl:with-param name="string" select="'rawout'"/>
+         </xsl:call-template>
+         <xsl:element name="a">
+         <xsl:attribute name="href">
+         <xsl:value-of select="@XMLUrl"/>
+         </xsl:attribute>
+         <xsl:value-of select="@XMLFile"/>
+         </xsl:element>                  
+        </p><hr/>
         <xsl:apply-templates/>
         <xsl:comment>#include
                 virtual="/global/bottom_short.php"</xsl:comment>
