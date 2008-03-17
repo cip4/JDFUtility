@@ -94,7 +94,7 @@ public class JMFHotFolderTest extends JDFTestCaseBase
     {
         JDFJMF jmf=JDFJMF.createJMF(EnumFamily.Signal, EnumType.Status);
         JDFDoc d=jmf.getOwnerDocument_JDFElement();
-        for(int i=0;i<1234567;i++)
+        for(int i=0;i<123;i++)
         {
             if(i%100==0)
                 System.out.println(i);

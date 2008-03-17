@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.lf5.util.StreamUtils;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -65,7 +66,13 @@ public class DumpJDFServlet extends HttpServlet {
     {
         System.out.println("dump service");
 
-        File f=JDFServletUtil.getTmpFile(baseDir.getAbsolutePath(), null, "d", ".txt",false);
+        String dir=request.getPathInfo();
+        File newDir=FileUtil.getFileInDirectory(baseDir, new File(dir));
+        if(newDir.exists() && ! newDir.isDirectory())
+            newDir=baseDir;
+        else
+            newDir.mkdirs();
+        File f=JDFServletUtil.getTmpFile(newDir.getAbsolutePath(), null, "d", ".txt",false);
 
         try
         {
@@ -78,7 +85,7 @@ public class DumpJDFServlet extends HttpServlet {
             final String contentType = request.getContentType();
             w.println("Context Type:"+contentType);
             w.println("Context Length:"+request.getContentLength());
-            w.print("-------------------------------------------------!>\n");
+            w.print("------ end of http header ------\n");
             w.flush();
 
             StreamUtils.copyThenClose(request.getInputStream(), fs);
@@ -86,7 +93,7 @@ public class DumpJDFServlet extends HttpServlet {
             w=new PrintWriter(os);
             w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
             w.print("<H1>Request Dump</H1><Body>");
-            w.println("Context Path:"+request.getContextPath()+"<BR/>");
+            w.println("Context Path:"+newDir+"<BR/>");
             if(contentType!=null)
                 w.println("Content Type:"+contentType+"<BR/>");
             w.print("</Body></HTML>");
