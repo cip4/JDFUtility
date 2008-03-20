@@ -67,7 +67,7 @@ public class DumpJDFServlet extends HttpServlet {
         System.out.println("dump service");
 
         String dir=request.getPathInfo();
-        File newDir=FileUtil.getFileInDirectory(baseDir, new File(dir));
+        File newDir=dir==null ? baseDir : FileUtil.getFileInDirectory(baseDir, new File(dir));
         if(newDir.exists() && ! newDir.isDirectory())
             newDir=baseDir;
         else
