@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 import javax.mail.Multipart;
 import javax.servlet.ServletConfig;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.lf5.util.StreamUtils;
+import org.cip4.jdflib.util.DumpDir;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
@@ -32,7 +34,8 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class DumpJDFServlet extends HttpServlet {
 
-    private File baseDir=null;
+    private DumpDir baseDir=null;
+    private HashMap<File, DumpDir> subDumps=new HashMap<File, DumpDir>();
     /**
      * 
      */
@@ -45,9 +48,9 @@ public class DumpJDFServlet extends HttpServlet {
         super.init(config);
         final String root = config.getInitParameter("rootDir");
         System.out.println("Config root: "+root);
-        baseDir=new File(root);
-        baseDir.mkdir(); // create if it aint there
-
+        File rootFile = new File(root);
+        baseDir=new DumpDir(rootFile);
+        subDumps.put(rootFile, baseDir);
     }
 
     /** Destroys the servlet.
@@ -64,15 +67,16 @@ public class DumpJDFServlet extends HttpServlet {
      */
     protected void service(HttpServletRequest request, HttpServletResponse response)
     {
-        System.out.println("dump service");
+        //System.out.println("dump service");
 
         String dir=request.getPathInfo();
-        File newDir=dir==null ? baseDir : FileUtil.getFileInDirectory(baseDir, new File(dir));
+        File newDir=dir==null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
         if(newDir.exists() && ! newDir.isDirectory())
-            newDir=baseDir;
+            newDir=baseDir.getDir();
         else
             newDir.mkdirs();
-        File f=JDFServletUtil.getTmpFile(newDir.getAbsolutePath(), null, "d", ".txt",false);
+        DumpDir theDump=getCreateDump(newDir);
+        File f=theDump.newFile();
 
         try
         {
@@ -118,6 +122,24 @@ public class DumpJDFServlet extends HttpServlet {
             System.out.println("dump service - snafu: "+e);
         }
 
+    }
+
+    /**
+     * @param newDir
+     */
+    private DumpDir getCreateDump(File newDir)
+    {
+        synchronized (subDumps)
+        {
+
+            DumpDir theDump=subDumps.get(newDir);
+            if(theDump==null)
+            {
+                theDump=new DumpDir(newDir);
+                subDumps.put(newDir, theDump);
+            }
+            return theDump;
+        }
     }
 
     /** Returns a short description of the servlet.
