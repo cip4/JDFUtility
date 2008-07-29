@@ -87,12 +87,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.IOUtils;
-import org.cip4.jdflib.CheckJDF;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.validate.JDFValidator;
 
 /**
  * This servlet parses any file and returns any XMP packet found in the file.
@@ -231,7 +231,7 @@ public class CheckJDFServlet extends HttpServlet {
         try
         {
             
-            CheckJDF checker=new CheckJDF();
+            JDFValidator checker=new JDFValidator();
             
             checker.setPrint(false);
             checker.bQuiet=true;
@@ -332,7 +332,7 @@ public class CheckJDFServlet extends HttpServlet {
     /** Returns a short description of the servlet.
      */
     public String getServletInfo() {
-        return "CheckJDF Servlet";
+        return "JDFValidator Servlet";
     }
     
 }

@@ -119,6 +119,7 @@ public class DumpJDFServlet extends HttpServlet {
         System.out.println("Config root: "+root);
         File rootFile = new File(root);
         baseDir=new DumpDir(rootFile);
+        baseDir.quiet=false;
         subDumps.put(rootFile, baseDir);
     }
 
@@ -145,7 +146,7 @@ public class DumpJDFServlet extends HttpServlet {
         else
             newDir.mkdirs();
         DumpDir theDump=getCreateDump(newDir);
-        String header="Context Path: "+request.getContextPath();
+        String header="Context Path: "+request.getRequestURI();
         String contentType = request.getContentType();
         header+="\nContext Type: "+contentType;
         header+="\nContext Length: "+request.getContentLength();
@@ -190,11 +191,12 @@ public class DumpJDFServlet extends HttpServlet {
     {
         synchronized (subDumps)
         {
-
             DumpDir theDump=subDumps.get(newDir);
             if(theDump==null)
             {
                 theDump=new DumpDir(newDir);
+                theDump.quiet=false;
+
                 subDumps.put(newDir, theDump);
             }
             return theDump;
