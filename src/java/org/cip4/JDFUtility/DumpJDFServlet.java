@@ -72,7 +72,6 @@ package org.cip4.JDFUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -84,7 +83,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.cip4.jdflib.util.DumpDir;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
@@ -101,112 +99,164 @@ import org.cip4.jdflib.util.StringUtil;
  *
  * @web:servlet-mapping url-pattern="/FixJDFServlet"
  */
-public class DumpJDFServlet extends HttpServlet {
+public class DumpJDFServlet extends HttpServlet
+{
 
-    private DumpDir baseDir=null;
-    private HashMap<File, DumpDir> subDumps=new HashMap<File, DumpDir>();
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -8902151736245089036L;
+	private DumpDir baseDir = null;
+	private final HashMap<File, DumpDir> subDumps = new HashMap<File, DumpDir>();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8902151736245089036L;
 
+	/** Initializes the servlet.
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		final String root = config.getInitParameter("rootDir");
+		System.out.println("Config root: " + root);
+		File rootFile = new File(root);
+		baseDir = new DumpDir(rootFile);
+		baseDir.quiet = false;
+		subDumps.put(rootFile, baseDir);
+	}
 
-    /** Initializes the servlet.
-     */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        final String root = config.getInitParameter("rootDir");
-        System.out.println("Config root: "+root);
-        File rootFile = new File(root);
-        baseDir=new DumpDir(rootFile);
-        baseDir.quiet=false;
-        subDumps.put(rootFile, baseDir);
-    }
+	/** Destroys the servlet.
+	 */
+	@Override
+	public void destroy()
+	{
+		//      foo		
+	}
 
-    /** Destroys the servlet.
-     */
-    public void destroy() {
-//      foo		
-    }
+	/** 
+	 * Handles all HTTP <code>GET / POST etc.</code> methods.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	{
+		//System.out.println("dump service");
 
+		String dir = request.getPathInfo();
+		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
+		if (newDir.exists() && !newDir.isDirectory())
+			newDir = baseDir.getDir();
+		else
+			newDir.mkdirs();
+		DumpDir theDump = getCreateDump(newDir);
+		String header = "Context Path: " + request.getRequestURI();
+		String contentType = request.getContentType();
+		header += "\nContext Type: " + contentType;
+		header += "\nContext Length: " + request.getContentLength();
 
-    /** 
-     * Handles all HTTP <code>GET / POST etc.</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    protected void service(HttpServletRequest request, HttpServletResponse response)
-    {
-        //System.out.println("dump service");
+		try
+		{
 
-        String dir=request.getPathInfo();
-        File newDir=dir==null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
-        if(newDir.exists() && ! newDir.isDirectory())
-            newDir=baseDir.getDir();
-        else
-            newDir.mkdirs();
-        DumpDir theDump=getCreateDump(newDir);
-        String header="Context Path: "+request.getRequestURI();
-        String contentType = request.getContentType();
-        header+="\nContext Type: "+contentType;
-        header+="\nContext Length: "+request.getContentLength();
+			File f = theDump.newFileFromStream(header, request.getInputStream());
+			OutputStream os = response.getOutputStream();
+			PrintWriter w = new PrintWriter(os);
+			w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
+			w.print("<H1>Request Dump</H1><Body>");
+			w.println("Context Path:" + newDir + "<BR/>");
+			w.println("Content Type:" + contentType + "<BR/>");
+			w.print("</Body></HTML>");
+			w.flush();
 
- 
-        try
-        {
+			if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
+			{
+				FileInputStream fis = new FileInputStream(f);
+				final String dirName = StringUtil.newExtension(f.getPath(), ".dir");
+				System.out.println("dump mime: " + dirName);
+				char c = 'a';
+				while (c != '!')
+					c = (char) fis.read();
 
-            File f=theDump.newFileFromStream(header, request.getInputStream());
-            OutputStream os=response.getOutputStream();
-            PrintWriter w=new PrintWriter(os);
-            w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
-            w.print("<H1>Request Dump</H1><Body>");
-            w.println("Context Path:"+newDir+"<BR/>");
-            w.println("Content Type:"+contentType+"<BR/>");
-            w.print("</Body></HTML>");
-            w.flush();
+				Multipart mp = MimeUtil.getMultiPart(fis);
+				MimeUtil.writeToDir(mp, new File(dirName));
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("dump service - snafu: " + e);
+		}
+		System.gc();
+	}
 
-            if(contentType!=null && contentType.toLowerCase().startsWith("multipart/related"))
-            {
-                FileInputStream fis=new FileInputStream(f);
-                final String dirName = StringUtil.newExtension(f.getPath(),".dir");
-                System.out.println("dump mime: "+dirName);
-                char c='a';
-                while(c!='!')
-                    c=(char)fis.read();
+	/** 
+	 * Handles all HTTP <code>GET / POST etc.</code> methods.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	{
+		//System.out.println("dump service");
 
-                Multipart mp=MimeUtil.getMultiPart(fis);
-                MimeUtil.writeToDir(mp, new File(dirName));
-            }
-        }
-        catch (Exception e) {
-            System.out.println("dump service - snafu: "+e);
-        }
+		String dir = request.getPathInfo();
+		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
+		if (newDir.exists() && !newDir.isDirectory())
+			newDir = baseDir.getDir();
+		else
+			newDir.mkdirs();
+		DumpDir theDump = getCreateDump(newDir);
+		String header = "Context Path: " + request.getRequestURI();
+		String contentType = request.getContentType();
+		header += "\nContext Type: " + contentType;
+		header += "\nContext Length: " + request.getContentLength();
 
-    }
+		try
+		{
 
-    /**
-     * @param newDir
-     */
-    private DumpDir getCreateDump(File newDir)
-    {
-        synchronized (subDumps)
-        {
-            DumpDir theDump=subDumps.get(newDir);
-            if(theDump==null)
-            {
-                theDump=new DumpDir(newDir);
-                theDump.quiet=false;
+			File f = theDump.newFileFromStream(header, request.getInputStream());
+			if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
+			{
+				FileInputStream fis = new FileInputStream(f);
+				final String dirName = StringUtil.newExtension(f.getPath(), ".dir");
+				System.out.println("dump mime: " + dirName);
+				char c = 'a';
+				while (c != '!')
+					c = (char) fis.read();
 
-                subDumps.put(newDir, theDump);
-            }
-            return theDump;
-        }
-    }
+				Multipart mp = MimeUtil.getMultiPart(fis);
+				MimeUtil.writeToDir(mp, new File(dirName));
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("dump service - snafu: " + e);
+		}
+		System.gc();
+	}
 
-    /** Returns a short description of the servlet.
-     */
-    public String getServletInfo() {
-        return "DumpJDF Servlet";
-    }
+	/**
+	 * @param newDir
+	 */
+	private DumpDir getCreateDump(File newDir)
+	{
+		synchronized (subDumps)
+		{
+			DumpDir theDump = subDumps.get(newDir);
+			if (theDump == null)
+			{
+				theDump = new DumpDir(newDir);
+				theDump.quiet = false;
+
+				subDumps.put(newDir, theDump);
+			}
+			return theDump;
+		}
+	}
+
+	/** Returns a short description of the servlet.
+	 */
+	@Override
+	public String getServletInfo()
+	{
+		return "DumpJDF Servlet";
+	}
 
 }
