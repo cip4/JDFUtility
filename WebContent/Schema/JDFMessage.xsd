@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:jdftyp="http://www.CIP4.org/JDFSchema_1_3_Types" xmlns:jdf="http://www.CIP4.org/JDFSchema_1_1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.CIP4.org/JDFSchema_1_1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="V1.3-002">
 	<xs:import namespace="http://www.CIP4.org/JDFSchema_1_3_Types" schemaLocation="JDFTypes.xsd"/>
-      <!--	This is the schema representation of 5.5.1 pure events  -->
+	<xs:include schemaLocation="JDFCore.xsd"/>
+	<!--	This is the schema representation of 5.5.1 pure events  -->
 	<xs:complexType name="SignalNotification" mixed="false">
 		<xs:annotation>
 			<xs:appinfo>
+				<Constraint Path="NotificationFilter" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Notification" minOccurs="1" maxOccurs="1"/>
 				<Constraint Path="Trigger" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
@@ -12,6 +14,7 @@
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:JMFAbstractSignal_">
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="NotificationFilter" type="jdf:NotificationFilter_m" minOccurs="0"/>					
 					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
 					<xs:element name="Trigger" type="jdf:TriggerElement_m" minOccurs="0"/>
 				</xs:sequence>
@@ -76,6 +79,8 @@
 	<xs:element name="NotificationFilter" type="jdf:NotificationFilter_m" substitutionGroup="jdf:QueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
+				<Version Path="@DeviceID" Last="1.3"/>
+				<Version Path="@MilestoneTypes" First="1.4"/>
 				<Version Path="@QueueEntryID" First="1.2"/>
 				<Version Path="@SignalTypes" First="1.2"/>
 				<Version Path="Part" First="1.2"/>
@@ -153,13 +158,31 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:element name="ControllerFilter" type="jdf:ControllerFilter_m" substitutionGroup="jdf:QueryTypeObj">
+		<xs:annotation>
+			<xs:appinfo>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
 	<xs:element name="JDFController" type="jdf:JDFController_m" substitutionGroup="jdf:ResponseTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@ControllerID" First="1.2"/>
+				<Version Path="@URLType" First="1.4"/>
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
+	<xs:complexType name="ControllerFilter_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:QueryTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ControllerID" type="jdftyp:string"/>
+				<xs:attribute name="URLTypes" type="jdftyp:eURLTypes_"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>	
 	<xs:complexType name="JDFController_m" mixed="false">
 		<xs:complexContent mixed="false">
 			<xs:extension base="jdf:ResponseTypeObj_">
@@ -168,6 +191,7 @@
 				</xs:sequence>
 				<xs:attribute name="ControllerID" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="URL" type="jdftyp:URL" use="required"/>
+				<xs:attribute name="URLType" type="jdftyp:eURLType_"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -399,6 +423,7 @@
 	<xs:element name="KnownMsgQuParams" type="jdf:KnownMsgQuParams_m" substitutionGroup="jdf:QueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
+				<Version Path="@ChannelMode" First="1.4"/>
 				<Version Path="@Exact" First="1.1"/>
 				<Version Path="@ListRegistrations" First="1.3"/>
 			</xs:appinfo>
@@ -408,15 +433,22 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@Acknowledge" First="1.1"/>
+				<Version Path="@ChannelMode" First="1.4"/>
+				<Version Path="@GenericAttributes" First="1.3"/>
+				<Version Path="@JMFRole" First="1.3"/>
+				<Version Path="@Registration" First="1.3"/>
+				<Version Path="@URLSchemes" First="1.1"/>
 				<Version Path="DevCaps" First="1.1"/>
 				<Version Path="ActionPool" First="1.3"/>
 				<Version Path="DevCapPool" First="1.3"/>
 				<Version Path="ModulePool" First="1.3"/>
+				<Version Path="State" First="1.4"/>
 				<Version Path="TestPool" First="1.3"/>
 				<Constraint Path="DevCaps" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="ActionPool" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="DevCapPool" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="ModulePool" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="State" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="TestPool" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
 		</xs:annotation>
@@ -427,6 +459,7 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 				</xs:sequence>
+				<xs:attribute name="ChannelMode" type="jdftyp:eChannelMode_"/>
 				<xs:attribute name="Exact" type="jdftyp:boolean" default="false"/>
 				<xs:attribute name="ListCommands" type="jdftyp:boolean" default="true"/>
 				<xs:attribute name="ListQueries" type="jdftyp:boolean" default="true"/>
@@ -445,9 +478,11 @@
 					<xs:element name="DevCapPool" type="jdf:DevCapPool" minOccurs="0"/>
 					<xs:element name="DevCaps" type="jdf:DeviceCap_DevCaps_lr" minOccurs="0"/>
 					<xs:element name="ModulePool" type="jdf:ModulePool" minOccurs="0"/>
+					<xs:element ref="jdf:AbstractStates" minOccurs="0"/>
 					<xs:element name="TestPool" type="jdf:TestPool" minOccurs="0"/>
 				</xs:sequence>
 				<xs:attribute name="Acknowledge" type="jdftyp:boolean" default="false"/>
+				<xs:attribute name="ChannelMode" type="jdftyp:eChannelMode_"/>
 				<xs:attribute name="Command" type="jdftyp:boolean" default="false"/>
 				<xs:attribute name="GenericAttributes" type="jdftyp:NMTOKENS" use="optional"/>
 				<xs:attribute name="JMFRole" type="jdftyp:eJMFRole_" use="optional"/>
@@ -457,6 +492,107 @@
 				<xs:attribute name="Signal" type="jdftyp:boolean" default="false"/>
 				<xs:attribute name="Type" type="jdftyp:NMTOKEN" use="required"/>
 				<xs:attribute name="URLSchemes" type="jdftyp:NMTOKENS"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QueryKnownSubscriptions" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="SubscriptionFilter" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Subscription" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractQuery_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:SubscriptionFilter" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ResponseKnownSubscriptions" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="SubscriptionInfo" minOccurs="0" maxOccurs="unbounded"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractResponse_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:SubscriptionInfo" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SignalKnownSubscriptions" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="SubscriptionInfo" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Notification" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Trigger" minOccurs="0" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractSignal_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:SubscriptionInfo" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+					<xs:element name="Trigger" type="jdf:TriggerElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="SubscriptionFilter" type="jdf:SubscriptionFilter_m" substitutionGroup="jdf:QueryTypeObj">
+		<xs:annotation>
+			<xs:appinfo/>			
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="SubscriptionInfo" type="jdf:SubscriptionInfo_m" substitutionGroup="jdf:ResponseTypeObj">
+		<xs:annotation>
+			<xs:appinfo>
+				<Constraint Path="Subscription" minOccurs="1" maxOccurs="1"/>				
+			</xs:appinfo>			
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SubscriptionFilter_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:QueryTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ChannelID" type="jdftyp:NMTOKEN"/>
+				<xs:attribute name="DeviceID" type="jdftyp:string"/>
+				<xs:attribute name="Families" type="jdftyp:NMTOKENS"/>
+				<xs:attribute name="JobID" type="jdftyp:string"/>
+				<xs:attribute name="JobPartID" type="jdftyp:string"/>
+				<xs:attribute name="MessageTypes" type="jdftyp:NMTOKENS"/>
+				<xs:attribute name="QueueEntryID" type="jdftyp:string"/>
+				<xs:attribute name="URL" type="jdftyp:URL"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubscriptionInfo_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:ResponseTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
+					<xs:element name="Subscription" type="jdf:SubscriptionElement_m" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ChannelID" type="jdftyp:NMTOKEN"/>
+				<xs:attribute name="DeviceID" type="jdftyp:string"/>
+				<xs:attribute name="Families" type="jdftyp:NMTOKEN"/>
+				<xs:attribute name="JobID" type="jdftyp:string"/>
+				<xs:attribute name="JobPartID" type="jdftyp:string"/>
+				<xs:attribute name="MessageTypes" type="jdftyp:NMTOKEN"/>
+				<xs:attribute name="QueueEntryID" type="jdftyp:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -524,6 +660,128 @@
 				<xs:attribute name="MessageType" type="jdftyp:NMTOKEN" use="optional"/>
 				<xs:attribute name="QueueEntryID" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="ReceiverURL" type="jdftyp:URL" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CommandRequestForAuthentication" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+				<Constraint Path="AuthenticationCmdParams" minOccurs="1" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractCommand_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:AuthenticationCmdParams" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ResponseRequestForAuthentication" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractResponse_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+					<xs:element ref="jdf:AuthenticationResp" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AuthenticationResp" type="jdf:AuthenticationResp_m" substitutionGroup="jdf:ResponseTypeObj">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="AuthenticationResp_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:ResponseTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="Certificate" type="jdf:telem" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="URL" type="jdftyp:URL" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QueryRequestForAuthentication" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+				<Constraint Path="AuthenticationQuParams" minOccurs="1" maxOccurs="1"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractQuery_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:AuthenticationQuParams" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AuthenticationQuParams" type="jdf:AuthenticationQuParams_m" substitutionGroup="jdf:QueryTypeObj">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="AuthenticationQuParams_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:QueryTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="AuthenticationType" type="jdftyp:eAuthenticationType_" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SignalRequestForAuthentication" mixed="false">
+		<xs:annotation>
+			<xs:appinfo>
+				<Version Path="." First="1.4"/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:JMFAbstractSignal_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element ref="jdf:AuthenticationResp" minOccurs="0"/>
+					<xs:element ref="jdf:AuthenticationQuParams" minOccurs="0"/>
+					<xs:element name="Notification" type="jdf:NotificationAudit" minOccurs="0"/>
+					<xs:element name="Trigger" type="jdf:TriggerElement_m" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AuthenticationCmdParams" type="jdf:AuthenticationCmdParams_m" substitutionGroup="jdf:CommandTypeObj">
+		<xs:annotation>
+			<xs:appinfo>
+			</xs:appinfo>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="AuthenticationCmdParams_m" mixed="false">
+		<xs:complexContent mixed="false">
+			<xs:extension base="jdf:CommandTypeObj_">
+				<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
+					<xs:element name="Certificate" type="jdf:telem" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="AuthenticationType" type="jdftyp:eAuthenticationType_"/>
+				<xs:attribute name="Reason" type="jdftyp:eAuthenticationReason_"/>
+				<xs:attribute name="ReasonDetails" type="jdftyp:string" use="optional" />
+				<xs:attribute name="URL" type="jdftyp:URL" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -785,11 +1043,13 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-      <xs:element name="ModifyNodeCmdParams" type="jdf:ModifyNodeCmdParams_m" substitutionGroup="jdf:CommandOrQueryTypeObj">
+	<xs:element name="ModifyNodeCmdParams" type="jdf:ModifyNodeCmdParams_m" substitutionGroup="jdf:CommandOrQueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.3"/>
+				<Version Path="./NewComment/Part" First="1.4"/>
 				<Constraint Path="QueueFilter" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="./NewComment/Part" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
 		</xs:annotation>
 	</xs:element>
@@ -802,6 +1062,7 @@
 						<xs:complexType>
 							<xs:sequence minOccurs="0" maxOccurs="unbounded">
 								<xs:group ref="jdf:GenericElements" minOccurs="0"/>
+								<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
 							</xs:sequence>
 							<xs:attribute name="Action" type="jdftyp:eCommentAction_" use="required"/>
 							<xs:attribute name="CommentID" type="jdftyp:NMTOKEN"/>
@@ -1343,8 +1604,11 @@
 	<xs:element name="ResourceQuParams" type="jdf:ResourceQuParams_m" substitutionGroup="jdf:QueryTypeObj">
 		<xs:annotation>
 			<xs:appinfo>
+				<Version Path="@LotDetails" First="1.4"/>
+				<Version Path="@LotID" First="1.4"/>
 				<Version Path="@ProductID" First="1.2"/>
-				<Version Path="@QueueEntryID" First="1.2"/>
+				<Version Path="@ResourceDetails" First="1.4"/>
+				<Version Path="@ResourceID" First="1.3"/>
 				<Version Path="Part" First="1.2"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
@@ -1354,18 +1618,23 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@ActualAmount" First="1.2"/>
-				<Version Path="@ModuleIndex" First="1.3"/>
+				<Version Path="@CommandResult" First="1.4"/>
 				<Version Path="@ModuleID" First="1.3"/>
+				<Version Path="@LotControlled" First="1.4"/>
+				<Version Path="@ModuleIndex" First="1.3"/>
 				<Version Path="@ProductID" First="1.2"/>
 				<Version Path="@Status" First="1.2"/>
 				<Version Path="@Usage" First="1.3"/>
 				<Version Path="AmountPool" First="1.3"/>
+				<Version Path="Lot" First="1.4"/>
 				<Version Path="MISDetails" First="1.2"/>
 				<Version Path="Part" First="1.2"/>
 				<Constraint Path="AmountPool" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="CostCenter" minOccurs="0" maxOccurs="1"/>
+				<Constraint Path="Lot" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="MISDetails" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
+				<Constraint Path="Resource" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="/*" minOccurs="0" maxOccurs="1"/>
 			</xs:appinfo>
 		</xs:annotation>
@@ -1397,11 +1666,14 @@
 				<xs:attribute name="JobID" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="JobPartID" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="Location" type="jdftyp:string" use="optional"/>
+				<xs:attribute name="LotDetails" type="jdftyp:eLotDetails_" default="Brief"/>
+				<xs:attribute name="LotID" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="ProcessUsage" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="ProductID" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="QueueEntryID" type="jdftyp:shortString" use="optional"/>
+				<xs:attribute name="ResourceDetails" type="jdftyp:eResourceDetails_" default="Full"/>
 				<xs:attribute name="ResourceID" type="jdftyp:NMTOKEN" use="optional"/>
-				<xs:attribute name="ResourceName" type="jdftyp:NMTOKEN" use="optional"/>
+				<xs:attribute name="ResourceName" type="jdftyp:NMTOKENS" use="optional"/>
 				<xs:attribute name="Usage" type="jdftyp:eUsage_" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -1413,6 +1685,7 @@
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element name="AmountPool" type="jdf:ResourceLink_AmountPool_l" minOccurs="0"/>
 					<xs:element name="CostCenter" type="jdf:CostCenter_re" minOccurs="0"/>
+					<xs:element name="Lot" type="jdf:Lot" minOccurs="0"/>
 					<xs:element name="MISDetails" type="jdf:MISDetails_re" minOccurs="0"/>
 					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
 					<xs:element ref="jdf:Resource" minOccurs="0"/>
@@ -1420,8 +1693,10 @@
 				<xs:attribute name="ActualAmount" type="jdftyp:double" use="optional"/>
 				<xs:attribute name="Amount" type="jdftyp:double" use="optional"/>
 				<xs:attribute name="AvailableAmount" type="jdftyp:double" use="optional"/>
-				<xs:attribute name="Level" type="jdftyp:eResourceInfo_m_Level_" default="OK"/>
+				<xs:attribute name="CommandResult" type="jdftyp:eCommandResult_" use="optional"/>
+				<xs:attribute name="Level" type="jdftyp:eResourceInfo_m_Level_" use="optional"/>
 				<xs:attribute name="Location" type="jdftyp:string" use="optional"/>
+				<xs:attribute name="LotControlled" type="jdftyp:boolean" use="optional"/>
 				<xs:attribute name="ModuleID" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="ModuleIndex" type="jdftyp:IntegerRangeList" use="optional"/>
 				<xs:attribute name="ProcessUsage" type="jdftyp:NMTOKEN" use="optional"/>
@@ -1540,6 +1815,8 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="." First="1.2"/>
+				<Version Path="ReturnURL" Last="1.3"/>
+				<Version Path="WatchURL" Last="1.3"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="Disposition" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="MISDetails" minOccurs="0" maxOccurs="1"/>
@@ -1747,7 +2024,9 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@DeviceCondition" First="1.2"/>
+				<Version Path="@DeviceID" First="1.3"/>
 				<Version Path="@DeviceOperationMode" First="1.2"/>
+				<Version Path="@IdleStartTime" First="1.4"/>
 				<Constraint Path="Device" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Employee" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="JobPhase" minOccurs="0" maxOccurs="unbounded"/>
@@ -1780,6 +2059,7 @@
 		<xs:attribute name="DeviceOperationMode" type="jdftyp:eDeviceOperationMode_" use="optional"/>
 		<xs:attribute name="DeviceStatus" type="jdftyp:eDeviceStatus_" use="required"/>
 		<xs:attribute name="HourCounter" type="jdftyp:duration" use="optional"/>
+		<xs:attribute name="IdleStartTime" type="jdftyp:dateTime" use="optional"/>
 		<xs:attribute name="PowerOnTime" type="jdftyp:dateTime" use="optional"/>
 		<xs:attribute name="ProductionCounter" type="jdftyp:double" use="optional"/>
 		<xs:attribute name="Speed" type="jdftyp:double" use="optional"/>
@@ -2420,13 +2700,15 @@
 				<Version Path="@RestTime" First="1.1"/>
 				<Version Path="@StartTime" First="1.1"/>
 				<Version Path="@TotalAmount" First="1.1"/>
+				<Version Path="@URL" First="1.4"/>
 				<Version Path="@Waste" First="1.1"/>
 				<Version Path="MISDetails" First="1.2"/>
-			    <Version Path="ModuleStatus" First="1.3"/>
+				<Version Path="ModuleStatus" First="1.3"/>
+				<Version Path="JDF" Last="1.3"/>
 				<Constraint Path="CostCenter" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="JDF" minOccurs="0" maxOccurs="1"/>
-			    <Constraint Path="ModuleStatus" minOccurs="0" maxOccurs="unbounded"/>
-			    <Constraint Path="ModuleStatus/Employee" minOccurs="0" maxOccurs="unbounded"/>
+				<Constraint Path="ModuleStatus" minOccurs="0" maxOccurs="unbounded"/>
+				<Constraint Path="ModuleStatus/Employee" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="MISDetails" minOccurs="0" maxOccurs="1"/>
 				<Constraint Path="Part" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
@@ -2456,7 +2738,7 @@
 					<xs:element name="CostCenter" type="jdf:CostCenter_re" minOccurs="0"/>
 					<xs:element ref="jdf:JDF" minOccurs="0"/>
 					<xs:element name="MISDetails" type="jdf:MISDetails_re" minOccurs="0"/>
-				    <xs:element name="ModuleStatus" type="jdf:DeviceInfo_ModuleStatus_" minOccurs="0"/>
+					<xs:element name="ModuleStatus" type="jdf:DeviceInfo_ModuleStatus_" minOccurs="0"/>
 					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
 				</xs:sequence>
 				<xs:attribute name="Activation" type="jdftyp:eActivation_" use="optional"/>
@@ -2475,6 +2757,7 @@
 				<xs:attribute name="Status" type="jdftyp:eNodeStatus_" use="required"/>
 				<xs:attribute name="StatusDetails" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="TotalAmount" type="jdftyp:double" use="optional"/>
+				<xs:attribute name="URL" type="jdftyp:URL" use="optional"/>
 				<xs:attribute name="Waste" type="jdftyp:double" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
@@ -3119,7 +3402,6 @@
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element ref="jdf:JobPhase" minOccurs="0"/>
 					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
-					<xs:element name="Preview" type="jdf:Preview_re" minOccurs="0"/>
 				</xs:sequence>
 				<xs:attribute name="DeviceID" type="jdftyp:shortString" use="optional"/>
 				<xs:attribute name="EndTime" type="jdftyp:dateTime" use="optional"/>
@@ -3715,6 +3997,7 @@
 		<xs:annotation>
 			<xs:appinfo>
 				<Version Path="@File" Last="1.1"/>
+				<Version Path="@HotFolder" Last="1.3"/>
 				<Version Path="@HttpGet" Last="1.1"/>
 				<Version Path="@Packaging" First="1.2"/>
 				<Version Path="@MIME" Last="1.1"/>
@@ -3765,6 +4048,11 @@
 			<xs:appinfo>
 				<Version Path="." First="1.2"/>
 				<Version Path="@GangNames" First="1.3"/>
+				<Version Path="@JobID" First="1.4"/>
+				<Version Path="@JobPartID" First="1.4"/>
+				<Version Path="@PreviewUsages" First="1.4"/>
+				<Version Path="@UpdateGranularity" First="1.4"/>
+				<Version Path="Part" First="1.4"/>
 				<Constraint Path="QueueEntryDef" minOccurs="0" maxOccurs="unbounded"/>
 				<Constraint Path="Device" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:appinfo>
@@ -3777,13 +4065,18 @@
 					<xs:group ref="jdf:GenericElements" minOccurs="0"/>
 					<xs:element ref="jdf:QueueEntryDef" minOccurs="0"/>
 					<xs:element name="Device" type="jdf:Device_re" minOccurs="0"/>
+					<xs:element name="Part" type="jdf:Part" minOccurs="0"/>
 				</xs:sequence>
 				<xs:attribute name="GangNames" type="jdftyp:NMTOKENS" use="optional"/>
+				<xs:attribute name="JobID" type="jdftyp:string" use="optional"/>
+				<xs:attribute name="JobPartID" type="jdftyp:string" use="optional"/>
 				<xs:attribute name="MaxEntries" type="jdftyp:Integer" use="optional"/>
 				<xs:attribute name="OlderThan" type="jdftyp:dateTime" use="optional"/>
+				<xs:attribute name="PreviewUsages" type="jdftyp:ePreviewUsageList_" default="Separation"/>
 				<xs:attribute name="NewerThan" type="jdftyp:dateTime" use="optional"/>
 				<xs:attribute name="QueueEntryDetails" type="jdftyp:eQueueEntryDetails_" default="Brief"/>
 				<xs:attribute name="StatusList" type="jdftyp:eQueueEntryStatusList_" use="optional"/>
+				<xs:attribute name="UpdateGranularity" type="jdftyp:eUpdateGranularity_" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
