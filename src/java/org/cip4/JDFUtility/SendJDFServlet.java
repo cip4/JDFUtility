@@ -49,14 +49,16 @@ public class SendJDFServlet extends HttpServlet {
 
     /** Initializes the servlet.
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
     }
 
     /** Destroys the servlet.
      */
-    public void destroy() {
+    @Override
+	public void destroy() {
 //      foo		
     }
 
@@ -64,7 +66,8 @@ public class SendJDFServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
         log.warn("get not implemented");
     }
@@ -73,7 +76,8 @@ public class SendJDFServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
         log.debug("Processing request...");
@@ -175,6 +179,7 @@ public class SendJDFServlet extends HttpServlet {
                 {
                     inStream=null;
                 }
+                
                 JDFDoc docResp=null;
                 success=urlCon.getResponseCode()==200;             
                 String outFileName=null;
@@ -219,7 +224,8 @@ public class SendJDFServlet extends HttpServlet {
                         dl.appendText(outFileName);
                         dl.setAttribute("href","./SendJDFTmp/"+outFileName,null);
                         html.appendElement("hr");
-                        html.appendElement("pre").appendElement("code").setText(docResp.write2String(2));
+                        if (docResp != null)
+                        	html.appendElement("pre").appendElement("code").setText(docResp.write2String(2));
                         html.appendElement("hr");
                     }
                     else
@@ -256,7 +262,8 @@ public class SendJDFServlet extends HttpServlet {
 
     /** Returns a short description of the servlet.
      */
-    public String getServletInfo() {
+    @Override
+	public String getServletInfo() {
         return "SendJDF Servlet";
     }
 

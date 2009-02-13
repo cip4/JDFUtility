@@ -120,14 +120,16 @@ public class CheckJDFServlet extends HttpServlet {
     
     /** Initializes the servlet.
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
         
     }
     
     /** Destroys the servlet.
      */
-    public void destroy() {
+    @Override
+	public void destroy() {
         // foo
     }
     
@@ -135,7 +137,8 @@ public class CheckJDFServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
     {
         System.out.println("Processing get");
     }
@@ -144,7 +147,8 @@ public class CheckJDFServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
         System.out.println("Processing request...");
@@ -331,7 +335,8 @@ public class CheckJDFServlet extends HttpServlet {
     
     /** Returns a short description of the servlet.
      */
-    public String getServletInfo() {
+    @Override
+	public String getServletInfo() {
         return "JDFValidator Servlet";
     }
     

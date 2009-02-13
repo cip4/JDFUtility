@@ -117,7 +117,8 @@ public class JMFHotFolderServlet extends HttpServlet {
 
     /** Initializes the servlet.
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
         final String root = config.getInitParameter("rootDir");
         System.out.println("Config root: "+root);
@@ -152,7 +153,8 @@ public class JMFHotFolderServlet extends HttpServlet {
 
     /** Destroys the servlet.
      */
-    public void destroy() {
+    @Override
+	public void destroy() {
 //      foo		
     }
 
@@ -162,7 +164,8 @@ public class JMFHotFolderServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
     {
         if(mimeTypes!=null)
         {
@@ -213,7 +216,8 @@ public class JMFHotFolderServlet extends HttpServlet {
 
     /** Returns a short description of the servlet.
      */
-    public String getServletInfo() {
+    @Override
+	public String getServletInfo() {
         return "JMFHotFolderServlet";
     }
 

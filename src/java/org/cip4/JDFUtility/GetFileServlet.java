@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  *
@@ -41,7 +42,8 @@ public class GetFileServlet extends HttpServlet {
 
     /** Initializes the servlet.
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
         final String root = config.getInitParameter("rootDir");
         System.out.println("Config root: "+root);
@@ -51,7 +53,8 @@ public class GetFileServlet extends HttpServlet {
 
     /** Destroys the servlet.
      */
-    public void destroy() {
+    @Override
+	public void destroy() {
 //      foo		
     }
 
@@ -61,7 +64,8 @@ public class GetFileServlet extends HttpServlet {
      * @throws IOException 
      * @throws ServletException 
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         processRequest(request, response);
     }
@@ -70,8 +74,9 @@ public class GetFileServlet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      */
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    @Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws IOException
     {
         processRequest(request, response);
     }
@@ -81,7 +86,7 @@ public class GetFileServlet extends HttpServlet {
      * Parses a multipart request.
      */
     private void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
+    throws IOException
     {
         OutputStream os=response.getOutputStream();
         String localName=request.getPathInfo();
@@ -93,7 +98,7 @@ public class GetFileServlet extends HttpServlet {
         }
         else
         {
-            response.setContentType(MimeUtil.TEXT_HTML);
+            response.setContentType(UrlUtil.TEXT_HTML);
             os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
             os.write(localName.getBytes());
             os.write("</HTML>".getBytes());
@@ -103,7 +108,8 @@ public class GetFileServlet extends HttpServlet {
 
     /** Returns a short description of the servlet.
      */
-    public String getServletInfo() {
+    @Override
+	public String getServletInfo() {
         return "GETFile Servlet";
     }
 
