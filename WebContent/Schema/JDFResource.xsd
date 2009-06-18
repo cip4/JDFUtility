@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <!--
-    The CIP4 Software License, Version 1.0 Copyright (c) 2001-2007 The International Cooperation for the Integration of Processes in Prepress, Press and
+    The CIP4 Software License, Version 1.0 Copyright (c) 2001-2009 The International Cooperation for the Integration of Processes in Prepress, Press and
     Postpress (CIP4). All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
     following conditions are met: 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
     disclaimer. 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the
@@ -3370,7 +3370,7 @@
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
           <xs:element name="Contact" type="jdf:Contact_re" minOccurs="0"/>
           <xs:element ref="jdf:ContactRef" minOccurs="0"/>
-          <xs:element name="Employee" type="jdf:Contact_re" minOccurs="0"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element ref="jdf:EmployeeRef" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
         </xs:sequence>
@@ -9224,8 +9224,8 @@
     <xs:attributeGroup ref="jdf:LayoutAttribs_c"/>
     <xs:attribute name="Automated" type="jdftyp:boolean" default="false"/>
     <xs:attribute name="LockOrigins" type="jdftyp:boolean" default="false"/>
-    <xs:attribute name="MaxDocOrd" type="jdftyp:Integer" default="1"/>
-    <xs:attribute name="MaxSetOrd" type="jdftyp:Integer" default="1"/>
+    <xs:attribute name="MaxDocOrd" type="jdftyp:Integer" use="optional"/>
+    <xs:attribute name="MaxSetOrd" type="jdftyp:Integer" use="optional"/>
     <xs:attribute name="OrdReset" type="jdftyp:eOrdReset_" default="Continue"/>
     <xs:attribute name="SheetCountReset" type="jdftyp:eOrdReset_" default="Continue"/>
   </xs:attributeGroup>
@@ -12981,12 +12981,14 @@
     </xs:complexContent>
   </xs:complexType>
   <!--
-    GCM: Removed for 1.4, Preview becomes Generic to all elements only Preview_r is required <xs:element name="Preview" type="jdf:Preview_r"
-    substitutionGroup="jdf:Resource"> <xs:annotation> <xs:appinfo> <Version Path="@CTM" First="1.1"/> <Version Path="@Directory" First="1.1"/> <Version
+    GCM: Removed for 1.4, Preview becomes Generic to all elements only Preview_r is required 
+    <xs:element name="Preview" type="jdf:Preview_re"> 
+    <xs:annotation> <xs:appinfo> <Version Path="@CTM" First="1.1"/> <Version Path="@Directory" First="1.1"/> <Version
     Path="@PreviewFileType" First="1.2"/> <Version Path="@PreviewType" Last="1.1"/> <Version Path="@PreviewUsage" First="1.2"/> </xs:appinfo> </xs:annotation>
     </xs:element>
-  -->
   <xs:element name="PreviewRef" type="jdf:ResourceRef" substitutionGroup="jdf:ResourceRef"/>
+  -->
+  <xs:element name="PreviewRef" type="jdf:ResourceRef"/>
   <xs:element name="PreviewLink" type="jdf:ParameterLink" substitutionGroup="jdf:ResourceLink"/>
   <xs:attributeGroup name="PreviewAttribs_c">
     <xs:attribute name="Compensation" type="jdftyp:eCompensation_" use="optional"/>
@@ -13000,13 +13002,28 @@
     <xs:attribute name="PreviewFileType" type="jdftyp:ePreviewFileType_" use="optional"/>
     <xs:attribute name="PreviewUsage" type="jdftyp:ePreviewType_" use="optional"/>
     <xs:attribute name="URL" type="jdftyp:URL" use="optional"/>
-  </xs:attributeGroup>
+    <!-- fudge to allow Preview anywhere -->
+       <xs:attribute name="Class" type="jdftyp:eResourceClass_" use="optional"/>
+ </xs:attributeGroup>
+ <!-- in this case Parameter is purely optional -->
+ 	<xs:simpleType name="myParameter">
+ 		<xs:restriction base="jdftyp:EnumerationBaseType">
+ 			<xs:enumeration value="Parameter"/>
+  		</xs:restriction>
+ 	</xs:simpleType>
+
   <xs:attributeGroup name="PreviewAttribs_r">
     <xs:attributeGroup ref="jdf:PreviewAttribs_c"/>
+    <xs:attributeGroup ref="jdf:PartitionAttribs"/>
+       <xs:attributeGroup ref="jdf:PartitionKeysAttribsForPreview"/>
+ 
     <xs:attribute name="PreviewFileType" type="jdftyp:ePreviewFileType_" default="PNG"/>
     <xs:attribute name="PreviewUsage" type="jdftyp:ePreviewType_" default="Separation"/>
-    <xs:attribute name="URL" type="jdftyp:URL" use="required"/>
-  </xs:attributeGroup>
+    <xs:attribute name="URL" type="jdftyp:URL" use="optional"/>
+   	<xs:attribute name="NoOp" type="jdftyp:boolean" use="optional"/>
+    <xs:attribute name="Class" type="jdf:myParameter" use="optional"/>
+   </xs:attributeGroup>
+   <!--
   <xs:complexType name="Preview_r" mixed="false">
     <xs:annotation>
       <xs:appinfo>
@@ -13019,27 +13036,31 @@
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent mixed="false">
-      <xs:extension base="jdf:ParameterResource">
+      <xs:extension base="jdf:ParameterResource"> 
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
-          <!--  <xs:group ref="jdf:GenericElements" minOccurs="0"/> -->
-
+ 
           <xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
           <xs:element name="PreviewUpdate" type="jdf:Preview_re" minOccurs="0"/>
           <xs:element ref="jdf:Comment" minOccurs="0"/>
           <xs:element ref="jdf:GeneralID" minOccurs="0"/>
+          <xs:element ref="jdf:Preview" minOccurs="0"/>
           <xs:any namespace="##other" processContents="lax" minOccurs="0"/>
         </xs:sequence>
-        <xs:attributeGroup ref="jdf:PreviewAttribs_r"/>
+        <xs:attributeGroup ref="jdf:PreviewAttribs_u"/>
       </xs:extension>
     </xs:complexContent>
+
   </xs:complexType>
-  <xs:complexType name="Preview_re" mixed="false">
+ -->
+ 
+ <xs:complexType name="Preview_re" mixed="false">
     <xs:complexContent mixed="false">
-      <xs:extension base="jdf:ParameterResourceElement">
+      <xs:extension base="jdf:ResourceElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericResourceElements" minOccurs="0"/>
           <xs:element ref="jdf:Comment" minOccurs="0"/>
           <xs:element ref="jdf:GeneralID" minOccurs="0"/>
+          <xs:element name="Preview" type="jdf:Preview_re" minOccurs="0"/>
           <xs:any namespace="##other" processContents="lax" minOccurs="0"/>
         </xs:sequence>
         <xs:attributeGroup ref="jdf:PreviewAttribs_r"/>

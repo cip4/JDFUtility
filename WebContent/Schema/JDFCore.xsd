@@ -2,7 +2,7 @@
 <!--  The CIP4 Software License, Version 1.0
   
   
-  Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+  Copyright (c) 2001-2009 The International Cooperation for the Integration of 
   Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
   
   Redistribution and use in source and binary forms, with or without modification, 
@@ -340,8 +340,9 @@
     <xs:sequence>
       <xs:element ref="jdf:Comment" minOccurs="0"/>
       <xs:element ref="jdf:GeneralID" minOccurs="0"/>
-      <!--  was  jdf:Preview_r but this caused "Class" to be inserted in partitions... -->
+      <!--  was  jdf:Preview_r but this caused "Class" to be inserted in partitions...-->
       <xs:element name="Preview" type="jdf:Preview_re" minOccurs="0"/>
+      <xs:element name="PreviewRef" type="jdf:ResourceRef" minOccurs="0"/>
       <xs:any namespace="##other" processContents="lax" minOccurs="0"/>
     </xs:sequence>
   </xs:group>
@@ -782,7 +783,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="Duration" type="jdftyp:duration" use="optional"/>
@@ -816,7 +817,6 @@
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
           <xs:element name="CostCenter" type="jdf:CostCenter_re" minOccurs="0"/>
           <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
-          <xs:element ref="jdf:EmployeeRef" minOccurs="0"/>
           <xs:element ref="jdf:NotificationDetails" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
         </xs:sequence>
@@ -910,7 +910,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element ref="jdf:EmployeeRef" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="ref" type="jdftyp:IDREF" use="optional"/>
@@ -925,7 +925,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="XPath" type="jdftyp:XPath" use="optional"/>
       </xs:extension>
@@ -942,7 +942,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="jRef" type="jdftyp:IDREF" use="optional"/>
         <xs:attribute name="XPath" type="jdftyp:XPath" use="optional"/>
@@ -961,7 +961,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="Independent" type="jdftyp:boolean" default="false"/>
@@ -986,7 +986,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="Independent" type="jdftyp:boolean" default="false"/>
@@ -1014,7 +1014,7 @@
       <xs:extension base="jdf:AuditElement">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0"/>
           <xs:element name="MISDetails" type="jdf:MISDetails_re" minOccurs="0"/>
           <xs:element ref="jdf:ResourceLink" minOccurs="0"/>
           <xs:element name="Part" type="jdf:Part" minOccurs="0"/>
@@ -1407,7 +1407,7 @@
       <xs:extension base="jdf:BaseElement_">
         <xs:sequence minOccurs="0" maxOccurs="unbounded">
           <xs:group ref="jdf:GenericElements" minOccurs="0"/>
-          <xs:element ref="jdf:Employee"/>
+          <xs:element ref="jdf:Employee" minOccurs="0"/>
           <xs:group ref="jdf:AnyMessage" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="AgentName" type="jdftyp:string" use="optional"/>
