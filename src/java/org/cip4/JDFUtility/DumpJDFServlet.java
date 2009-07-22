@@ -219,6 +219,34 @@ public class DumpJDFServlet extends HttpServlet
 	{
 		// System.out.println("dump service");
 		numPost++;
+		final String nodump = request.getParameter("nodump");
+		final boolean dump = !StringUtil.parseBoolean(nodump, false);
+		if (dump)
+		{
+			dumpToFile(request);
+		}
+		else
+		{
+			try
+			{
+				final OutputStream os = response.getOutputStream();
+				final PrintWriter w = new PrintWriter(os);
+				w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD></HTML>");
+				w.flush();
+			}
+			catch (final Exception e)
+			{
+				// nop
+			}
+		}
+
+	}
+
+	/**
+	 * @param request
+	 */
+	private void dumpToFile(final HttpServletRequest request)
+	{
 		final String dir = request.getPathInfo();
 		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
 		if (newDir.exists() && !newDir.isDirectory())
@@ -235,7 +263,6 @@ public class DumpJDFServlet extends HttpServlet
 		header += "\nContext Type: " + contentType;
 		int contentLength = request.getContentLength();
 		header += "\nContext Length: " + contentLength;
-
 		try
 		{
 
