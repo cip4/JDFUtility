@@ -211,9 +211,14 @@
     <xs:attribute name="ID" type="jdftyp:ID" use="optional"/>
     <xs:attribute name="UpdateID" type="jdftyp:NMTOKEN" use="optional"/>
     <xs:attribute name="ProductID" type="jdftyp:shortString" use="optional"/>
-            <!-- added for backward compatibility 060601 -->
-            <xs:attribute name="Status" type="jdftyp:eResourceStatus_" use="optional" />
-      </xs:attributeGroup>
+     <xs:attribute name="AgentName" type="jdftyp:string" use="optional"/>
+    <xs:attribute name="AgentVersion" type="jdftyp:string" use="optional"/>
+    <xs:attribute name="Author" type="jdftyp:string" use="optional"/>
+    <xs:attribute name="CatalogID" type="jdftyp:shortString" use="optional"/>
+    <xs:attribute name="CatalogDetails" type="jdftyp:string" use="optional"/>
+  <!-- added for backward compatibility 060601 -->
+     <xs:attribute name="Status" type="jdftyp:eResourceStatus_" use="optional" />
+   </xs:attributeGroup>
   <xs:attributeGroup name="AuditAttribs">
     <xs:attribute name="AgentName" type="jdftyp:string" use="optional"/>
     <xs:attribute name="AgentVersion" type="jdftyp:string" use="optional"/>
@@ -1172,7 +1177,17 @@
         <Version Path="@EditionVersion" First="1.3"/>
         <Version Path="@ItemNames" First="1.2"/>
         <Version Path="@LayerIDs" First="1.1"/>
-        <Version Path="@PageTags" First="1.3"/>
+       <Version Path="@Metadata0" First="1.4"/>
+       <Version Path="@Metadata1" First="1.4"/>
+       <Version Path="@Metadata2" First="1.4"/>
+       <Version Path="@Metadata3" First="1.4"/>
+       <Version Path="@Metadata4" First="1.4"/>
+       <Version Path="@Metadata5" First="1.4"/>
+       <Version Path="@Metadata6" First="1.4"/>
+       <Version Path="@Metadata7" First="1.4"/>
+       <Version Path="@Metadata8" First="1.4"/>
+       <Version Path="@Metadata9" First="1.4"/>
+         <Version Path="@PageTags" First="1.3"/>
         <Version Path="@PlateLayout" First="1.3"/>
         <Version Path="@PreflightRule" First="1.2"/>
         <Version Path="@PreviewType" First="1.1"/>
