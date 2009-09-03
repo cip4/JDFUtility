@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2007 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -96,248 +96,258 @@ import org.cip4.jdflib.validate.JDFValidator;
 
 /**
  * This servlet parses any file and returns any XMP packet found in the file.
- *
- * @author  claes
- *
- * @web:servlet	name="XMPServlet" 
- *						display-name="XMP Servlet" 
- *						description="" 
- *						load-on-startup="1"
- *
- * @web:servlet-init-param	name="" 
- *									value=""
- *									description=""
- *
+ * 
+ * @author claes
+ * 
+ * @web:servlet name="XMPServlet" display-name="XMP Servlet" description="" load-on-startup="1"
+ * 
+ * @web:servlet-init-param name="" value="" description=""
+ * 
  * @web:servlet-mapping url-pattern="/xmpservlet"
  */
-public class CheckJDFServlet extends HttpServlet {
-    
-    /**
+public class CheckJDFServlet extends HttpServlet
+{
+
+	/**
      * 
      */
-    private static final long serialVersionUID = -3663640051616511411L;
-    
-    
-    /** Initializes the servlet.
-     */
-    @Override
-	public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        
-    }
-    
-    /** Destroys the servlet.
-     */
-    @Override
-	public void destroy() {
-        // foo
-    }
-    
-    /** Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    {
-        System.out.println("Processing get");
-    }
-    
-    /** Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    @Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
-    {
-        System.out.println("Processing request...");
-        
-        // Check that we have a file upload request
-        
-        boolean isMultipart = FileUploadBase.isMultipartContent(request);
-        if (isMultipart)
-        {
-            System.out.println("Processing multipart request...");
-            processMultipartRequest(request, response);
-        }
-    }
-    
-    
-    /**
-     * Parses a multipart request.
-     */
-    private void processMultipartRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException
-    {
-        // Parse the multipart request
-        List fileItems = JDFServletUtil.getFileList(request);
-        
-        // Get the first file item
-        // To do: Process all file items
-        FileItem fileItem=null;
-        boolean bUseSchema=false;
-        boolean bIgnorePrivate=false;
-        String language="EN";
-        String devcapName=null;
-        File devcapFile=null;
-        for(int i=0;i<fileItems.size();i++)
-        {
-            Runtime.getRuntime().gc(); // clean up before loading
-            FileItem item = (FileItem) fileItems.get(i);
-            final String fieldName = item.getFieldName();
-            System.out.println("Foo Form name: " + fieldName);
-            if(item.isFormField())
-            {
-                if(fieldName.equals("UseSchema"))
-                {
-                    if(item.getString().equals("true"))
-                        bUseSchema=true;
-                }        
-                else if(fieldName.equals("IgnorePrivate"))
-                {
-                    if(item.getString().equals("true"))
-                        bIgnorePrivate=true;
-                    System.out.println("IgnorePrivate: " + bIgnorePrivate);
-                }        
-                else if(fieldName.equals("Language"))
-                {
-                    language=item.getString();
-                    if(language.equalsIgnoreCase("nederlands"))
-                        language="nl";
-                    language=language.substring(0,2).toUpperCase();
-                    System.out.println("Language: " + language);
-                }        
-            }
-            else if("devcapFile".equals(fieldName))
-            {
-                devcapName=item.getName();
-                System.out.println("devcapFile: " + devcapName);
-                if(devcapFile!=null && devcapFile.length()>0)
-                    devcapFile = createTmpFile(item,"devcap");
-                else
-                    devcapFile=null;
-            }
-            else if (item.getSize()<20 || item.getName().length()==0)
-            {
-                System.out.println("Bad File name: " + item.getName());
-            }
-            else // ok
-            {
-                System.out.println("File name: " + item.getName());
-                fileItem=item;
-            }
-        }
-        String xmlString=null;
-        XMLDoc d=null;
-        
-        // Extracts JDF packet
-        try
-        {
-            
-            JDFValidator checker=new JDFValidator();
-            
-            checker.setPrint(false);
-            checker.bQuiet=true;
-            checker.setIgnorePrivate(bIgnorePrivate);
-            checker.level=EnumValidationLevel.Complete;
-            checker.xslStyleSheet="./checkjdf.xsl";
-            if(devcapFile!=null && devcapFile.canRead())
-            {
-                checker.devCapFile=devcapFile.getAbsolutePath();
-                System.out.println(devcapFile.getAbsolutePath());
-                
-            }
-            
-            if(bUseSchema) // using schema
-            {
-                String schemaPath=JDFServletUtil.baseDir+"Schema/JDF.xsd";
-                File fs=new File(schemaPath);
-                schemaPath=UrlUtil.getRelativeURL(fs, null, true);
-                
-                checker.setJDFSchemaLocation(new File(schemaPath));
-            }
-            
-            if(fileItem!=null)
-            {
-                final String fileItemName = fileItem.getName();
-                System.out.println("FIName: "+fileItemName);
-                final String lower = fileItemName.toLowerCase();
-                if(lower.endsWith(".zip"))
-                {
-                    File zipFile = createTmpFile(fileItem,"zip");
-                    d=checker.processZipFile(zipFile);
-                }
-                else if(lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
-                {
-                    System.out.println("processing MIME file");
-                    InputStream s = fileItem.getInputStream();
-                    d=checker.processMimeStream(s);
-                }
-                else
-                {
-                    InputStream s = fileItem.getInputStream();
-                    d=checker.processSingleStream(s,fileItemName,null);
-                }
-                d.getRoot().setAttribute("Language",language);
-                File outFile=JDFServletUtil.getTmpFile("CheckJDFTmp",fileItem,"check_",".xml");
-                KElement root=d.getRoot();
-                String sURL="./CheckJDFTmp/"+outFile.getName();
-                sURL= StringUtil.escape(sURL,UrlUtil.m_URIEscape,"%",16,2,0x21,-1);           
-                root.setAttribute("XMLUrl",sURL);
-                // MS IE sucks! replace non escape with __
-                root.setAttribute("XMLFile",fileItemName);
-                System.out.println("URL: "+sURL);
-                //root.setAttribute("XMLUrl","./CheckJDFTmp/"+outFile.getName());
-                d.write2File(outFile.getPath(), 2, true);
-                d.setXSLTURL("./checkjdf.xsl");
-                xmlString=d.write2String(0);
-                fileItem.delete();
-                JDFServletUtil.cleanup("CheckJDFTmp");
-            }
-            else
-            {
-                d=checker.processSingleStream(null,null,null);
-                d.setXSLTURL("./checkjdf.xsl");
-                xmlString=d.write2String(0);                
-            }
-        }
-        catch(IOException ioe)
-        {
-            throw new ServletException("Could not read file.", ioe);
-        }
-        response.setContentType("text/xml;charset=utf-8");
-       
-        
-        PrintWriter out = response.getWriter();
-        out.println(xmlString);
-        out.flush();
-        out.close();
-        
-        System.out.println("Exit processMultipartRequest");
-    }
+	private static final long serialVersionUID = -3663640051616511411L;
 
-    ////////////////////////////////////////////////////////////////////
-    
-    private File createTmpFile(FileItem fileItem, String ext) throws FileNotFoundException, IOException
-    {
-        InputStream s = fileItem.getInputStream();
-        File zipFile=JDFServletUtil.getTmpFile("CheckJDFTmp",fileItem,ext+"_","."+ext);
-        FileOutputStream fos=new FileOutputStream(zipFile);
-        int n=IOUtils.copy(s,fos);
-        fos.flush();
-        fos.close();
-        System.out.println(ext+" file name: "+zipFile.toString()+" size: "+n);
-        return zipFile;
-    }
-    
-    ////////////////////////////////////////////////////////////////////
-    
-    /** Returns a short description of the servlet.
-     */
-    @Override
-	public String getServletInfo() {
-        return "JDFValidator Servlet";
-    }
-    
+	/**
+	 * Initializes the servlet.
+	 */
+	@Override
+	public void init(final ServletConfig config) throws ServletException
+	{
+		super.init(config);
+
+	}
+
+	/**
+	 * Destroys the servlet.
+	 */
+	@Override
+	public void destroy()
+	{
+		// foo
+	}
+
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
+	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+	{
+		System.out.println("Processing get");
+	}
+
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
+	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+	{
+		System.out.println("Processing request...");
+
+		// Check that we have a file upload request
+
+		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
+		if (isMultipart)
+		{
+			System.out.println("Processing multipart request...");
+			processMultipartRequest(request, response);
+		}
+	}
+
+	/**
+	 * Parses a multipart request.
+	 */
+	private void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+	{
+		// Parse the multipart request
+		final List fileItems = JDFServletUtil.getFileList(request);
+
+		// Get the first file item
+		// To do: Process all file items
+		FileItem fileItem = null;
+		boolean bUseSchema = false;
+		boolean bIgnorePrivate = false;
+		String language = "EN";
+		String devcapName = null;
+		File devcapFile = null;
+		for (int i = 0; i < fileItems.size(); i++)
+		{
+			Runtime.getRuntime().gc(); // clean up before loading
+			final FileItem item = (FileItem) fileItems.get(i);
+			final String fieldName = item.getFieldName();
+			// System.out.println("Foo Form name: " + fieldName);
+			if (item.isFormField())
+			{
+				if (fieldName.equals("UseSchema"))
+				{
+					if (item.getString().equals("true"))
+					{
+						bUseSchema = true;
+					}
+				}
+				else if (fieldName.equals("IgnorePrivate"))
+				{
+					if (item.getString().equals("true"))
+					{
+						bIgnorePrivate = true;
+					}
+					System.out.println("IgnorePrivate: " + bIgnorePrivate);
+				}
+				else if (fieldName.equals("Language"))
+				{
+					language = item.getString();
+					if (language.equalsIgnoreCase("nederlands"))
+					{
+						language = "nl";
+					}
+					language = language.substring(0, 2).toUpperCase();
+					System.out.println("Language: " + language);
+				}
+			}
+			else if ("devcapFile".equals(fieldName))
+			{
+				devcapName = item.getName();
+				System.out.println("devcapFile: " + devcapName);
+				if (devcapFile != null && devcapFile.length() > 0)
+				{
+					devcapFile = createTmpFile(item, "devcap");
+				}
+				else
+				{
+					devcapFile = null;
+				}
+			}
+			else if (item.getSize() < 20 || item.getName().length() == 0)
+			{
+				System.out.println("Bad File name: " + item.getName());
+			}
+			else
+			// ok
+			{
+				System.out.println("File name: " + item.getName());
+				fileItem = item;
+			}
+		}
+		String xmlString = null;
+		XMLDoc d = null;
+
+		// Extracts JDF packet
+		try
+		{
+
+			final JDFValidator checker = new JDFValidator();
+
+			checker.setPrint(false);
+			checker.bQuiet = true;
+			checker.setIgnorePrivate(bIgnorePrivate);
+			checker.level = EnumValidationLevel.Complete;
+			checker.xslStyleSheet = "./checkjdf.xsl";
+			if (devcapFile != null && devcapFile.canRead())
+			{
+				checker.devCapFile = devcapFile.getAbsolutePath();
+				System.out.println(devcapFile.getAbsolutePath());
+
+			}
+
+			if (bUseSchema) // using schema
+			{
+				String schemaPath = JDFServletUtil.baseDir + "Schema/JDF.xsd";
+				final File fs = new File(schemaPath);
+				schemaPath = UrlUtil.getRelativeURL(fs, null, true);
+
+				checker.setJDFSchemaLocation(new File(schemaPath));
+			}
+
+			if (fileItem != null)
+			{
+				final String fileItemName = fileItem.getName();
+				System.out.println("FIName: " + fileItemName);
+				final String lower = fileItemName.toLowerCase();
+				if (lower.endsWith(".zip"))
+				{
+					final File zipFile = createTmpFile(fileItem, "zip");
+					d = checker.processZipFile(zipFile);
+				}
+				else if (lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
+				{
+					System.out.println("processing MIME file");
+					final InputStream s = fileItem.getInputStream();
+					d = checker.processMimeStream(s);
+				}
+				else
+				{
+					final InputStream s = fileItem.getInputStream();
+					d = checker.processSingleStream(s, fileItemName, null);
+				}
+				final KElement root = d.getRoot();
+				root.setAttribute("Language", language);
+				final File outFile = JDFServletUtil.getTmpFile("CheckJDFTmp", fileItem, "check_", ".xml");
+				String sURL = "./CheckJDFTmp/" + outFile.getName();
+				sURL = StringUtil.escape(sURL, UrlUtil.m_URIEscape, "%", 16, 2, 0x21, -1);
+				root.setAttribute("XMLUrl", sURL);
+				// MS IE sucks! replace non escape with __
+				root.setAttribute("XMLFile", fileItemName);
+				System.out.println("URL: " + sURL);
+				// root.setAttribute("XMLUrl","./CheckJDFTmp/"+outFile.getName());
+				d.write2File(outFile.getPath(), 2, true);
+				d.setXSLTURL("./checkjdf.xsl");
+				xmlString = d.write2String(0);
+				fileItem.delete();
+				JDFServletUtil.cleanup("CheckJDFTmp");
+			}
+			else
+			{
+				d = checker.processSingleStream(null, null, null);
+				d.setXSLTURL("./checkjdf.xsl");
+				xmlString = d.write2String(0);
+			}
+		}
+		catch (final IOException ioe)
+		{
+			throw new ServletException("Could not read file.", ioe);
+		}
+		response.setContentType("text/xml;charset=utf-8");
+
+		final PrintWriter out = response.getWriter();
+		out.println(xmlString);
+		out.flush();
+		out.close();
+
+		System.out.println("Exit processMultipartRequest");
+	}
+
+	// //////////////////////////////////////////////////////////////////
+
+	private File createTmpFile(final FileItem fileItem, final String ext) throws FileNotFoundException, IOException
+	{
+		final InputStream s = fileItem.getInputStream();
+		final File zipFile = JDFServletUtil.getTmpFile("CheckJDFTmp", fileItem, ext + "_", "." + ext);
+		final FileOutputStream fos = new FileOutputStream(zipFile);
+		final int n = IOUtils.copy(s, fos);
+		fos.flush();
+		fos.close();
+		System.out.println(ext + " file name: " + zipFile.toString() + " size: " + n);
+		return zipFile;
+	}
+
+	// //////////////////////////////////////////////////////////////////
+
+	/**
+	 * Returns a short description of the servlet.
+	 */
+	@Override
+	public String getServletInfo()
+	{
+		return "JDFValidator Servlet";
+	}
+
 }

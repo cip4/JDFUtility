@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -83,29 +83,34 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 
-
-
-
+/**
+ * @author Dr. Rainer Prosi, Heidelberger Druckmaschinen AG
+ * 
+ * Aug 9, 2009
+ */
 public class JMFHotFolderTest extends JDFTestCaseBase
 {
-    
-    ///////////////////////////////////////////////////////////////////////////
-    public void testMany() throws Exception
-    {
-        JDFJMF jmf=JDFJMF.createJMF(EnumFamily.Signal, EnumType.Status);
-        JDFDoc d=jmf.getOwnerDocument_JDFElement();
-        for(int i=0;i<123;i++)
-        {
-            if(i%100==0)
-                System.out.println(i);
-            d.write2URL("http://localhost:8080/jmfHotFolder/");
-            d.write2URL("http://localhost:8080/jmfHotFolder/foo");
-            d.write2URL("http://localhost:8080/jmfHotFolder/a");
-            d.write2URL("http://localhost:8080/jmfHotFolder/b");
-            
-        }
-    }
 
+	// /////////////////////////////////////////////////////////////////////////
+	/**
+	 * @throws Exception
+	 */
+	public void testMany() throws Exception
+	{
+		final JDFJMF jmf = JDFJMF.createJMF(EnumFamily.Signal, EnumType.Status);
+		final JDFDoc d = jmf.getOwnerDocument_JDFElement();
+		for (int i = 0; i < 123; i++)
+		{
+			if (i % 100 == 0)
+			{
+				System.out.println(i);
+			}
+			d.write2URL("http://localhost:8080/jmfHotFolder/");
+			d.write2URL("http://localhost:8080/jmfHotFolder/foo");
+			d.write2URL("http://localhost:8080/jmfHotFolder/a");
+			d.write2URL("http://localhost:8080/jmfHotFolder/b");
 
+		}
+	}
 
 }

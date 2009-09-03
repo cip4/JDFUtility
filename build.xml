@@ -7,7 +7,10 @@
 		<echo>Initializing. Using build settings from ./build.properties...</echo>
 		<!-- Sets properties -->
 		<tstamp />
-   	<property name="JDFUtility.name" value="JDFUtility" />
+
+		<property name="ant.build.javac.target" value="1.5" />
+
+   		<property name="JDFUtility.name" value="JDFUtility" />
 		<property file="version.properties"/>
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />

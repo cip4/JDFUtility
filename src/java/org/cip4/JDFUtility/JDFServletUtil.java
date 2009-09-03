@@ -1,4 +1,73 @@
-
+/*
+ *
+ * The CIP4 Software License, Version 1.0
+ *
+ *
+ * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
 package org.cip4.JDFUtility;
 
 import java.io.File;
@@ -17,100 +86,137 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
 /**
- *
- * @author  rainer
+ * 
+ * @author rainer
  */
-public class JDFServletUtil extends Object {
+public class JDFServletUtil extends Object
+{
 
-    static int fileCounter=1000; 
-    final static public String cwd =System.getProperty("user.dir");
-    final static public String baseDir =System.getProperty("catalina.base")+"/webapps/JDFUtility/";
+	static int fileCounter = 1000;
+	/**
+	 * the current working directory
+	 */
+	final static public String cwd = System.getProperty("user.dir");
+	/**
+	 * the servlet base directory
+	 */
+	final static public String baseDir = System.getProperty("catalina.base") + "/webapps/JDFUtility/";
 
-    public static File getTmpFile(String dirName, String tmpName, String prefix, String extension, boolean bCatalina)
-    {
-        if(tmpName==null)
-            tmpName="File"+fileCounter++;
-           
-        // we are in bin, which is a sibling directory of JDFUtilitys
-        File tmpDir=new File(bCatalina ? baseDir+dirName : dirName);
+	/**
+	 * @param dirName
+	 * @param tmpName
+	 * @param prefix
+	 * @param extension
+	 * @param bCatalina
+	 * @return
+	 */
+	public static File getTmpFile(final String dirName, String tmpName, final String prefix, final String extension, final boolean bCatalina)
+	{
+		if (tmpName == null)
+		{
+			tmpName = "File" + fileCounter++;
+		}
 
-        if(!tmpDir.isDirectory())
-            tmpDir.mkdirs();
+		// we are in bin, which is a sibling directory of JDFUtilitys
+		final File tmpDir = new File(bCatalina ? baseDir + dirName : dirName);
 
-        char[] tmp=tmpName.toCharArray();
-        for(int i=0;i<tmp.length;i++)
-        {
-            if((tmp[i]>127)||(tmp[i]<=32))
-                tmp[i]='_';
-        }
-        tmpName=String.valueOf(tmp);
-        tmpName=prefix+StringUtil.pathToName(tmpName);            
-        tmpName=UrlUtil.removeExtension(tmpName);
+		if (!tmpDir.isDirectory())
+		{
+			tmpDir.mkdirs();
+		}
 
-        File outFile;
-        try
-        {
-            outFile = File.createTempFile(tmpName,extension,tmpDir);
-        }
-        catch (IOException e)
-        {
-            return null;
-        }
-        return outFile;
-    }   
-    
-    public static File getTmpFile(String dirName, FileItem fileItem, String prefix, String extension)
-    {
-        if(fileItem==null)
-            return null;
-        String tmpName = fileItem.getName();        
-        return getTmpFile(dirName, tmpName, prefix, extension, true);
-    }	
+		final char[] tmp = tmpName.toCharArray();
+		for (int i = 0; i < tmp.length; i++)
+		{
+			if ((tmp[i] > 127) || (tmp[i] <= 32))
+			{
+				tmp[i] = '_';
+			}
+		}
+		tmpName = String.valueOf(tmp);
+		tmpName = prefix + StringUtil.pathToName(tmpName);
+		tmpName = UrlUtil.removeExtension(tmpName);
 
-    public static List getFileList(HttpServletRequest request) throws ServletException
-    {
-        //      Create a factory for disk-based file items
-        FileItemFactory factory = new DiskFileItemFactory();
+		File outFile;
+		try
+		{
+			outFile = File.createTempFile(tmpName, extension, tmpDir);
+		}
+		catch (final IOException e)
+		{
+			return null;
+		}
+		return outFile;
+	}
 
-        //      Create a new file upload handler
-        ServletFileUpload upload = new ServletFileUpload(factory);
+	/**
+	 * @param dirName
+	 * @param fileItem
+	 * @param prefix
+	 * @param extension
+	 * @return
+	 */
+	public static File getTmpFile(final String dirName, final FileItem fileItem, final String prefix, final String extension)
+	{
+		if (fileItem == null)
+		{
+			return null;
+		}
+		final String tmpName = fileItem.getName();
+		return getTmpFile(dirName, tmpName, prefix, extension, true);
+	}
 
-        List fileItems = null;
-        try
-        {
-            fileItems = upload.parseRequest(request);       
-            upload.setSizeMax(1024*1024*20); // 20 MB   
-        }
-        catch (FileUploadException fue)
-        {
-            throw new ServletException("Could not parse multipart request.", fue);
-        }
-        return fileItems;
-    }
+	/**
+	 * @param request
+	 * @return
+	 * @throws ServletException
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<FileItem> getFileList(final HttpServletRequest request) throws ServletException
+	{
+		// Create a factory for disk-based file items
+		final FileItemFactory factory = new DiskFileItemFactory();
 
+		// Create a new file upload handler
+		final ServletFileUpload upload = new ServletFileUpload(factory);
 
-    /**
-     * cleanup previous junk that is older than an hour
-     */
-    public static void cleanup(String dirNam)
-    {
-        long modNow=System.currentTimeMillis();
-        File tmpDir=new File(baseDir+dirNam);
-        File[] tmpFiles=tmpDir.listFiles();
-        for(int n=0;n<tmpFiles.length;n++){
-            File oldFile=tmpFiles[n];
-            if(modNow-3600000>oldFile.lastModified()){ // 3600 seconds timeout
-                oldFile.delete();
-                System.out.println("deleting "+oldFile.getName()+" "+String.valueOf(oldFile.lastModified())+" "+String.valueOf(modNow));                    
-            }
-        }
-        Runtime.getRuntime().gc(); // clean up memory
-    }
+		List<FileItem> fileItems = null;
+		try
+		{
+			fileItems = upload.parseRequest(request);
+			upload.setSizeMax(1024 * 1024 * 20); // 20 MB
+		}
+		catch (final FileUploadException fue)
+		{
+			throw new ServletException("Could not parse multipart request.", fue);
+		}
+		return fileItems;
+	}
 
-    public static boolean isWindows()
-    {
-        return System.getProperty("os.name").startsWith("Win");
-    }
+	/**
+	 * cleanup previous junk that is older than an hour
+	 * @param dirNam the directory to clean
+	 */
+	public static void cleanup(final String dirNam)
+	{
+		final long modNow = System.currentTimeMillis();
+		final File tmpDir = new File(baseDir + dirNam);
+		final File[] tmpFiles = tmpDir.listFiles();
+		for (int n = 0; n < tmpFiles.length; n++)
+		{
+			final File oldFile = tmpFiles[n];
+			if (modNow - 3600000 > oldFile.lastModified())
+			{ // 3600 seconds timeout
+				oldFile.delete();
+				System.out.println("deleting " + oldFile.getName() + " " + String.valueOf(oldFile.lastModified()) + " " + String.valueOf(modNow));
+			}
+		}
+		Runtime.getRuntime().gc(); // clean up memory
+	}
 
+	public static boolean isWindows()
+	{
+		return System.getProperty("os.name").startsWith("Win");
+	}
 
 }

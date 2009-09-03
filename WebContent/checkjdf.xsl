@@ -596,7 +596,8 @@
           <br/><hr/>
           <xsl:call-template name="localize">
           <xsl:with-param name="string" select="'CheckJDFVersion'"/>
-          </xsl:call-template>     
+          </xsl:call-template> 
+          <br/>    
          <xsl:call-template name="localize">
          <xsl:with-param name="string" select="'version'"/>
          </xsl:call-template>
