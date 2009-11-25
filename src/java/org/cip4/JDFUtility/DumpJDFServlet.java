@@ -74,6 +74,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.mail.Multipart;
@@ -83,11 +86,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.cip4.jdflib.util.ByteArrayIOStream;
+import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.DumpDir;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * 
@@ -102,9 +109,11 @@ public class DumpJDFServlet extends HttpServlet
 	private final HashMap<File, DumpDir> subDumps = new HashMap<File, DumpDir>();
 	private int numGet = 0;
 	private int numPost = 0;
+	private int numBadForward = 0;
+	private int numForward = 0;
 	private long requestLen = 0;
 	private final JDFDate startDate = new JDFDate();
-
+	private String proxyURL;
 	/**
 	 * 
 	 */
@@ -117,6 +126,7 @@ public class DumpJDFServlet extends HttpServlet
 	public void init(final ServletConfig config) throws ServletException
 	{
 		super.init(config);
+		proxyURL = null;
 		final String root = config.getInitParameter("rootDir");
 		System.out.println("Config root: " + root);
 		final File rootFile = new File(root);
@@ -142,71 +152,99 @@ public class DumpJDFServlet extends HttpServlet
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
-		// System.out.println("dump service");
 		numGet++;
+		String error = updateProxy(request);
 		final String dir = request.getPathInfo();
 		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
-		if (newDir.exists() && !newDir.isDirectory())
-		{
-			newDir = baseDir.getDir();
-		}
-		else
-		{
-			newDir.mkdirs();
-		}
-		final DumpDir theDump = getCreateDump(newDir);
-		String header = "Context Path: " + request.getRequestURI();
-		final String contentType = request.getContentType();
-		header += "\nContext Type: " + contentType;
-		int contentLength = request.getContentLength();
-		final int contentLength1 = contentLength;
-		header += "\nContext Length: " + contentLength;
+		ByteArrayIOStream bos = dumpToFile(request);
 
 		try
 		{
-
-			final File f = theDump.newFileFromStream(header, request.getInputStream());
-			if (contentLength < 0)
-			{
-				final FileInputStream fis = new FileInputStream(f);
-				contentLength = fis.available() - header.length() - 28;
-			}
-			requestLen += contentLength;
+			final String contentType = request.getContentType();
+			int contentLength = request.getContentLength();
+			String rHost = request.getRemoteHost();
+			int rPort = request.getRemotePort();
+			requestLen += contentLength > 0 ? contentLength : 0;
 			final OutputStream os = response.getOutputStream();
 			final PrintWriter w = new PrintWriter(os);
 			w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
 			w.print("<Body><H1>Request Dump</H1><HR/>");
+			w.println("<h2>this request	</h2>");
 			w.println("Dump Directory: " + newDir + "<BR/>");
 			w.println("Content Type: " + contentType + "<BR/>");
-			w.println("Content Length: " + contentLength1 + "<BR/>");
-			w.println("Measured Content Length: " + contentLength + "<BR/>");
+			w.println("Content Length: " + contentLength + "<BR/>");
+			w.println("Request URI: " + request.getRequestURL().toString() + "<BR/>");
+			w.println("Remote host: " + rHost + ":" + rPort + "<BR/>");
+			if (error != null)
+			{
+				w.println("<h3>Error updating Proxy</h3>");
+				w.println(error);
+			}
+			String displayProxy = proxyURL == null ? "" : proxyURL;
+			w.println("<h2>proxy url</h2>");
+			w.println("<form action=\"" + request.getContextPath()
+					+ "\"><input type=\"text\" name=\"proxy\" size=\"60\" value=\"" + displayProxy
+					+ "\"></input> <input type =\"submit\" name=\"submit\" value=\"update proxy\"/></form>");
+
+			w.println("<h2>Summary</h2>");
 			w.println("# Get requests: " + numGet + "<BR/>");
 			w.println("# Post requests: " + numPost + "<BR/>");
 			w.println("# Bytes Processed: " + requestLen + "<BR/>");
+			w.println("# Total Forwards: " + (numForward + numBadForward) + "<BR/>");
+			w.println("# Successfull Forwards: " + numForward + "<BR/>");
+			w.println("# Failed Forwards: " + numBadForward + "<BR/>");
+			w.println("Free Memory: " + Runtime.getRuntime().freeMemory() + "<BR/>");
+			w.println("Total Memory: " + Runtime.getRuntime().totalMemory() + "<BR/>");
+
 			w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
-			w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
+			w.print("<font size='-1' color='gray'> - active since: "
+					+ startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
 			w.flush();
-
-			if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
-			{
-				final FileInputStream fis = new FileInputStream(f);
-				final String dirName = StringUtil.newExtension(f.getPath(), ".dir");
-				System.out.println("dump mime: " + dirName);
-				char c = 'a';
-				while (c != '!')
-				{
-					c = (char) fis.read();
-				}
-
-				final Multipart mp = MimeUtil.getMultiPart(fis);
-				MimeUtil.writeToDir(mp, new File(dirName));
-			}
 		}
 		catch (final Exception e)
 		{
 			System.out.println("dump service - snafu: " + e);
 		}
+		forward(bos, request);
 		System.gc();
+	}
+
+	/**
+	 * @param request
+	 * @return the error string, null if ok
+	 */
+	private String updateProxy(HttpServletRequest request)
+	{
+		String newProxy = StringUtil.getNonEmpty(request.getParameter("proxy"));
+		String error = null;
+		if (newProxy != null)
+		{
+			try
+			{
+				URL url = new URL(newProxy);
+				boolean same = true;
+				int port = request.getLocalPort();
+				int urlPort = url.getPort();
+				same = same && port == urlPort;
+				String server = request.getLocalName();
+				String urlServer = url.getHost();
+				same = same && ContainerUtil.equals(server.toLowerCase(), urlServer.toLowerCase());
+				String path = StringUtil.token(request.getContextPath(), 0, "/");
+				String urlPath = StringUtil.token(url.getPath(), 0, "/");
+				same = same && ContainerUtil.equals(path.toLowerCase(), urlPath.toLowerCase());
+
+				if (!same)
+					proxyURL = url.toExternalForm();
+				else
+					error = "cannot create proxy for self - infinite loop<br/>";
+			}
+			catch (MalformedURLException x)
+			{
+				proxyURL = null;
+				error = x.toString() + "<br/>";
+			}
+		}
+		return error;
 	}
 
 	/**
@@ -221,14 +259,19 @@ public class DumpJDFServlet extends HttpServlet
 		numPost++;
 		final String nodump = request.getParameter("nodump");
 		final boolean dump = !StringUtil.parseBoolean(nodump, false);
+		ByteArrayIOStream bos = null;
 		if (dump)
 		{
-			dumpToFile(request);
+			bos = dumpToFile(request);
 		}
 		else
 		{
 			try
 			{
+				if (proxyURL != null)
+				{
+					bos = new ByteArrayIOStream(request.getInputStream());
+				}
 				final OutputStream os = response.getOutputStream();
 				final PrintWriter w = new PrintWriter(os);
 				w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD></HTML>");
@@ -239,13 +282,55 @@ public class DumpJDFServlet extends HttpServlet
 				// nop
 			}
 		}
+		forward(bos, request);
+
+	}
+
+	/**
+	 * @param bos
+	 * @param req 
+	 */
+	private void forward(ByteArrayIOStream bos, HttpServletRequest req)
+	{
+		if (bos == null || req == null || proxyURL == null)
+			return;
+
+		try
+		{
+			final URL url = new URL(proxyURL);
+
+			HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
+			String method = req.getMethod();
+			httpURLconnection.setRequestMethod(method);
+			httpURLconnection.setRequestProperty("Connection", "close");
+			if (!UrlUtil.GET.equalsIgnoreCase(method))
+			{
+				String contentType = req.getContentType();
+				httpURLconnection.setRequestProperty(UrlUtil.CONTENT_TYPE, contentType);
+				httpURLconnection.setDoOutput(true);
+				final OutputStream out = httpURLconnection.getOutputStream();
+				IOUtils.copy(bos.getInputStream(), out);
+				out.flush();
+				out.close();
+			}
+			int rc = httpURLconnection.getResponseCode(); // close channel
+			if (rc == 200)
+				numForward++;
+			else
+				numBadForward++;
+		}
+		catch (Exception x)
+		{
+			// nop
+		}
 
 	}
 
 	/**
 	 * @param request
+	 * @return 
 	 */
-	private void dumpToFile(final HttpServletRequest request)
+	private ByteArrayIOStream dumpToFile(final HttpServletRequest request)
 	{
 		final String dir = request.getPathInfo();
 		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
@@ -258,15 +343,18 @@ public class DumpJDFServlet extends HttpServlet
 			newDir.mkdirs();
 		}
 		final DumpDir theDump = getCreateDump(newDir);
-		String header = "Context Path: " + request.getRequestURI();
+		String header = "Context Path: " + request.getRequestURL().toString();
 		final String contentType = request.getContentType();
 		header += "\nContext Type: " + contentType;
 		int contentLength = request.getContentLength();
 		header += "\nContext Length: " + contentLength;
+		header += "\nRemote host: " + request.getRemoteHost() + ":" + request.getRemotePort();
+		ByteArrayIOStream bos = null;
 		try
 		{
+			bos = new ByteArrayIOStream(request.getInputStream());
 
-			final File f = theDump.newFileFromStream(header, request.getInputStream());
+			final File f = theDump.newFileFromStream(header, bos.getInputStream());
 			if (contentLength < 0)
 			{
 				final FileInputStream fis = new FileInputStream(f);
@@ -294,6 +382,7 @@ public class DumpJDFServlet extends HttpServlet
 			System.out.println("dump service - snafu: " + e);
 		}
 		System.gc();
+		return bos;
 	}
 
 	/**

@@ -84,8 +84,8 @@
 		<copy todir="${war.dir}/WEB-INF/lib" flatten="true">
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar" />
-				<exclude name="servletapi-2.4.jar" />
-				<exclude name="junit-3.8.1.jar" />
+				<exclude name="servlet*.jar" />
+				<exclude name="junit*.jar" />
 				<exclude name="httpunit-1.5.4.jar" />
 			</fileset>
 			<fileset dir="${dist.dir}">
