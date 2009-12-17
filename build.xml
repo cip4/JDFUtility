@@ -96,6 +96,8 @@
 		<replace file="${war.dir}/index.html">
 			<replacefilter token="@build.number@" value="${build.number}" />
 			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
+			<replacefilter token="@build.majorversion@" value="${major.version}" />
+			<replacefilter token="@build.minorversion@" value="${minor.version}" />
 		</replace>		
 		<!-- Builds compressed WAR file -->
 		<jar basedir="${war.dir}" destfile="${dist.dir}/${JDFUtility.name}.war" filesonly="false"/>
