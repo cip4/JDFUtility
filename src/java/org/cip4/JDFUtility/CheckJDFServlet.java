@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -71,22 +71,16 @@
 package org.cip4.JDFUtility;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
@@ -99,77 +93,27 @@ import org.cip4.jdflib.validate.JDFValidator;
  * 
  * @author claes
  * 
- * @web:servlet name="XMPServlet" display-name="XMP Servlet" description="" load-on-startup="1"
- * 
- * @web:servlet-init-param name="" value="" description=""
- * 
- * @web:servlet-mapping url-pattern="/xmpservlet"
- */
-public class CheckJDFServlet extends HttpServlet
+  */
+public class CheckJDFServlet extends UtilityServlet
 {
 
 	/**
-     * 
-     */
+	 * 
+	 */
 	private static final long serialVersionUID = -3663640051616511411L;
 
 	/**
-	 * Initializes the servlet.
-	 */
-	@Override
-	public void init(final ServletConfig config) throws ServletException
-	{
-		super.init(config);
-
-	}
-
-	/**
-	 * Destroys the servlet.
-	 */
-	@Override
-	public void destroy()
-	{
-		// foo
-	}
-
-	/**
-	 * Handles the HTTP <code>GET</code> method.
-	 * @param request servlet request
-	 * @param response servlet response
-	 */
-	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		System.out.println("Processing get");
-	}
-
-	/**
-	 * Handles the HTTP <code>POST</code> method.
-	 * @param request servlet request
-	 * @param response servlet response
-	 */
-	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
-	{
-		System.out.println("Processing request...");
-
-		// Check that we have a file upload request
-
-		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
-		if (isMultipart)
-		{
-			System.out.println("Processing multipart request...");
-			processMultipartRequest(request, response);
-		}
-	}
-
-	/**
 	 * Parses a multipart request.
+	 * @param request 
+	 * @param response 
+	 * @throws ServletException 
+	 * @throws IOException 
 	 */
-	private void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+	@Override
+	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List fileItems = JDFServletUtil.getFileList(request);
+		final List<FileItem> fileItems = JDFServletUtil.getFileList(request);
 
 		// Get the first file item
 		// To do: Process all file items
@@ -182,7 +126,7 @@ public class CheckJDFServlet extends HttpServlet
 		for (int i = 0; i < fileItems.size(); i++)
 		{
 			Runtime.getRuntime().gc(); // clean up before loading
-			final FileItem item = (FileItem) fileItems.get(i);
+			final FileItem item = fileItems.get(i);
 			final String fieldName = item.getFieldName();
 			// System.out.println("Foo Form name: " + fieldName);
 			if (item.isFormField())
@@ -219,7 +163,7 @@ public class CheckJDFServlet extends HttpServlet
 				System.out.println("devcapFile: " + devcapName);
 				if (devcapFile != null && devcapFile.length() > 0)
 				{
-					devcapFile = createTmpFile(item, "devcap");
+					devcapFile = createTmpFile(item, "CheckJDFTmp", "devcap");
 				}
 				else
 				{
@@ -274,7 +218,7 @@ public class CheckJDFServlet extends HttpServlet
 				final String lower = fileItemName.toLowerCase();
 				if (lower.endsWith(".zip"))
 				{
-					final File zipFile = createTmpFile(fileItem, "zip");
+					final File zipFile = createTmpFile(fileItem, "CheckJDFTmp", "zip");
 					d = checker.processZipFile(zipFile);
 				}
 				else if (lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
@@ -323,20 +267,6 @@ public class CheckJDFServlet extends HttpServlet
 		out.close();
 
 		System.out.println("Exit processMultipartRequest");
-	}
-
-	// //////////////////////////////////////////////////////////////////
-
-	private File createTmpFile(final FileItem fileItem, final String ext) throws FileNotFoundException, IOException
-	{
-		final InputStream s = fileItem.getInputStream();
-		final File zipFile = JDFServletUtil.getTmpFile("CheckJDFTmp", fileItem, ext + "_", "." + ext);
-		final FileOutputStream fos = new FileOutputStream(zipFile);
-		final int n = IOUtils.copy(s, fos);
-		fos.flush();
-		fos.close();
-		System.out.println(ext + " file name: " + zipFile.toString() + " size: " + n);
-		return zipFile;
 	}
 
 	// //////////////////////////////////////////////////////////////////

@@ -92,6 +92,8 @@ import org.cip4.jdflib.util.UrlUtil;
 public class JDFServletUtil extends Object
 {
 
+	static long lastCleanup = 0;
+
 	static int fileCounter = 1000;
 	/**
 	 * the current working directory
@@ -200,6 +202,9 @@ public class JDFServletUtil extends Object
 	public static void cleanup(final String dirNam)
 	{
 		final long modNow = System.currentTimeMillis();
+		if (modNow - lastCleanup < 600000)
+			return; // only attempt cleanup every 10 minutes
+		lastCleanup = modNow;
 		final File tmpDir = new File(baseDir + dirNam);
 		final File[] tmpFiles = tmpDir.listFiles();
 		for (int n = 0; n < tmpFiles.length; n++)
