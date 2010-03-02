@@ -1,3 +1,73 @@
+/*
+ *
+ * The CIP4 Software License, Version 1.0
+ *
+ *
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
 package org.cip4.JDFUtility;
 
 import java.io.File;
@@ -11,6 +81,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
@@ -39,8 +110,11 @@ public class FixJDFServlet extends UtilityServlet
 
 	/**
 	 * Parses a multipart request.
+	 * @param request 
+	 * @param response 
+	 * @throws ServletException 
+	 * @throws IOException 
 	 */
-	@Override
 	protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		List<FileItem> fileItems = JDFServletUtil.getFileList(request);
@@ -55,7 +129,7 @@ public class FixJDFServlet extends UtilityServlet
 			FileItem item = fileItems.get(i);
 			if (item.isFormField())
 			{
-				System.out.println("Form name: " + item.getFieldName());
+				log.info("Form name: " + item.getFieldName());
 				if (item.getFieldName().equals("Version"))
 				{
 					versionField = item.getString();
@@ -68,24 +142,24 @@ public class FixJDFServlet extends UtilityServlet
 			}
 			else if (item.getSize() < 20 || item.getName().length() == 0)
 			{
-				System.out.println("Bad File name: " + item.getName());
+				log.warn("Bad File name: " + item.getName());
 			}
 			else
 			// ok
 			{
-				System.out.println("File name: " + item.getName());
+				log.info("File name: " + item.getName());
 				fileItem = item;
 				nFiles++;
 			}
 		}
 
-		System.out.println("File count: " + nFiles);
+		log.info("File count: " + nFiles);
 		if (fileItem != null)
 		{
 			// Get the first file item
 			// To do: Process all file items
-			System.out.println("File size: " + fileItem.getSize() / 1024 + "KB");
-			System.out.println("File type: " + fileItem.getContentType());
+			log.info("File size: " + fileItem.getSize() / 1024 + "KB");
+			log.info("File type: " + fileItem.getContentType());
 		}
 
 		XMLDoc htmlDoc = new XMLDoc("html", null);
@@ -101,7 +175,7 @@ public class FixJDFServlet extends UtilityServlet
 		// Extracts XMP packet
 		try
 		{
-			System.out.println("try");
+			log.debug("try");
 			boolean success = false;
 
 			if (fileItem != null)
@@ -114,7 +188,7 @@ public class FixJDFServlet extends UtilityServlet
 					KElement k = d.getRoot();
 					if (k instanceof JDFElement)
 					{
-						System.out.print("Updating to " + versionField + " ... ");
+						log.info("Updating to " + versionField + " ... ");
 
 						if (versionField.equals("General"))
 						{
@@ -145,7 +219,7 @@ public class FixJDFServlet extends UtilityServlet
 						}
 						JDFElement e = (JDFElement) k;
 						success = e.fixVersion(version);
-						System.out.println(success ? "Fix was successful" : "Fix Failed");
+						log.info(success ? "Fix was successful" : "Fix Failed");
 					}
 				}
 
@@ -181,12 +255,9 @@ public class FixJDFServlet extends UtilityServlet
 		}
 		catch (IOException ioe)
 		{
+			log.error("Could not read file", ioe);
 			throw new ServletException("Could not read file.", ioe);
 		}
-
-		//       html.appendXMLComment("#include virtual=\"/global/navigation/menue_switch.php?section=support\" ");
-		// Writes the XMP packet to output
-		// Todo: Use JSP instead of writing directly to output
 
 		response.setContentType("text/html;charset=utf-8");
 
@@ -201,6 +272,24 @@ public class FixJDFServlet extends UtilityServlet
 	public String getServletInfo()
 	{
 		return "FixJDF Servlet";
+	}
+
+	/**
+	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	*/
+	@Override
+	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
+		if (isMultipart)
+		{
+			log.debug("Processing multipart request...");
+			processMultipartRequest(request, response);
+		}
 	}
 
 }

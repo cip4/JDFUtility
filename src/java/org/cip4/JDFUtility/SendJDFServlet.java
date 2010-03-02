@@ -1,3 +1,73 @@
+/*
+ *
+ * The CIP4 Software License, Version 1.0
+ *
+ *
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        The International Cooperation for the Integration of 
+ *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ *    Processes in  Prepress, Press and Postpress" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact info@cip4.org.
+ *
+ * 5. Products derived from this software may not be called "CIP4",
+ *    nor may "CIP4" appear in their name, without prior written
+ *    permission of the CIP4 organization
+ *
+ * Usage of this software in commercial products is subject to restrictions. For
+ * details please consult info@cip4.org.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE INTERNATIONAL COOPERATION FOR
+ * THE INTEGRATION OF PROCESSES IN PREPRESS, PRESS AND POSTPRESS OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the The International Cooperation for the Integration 
+ * of Processes in Prepress, Press and Postpress and was
+ * originally based on software 
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
+ *  
+ * For more information on The International Cooperation for the 
+ * Integration of Processes in  Prepress, Press and Postpress , please see
+ * <http://www.cip4.org/>.
+ *  
+ * 
+ */
 package org.cip4.JDFUtility;
 
 import java.io.File;
@@ -12,14 +82,11 @@ import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
@@ -32,11 +99,8 @@ import org.cip4.jdflib.util.UrlUtil;
  * 
  * 
  */
-public class SendJDFServlet extends HttpServlet
+public class SendJDFServlet extends UtilityServlet
 {
-
-	private final Log log;
-	private static int nRequests = 0;
 
 	/**
 	 * 
@@ -44,12 +108,11 @@ public class SendJDFServlet extends HttpServlet
 	public SendJDFServlet()
 	{
 		super();
-		log = LogFactory.getLog(getClass());
 	}
 
 	/**
-     * 
-     */
+	 * 
+	 */
 	private static final long serialVersionUID = -8902151736245089036L;
 
 	/**
@@ -72,41 +135,29 @@ public class SendJDFServlet extends HttpServlet
 	}
 
 	/**
-	 * Handles the HTTP <code>GET</code> method.
-	 * @param request servlet request
-	 * @param response servlet response
-	 */
+	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	*/
 	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		log.warn("get not implemented");
-	}
-
-	/**
-	 * Handles the HTTP <code>POST</code> method.
-	 * @param request servlet request
-	 * @param response servlet response
-	 */
-	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
-	{
-		log.debug("Processing request...");
-		nRequests++;
-		// Check that we have a file upload request
 		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
 		if (isMultipart)
 		{
 			log.debug("Processing multipart request...");
 			processMultipartRequest(request, response);
 		}
-		else
-		{
-			log.warn("Not a multipart request!");
-		}
 	}
 
 	/**
 	 * Parses a multipart request.
+	 * @param request 
+	 * @param response 
+	 * @throws ServletException 
+	 * @throws IOException 
 	 */
 	private void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
@@ -144,7 +195,6 @@ public class SendJDFServlet extends HttpServlet
 
 		final XMLDoc htmlDoc = new XMLDoc("html", null);
 		final KElement html = prepareHeader(urlToSend, htmlDoc);
-		html.appendElement("h2").setText("Total Request Count: " + nRequests);
 		html.appendElement("hr");
 		if (fileItem != null)
 		{

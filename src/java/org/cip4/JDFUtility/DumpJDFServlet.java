@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -82,7 +82,6 @@ import java.util.HashMap;
 import javax.mail.Multipart;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,7 +90,6 @@ import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.DumpDir;
 import org.cip4.jdflib.util.FileUtil;
-import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -102,17 +100,25 @@ import org.cip4.jdflib.util.UrlUtil;
  * 
  * 
  */
-public class DumpJDFServlet extends HttpServlet
+public class DumpJDFServlet extends UtilityServlet
 {
 
-	private DumpDir baseDir = null;
-	private final HashMap<File, DumpDir> subDumps = new HashMap<File, DumpDir>();
-	private int numGet = 0;
-	private int numPost = 0;
-	private int numBadForward = 0;
-	private int numForward = 0;
-	private long requestLen = 0;
-	private final JDFDate startDate = new JDFDate();
+	/**
+	 * 
+	 */
+	public DumpJDFServlet()
+	{
+		super();
+		baseDir = null;
+		subDumps = new HashMap<File, DumpDir>();
+		numBadForward = 0;
+		numForward = 0;
+	}
+
+	private DumpDir baseDir;
+	private final HashMap<File, DumpDir> subDumps;
+	private int numBadForward;
+	private int numForward;
 	private String proxyURL;
 	/**
 	 * 
@@ -128,20 +134,11 @@ public class DumpJDFServlet extends HttpServlet
 		super.init(config);
 		proxyURL = null;
 		final String root = config.getInitParameter("rootDir");
-		System.out.println("Config root: " + root);
+		log.info("Config root: " + root);
 		final File rootFile = new File(root);
 		baseDir = new DumpDir(rootFile);
 		baseDir.quiet = false;
 		subDumps.put(rootFile, baseDir);
-	}
-
-	/**
-	 * Destroys the servlet.
-	 */
-	@Override
-	public void destroy()
-	{
-		// foo
 	}
 
 	/**
@@ -150,31 +147,17 @@ public class DumpJDFServlet extends HttpServlet
 	 * @param response servlet response
 	 */
 	@Override
-	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+	protected PrintWriter processGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
-		numGet++;
 		String error = updateProxy(request);
 		final String dir = request.getPathInfo();
 		File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
 		ByteArrayIOStream bos = dumpToFile(request);
-
+		PrintWriter w = null;
 		try
 		{
-			final String contentType = request.getContentType();
-			int contentLength = request.getContentLength();
-			String rHost = request.getRemoteHost();
-			int rPort = request.getRemotePort();
-			requestLen += contentLength > 0 ? contentLength : 0;
-			final OutputStream os = response.getOutputStream();
-			final PrintWriter w = new PrintWriter(os);
-			w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD>");
-			w.print("<Body><H1>Request Dump</H1><HR/>");
-			w.println("<h2>this request	</h2>");
+			w = setupGet(request, response);
 			w.println("Dump Directory: " + newDir + "<BR/>");
-			w.println("Content Type: " + contentType + "<BR/>");
-			w.println("Content Length: " + contentLength + "<BR/>");
-			w.println("Request URI: " + request.getRequestURL().toString() + "<BR/>");
-			w.println("Remote host: " + rHost + ":" + rPort + "<BR/>");
 			if (error != null)
 			{
 				w.println("<h3>Error updating Proxy</h3>");
@@ -182,31 +165,22 @@ public class DumpJDFServlet extends HttpServlet
 			}
 			String displayProxy = proxyURL == null ? "" : proxyURL;
 			w.println("<h2>proxy url</h2>");
-			w.println("<form action=\"" + request.getContextPath()
-					+ "\"><input type=\"text\" name=\"proxy\" size=\"60\" value=\"" + displayProxy
+			w.println("<form action=\"" + request.getContextPath() + "\"><input type=\"text\" name=\"proxy\" size=\"60\" value=\"" + displayProxy
 					+ "\"></input> <input type =\"submit\" name=\"submit\" value=\"update proxy\"/></form>");
 
 			w.println("<h2>Summary</h2>");
-			w.println("# Get requests: " + numGet + "<BR/>");
-			w.println("# Post requests: " + numPost + "<BR/>");
-			w.println("# Bytes Processed: " + requestLen + "<BR/>");
 			w.println("# Total Forwards: " + (numForward + numBadForward) + "<BR/>");
 			w.println("# Successfull Forwards: " + numForward + "<BR/>");
 			w.println("# Failed Forwards: " + numBadForward + "<BR/>");
-			w.println("Free Memory: " + Runtime.getRuntime().freeMemory() + "<BR/>");
-			w.println("Total Memory: " + Runtime.getRuntime().totalMemory() + "<BR/>");
 
-			w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
-			w.print("<font size='-1' color='gray'> - active since: "
-					+ startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
-			w.flush();
 		}
 		catch (final Exception e)
 		{
-			System.out.println("dump service - snafu: " + e);
+			log.error("dump service - snafu: ", e);
 		}
 		forward(bos, request);
 		System.gc();
+		return w;
 	}
 
 	/**
@@ -253,10 +227,9 @@ public class DumpJDFServlet extends HttpServlet
 	 * @param response servlet response
 	 */
 	@Override
-	protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
+	protected void processPost(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		// System.out.println("dump service");
-		numPost++;
 		final String nodump = request.getParameter("nodump");
 		final boolean dump = !StringUtil.parseBoolean(nodump, false);
 		ByteArrayIOStream bos = null;
@@ -279,7 +252,7 @@ public class DumpJDFServlet extends HttpServlet
 			}
 			catch (final Exception e)
 			{
-				// nop
+				log.error("whazzup? ", e);
 			}
 		}
 		forward(bos, request);
@@ -366,7 +339,7 @@ public class DumpJDFServlet extends HttpServlet
 			{
 				final FileInputStream fis = new FileInputStream(f);
 				final String dirName = StringUtil.newExtension(f.getPath(), ".dir");
-				System.out.println("dump mime: " + dirName);
+				log.info("dump mime: " + dirName);
 				char c = 'a';
 				while (c != '!')
 				{
@@ -379,7 +352,7 @@ public class DumpJDFServlet extends HttpServlet
 		}
 		catch (final Exception e)
 		{
-			System.out.println("dump service - snafu: " + e);
+			log.error("dump service - snafu: ", e);
 		}
 		System.gc();
 		return bos;
@@ -387,6 +360,7 @@ public class DumpJDFServlet extends HttpServlet
 
 	/**
 	 * @param newDir
+	 * @return 
 	 */
 	private DumpDir getCreateDump(final File newDir)
 	{
@@ -395,6 +369,7 @@ public class DumpJDFServlet extends HttpServlet
 			DumpDir theDump = subDumps.get(newDir);
 			if (theDump == null)
 			{
+				log.info("creating new Directory: " + newDir.getPath());
 				theDump = new DumpDir(newDir);
 				theDump.quiet = false;
 

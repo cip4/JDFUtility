@@ -81,6 +81,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadBase;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
@@ -96,6 +97,23 @@ import org.cip4.jdflib.validate.JDFValidator;
   */
 public class CheckJDFServlet extends UtilityServlet
 {
+	/**
+	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 * @throws ServletException 
+	*/
+	@Override
+	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
+		if (isMultipart)
+		{
+			log.debug("Processing multipart request...");
+			processMultipartRequest(request, response);
+		}
+	}
 
 	/**
 	 * 
@@ -109,7 +127,6 @@ public class CheckJDFServlet extends UtilityServlet
 	 * @throws ServletException 
 	 * @throws IOException 
 	 */
-	@Override
 	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// Parse the multipart request
@@ -128,7 +145,7 @@ public class CheckJDFServlet extends UtilityServlet
 			Runtime.getRuntime().gc(); // clean up before loading
 			final FileItem item = fileItems.get(i);
 			final String fieldName = item.getFieldName();
-			// System.out.println("Foo Form name: " + fieldName);
+
 			if (item.isFormField())
 			{
 				if (fieldName.equals("UseSchema"))
@@ -144,7 +161,7 @@ public class CheckJDFServlet extends UtilityServlet
 					{
 						bIgnorePrivate = true;
 					}
-					System.out.println("IgnorePrivate: " + bIgnorePrivate);
+					log.debug("IgnorePrivate: " + bIgnorePrivate);
 				}
 				else if (fieldName.equals("Language"))
 				{
@@ -154,7 +171,7 @@ public class CheckJDFServlet extends UtilityServlet
 						language = "nl";
 					}
 					language = language.substring(0, 2).toUpperCase();
-					System.out.println("Language: " + language);
+					log.debug("Language: " + language);
 				}
 			}
 			else if ("devcapFile".equals(fieldName))
@@ -172,12 +189,12 @@ public class CheckJDFServlet extends UtilityServlet
 			}
 			else if (item.getSize() < 20 || item.getName().length() == 0)
 			{
-				System.out.println("Bad File name: " + item.getName());
+				log.warn("Bad File name: " + item.getName());
 			}
 			else
 			// ok
 			{
-				System.out.println("File name: " + item.getName());
+				log.info("File name: " + item.getName());
 				fileItem = item;
 			}
 		}
@@ -214,7 +231,7 @@ public class CheckJDFServlet extends UtilityServlet
 			if (fileItem != null)
 			{
 				final String fileItemName = fileItem.getName();
-				System.out.println("FIName: " + fileItemName);
+				log.info("FIName: " + fileItemName);
 				final String lower = fileItemName.toLowerCase();
 				if (lower.endsWith(".zip"))
 				{
@@ -223,7 +240,7 @@ public class CheckJDFServlet extends UtilityServlet
 				}
 				else if (lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
 				{
-					System.out.println("processing MIME file");
+					log.info("processing MIME file");
 					final InputStream s = fileItem.getInputStream();
 					d = checker.processMimeStream(s);
 				}
@@ -240,7 +257,7 @@ public class CheckJDFServlet extends UtilityServlet
 				root.setAttribute("XMLUrl", sURL);
 				// MS IE sucks! replace non escape with __
 				root.setAttribute("XMLFile", fileItemName);
-				System.out.println("URL: " + sURL);
+				log.info("URL: " + sURL);
 				// root.setAttribute("XMLUrl","./CheckJDFTmp/"+outFile.getName());
 				d.write2File(outFile.getPath(), 2, true);
 				d.setXSLTURL("./checkjdf.xsl");
@@ -279,5 +296,4 @@ public class CheckJDFServlet extends UtilityServlet
 	{
 		return "JDFValidator Servlet";
 	}
-
 }
