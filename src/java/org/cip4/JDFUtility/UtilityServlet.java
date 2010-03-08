@@ -166,7 +166,7 @@ public abstract class UtilityServlet extends HttpServlet
 		public void complete()
 		{
 			tTotal += getTimeProcessed();
-			long t = timer.getCPUTime();
+			long t = timer.getTotalCPUTime();
 			if (t > 0)
 				tCPUTotal += (t / 1000); // micros is ok
 		}
@@ -237,7 +237,7 @@ public abstract class UtilityServlet extends HttpServlet
 		if (si.w != null)
 		{
 			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(seconds): " + tTotal / 1000. + " Average: " + (tTotal / (numGet + numPost)) + "<BR/>");
-			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getCPUTime() / 1000000. + " Total CPU time (seconds): " + tCPUTotal / 1000000. + " Average: "
+			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (seconds): " + tCPUTotal / 1000000. + " Average: "
 					+ (tCPUTotal * 0.001 / (numGet + numPost)) + "<BR/><BR/>");
 			si.w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			si.w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
