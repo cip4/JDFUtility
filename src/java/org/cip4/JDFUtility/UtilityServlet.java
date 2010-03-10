@@ -116,6 +116,8 @@ public abstract class UtilityServlet extends HttpServlet
 	protected Log log;
 	protected static long tTotal = 0;
 	protected static long tCPUTotal = 0;
+	protected static long tMax = 0;
+	protected static long tCPUMax = 0;
 	protected long requestLen;
 	protected final JDFDate startDate;
 
@@ -166,7 +168,9 @@ public abstract class UtilityServlet extends HttpServlet
 		public void complete()
 		{
 			tTotal += getTimeProcessed();
+			tMax = Math.max(tMax, getTimeProcessed());
 			long t = timer.getTotalCPUTime();
+			tCPUMax = Math.max(tCPUMax, t);
 			if (t > 0)
 				tCPUTotal += (t / 1000); // micros is ok
 		}
@@ -236,9 +240,10 @@ public abstract class UtilityServlet extends HttpServlet
 		si.complete();
 		if (si.w != null)
 		{
-			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(seconds): " + tTotal / 1000. + " Average: " + (tTotal / (numGet + numPost)) + "<BR/>");
-			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (seconds): " + tCPUTotal / 1000000. + " Average: "
-					+ (tCPUTotal * 0.001 / (numGet + numPost)) + "<BR/><BR/>");
+			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + tTotal / 1. + " Max time(milliseconds): " + tMax + " Average: "
+					+ (tTotal / (numGet + numPost)) + "<BR/>");
+			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (milliseconds): " + tCPUTotal / 1000000.
+					+ " Max CPU time(milliseconds): " + tCPUMax / 1000000. + " Average(milliSeconds): " + (tCPUTotal / (1000. * (numGet + numPost))) + "<BR/><BR/>");
 			si.w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			si.w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
 
@@ -291,13 +296,16 @@ public abstract class UtilityServlet extends HttpServlet
 		int contentLength = request.getContentLength();
 		final OutputStream os = response.getOutputStream();
 		final PrintWriter w = new PrintWriter(os);
-		w.print("<HTML><HEAD><TITLE>" + getServletInfo() + "</TITLE></HEAD>");
-		w.print("<Body><H1>Request Dump</H1><HR/>");
-		w.println("<h2>this request	</h2>");
+		w.print("<HTML>");
+		w.print("<LINK REL=\"stylesheet\" HREF=\"http://www.cip4.org/css/styles_pc.css\" TYPE=\"text/css\" />");
+		w.print("<HEAD><TITLE>" + getServletInfo() + "</TITLE></HEAD>");
+		w.print("<Body><H1>Request Details</H1><HR/>");
+		w.println("<h2>Details for this request	</h2>");
 		w.println("Content Type: " + contentType + "<BR/>");
 		w.println("Content Length: " + contentLength + "<BR/>");
 		w.println("Request URI: " + request.getRequestURL().toString() + "<BR/>");
 		w.println("Remote host: " + rHost + ":" + rPort + "<BR/>");
+		w.println("<h2>Summary of All requests</h2>");
 		w.println("# Get requests: " + numGet + "<BR/>");
 		w.println("# Post requests: " + numPost + "<BR/>");
 		w.println("# Bytes Processed: " + requestLen + "<BR/>");

@@ -492,13 +492,13 @@
     </xsl:variable>
     <!-- XHTML -->
     <html>
-      <head>
+       <link rel="stylesheet" href="http://www.cip4.org/css/styles_pc.css" type="text/css" />
+       <head>
         <title>
           <xsl:call-template name="localize">
             <xsl:with-param name="string" select="'title'"/>
           </xsl:call-template>
         </title>
-        <link href="../conf/report/checkjdf.css" media="all" rel="stylesheet" type="text/css"/>
       </head>
       <body>
         <xsl:comment>#include
