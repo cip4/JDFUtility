@@ -143,13 +143,12 @@ public abstract class UtilityServlet extends HttpServlet
 		public ServletInfo(final HttpServletRequest request)
 		{
 			super();
+			timer = new CPUTimer(true);
 			tStart = System.currentTimeMillis();
 			id = KElement.uniqueID(0);
 			contentLength = request.getContentLength();
 			if (contentLength > 0)
 				requestLen += contentLength;
-			timer = new CPUTimer(true);
-
 		}
 
 		/**
@@ -167,12 +166,13 @@ public abstract class UtilityServlet extends HttpServlet
 		 */
 		public void complete()
 		{
-			tTotal += getTimeProcessed();
-			tMax = Math.max(tMax, getTimeProcessed());
-			long t = timer.getTotalCPUTime();
+			long timeProcessed = getTimeProcessed();
+			tTotal += timeProcessed;
+			tMax = Math.max(tMax, timeProcessed);
+			long t = timer.getTotalCPUTime() / 1000;// micros is ok
 			tCPUMax = Math.max(tCPUMax, t);
 			if (t > 0)
-				tCPUTotal += (t / 1000); // micros is ok
+				tCPUTotal += t;
 		}
 
 		public long tStart;
@@ -242,8 +242,8 @@ public abstract class UtilityServlet extends HttpServlet
 		{
 			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + tTotal / 1. + " Max time(milliseconds): " + tMax + " Average: "
 					+ (tTotal / (numGet + numPost)) + "<BR/>");
-			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (milliseconds): " + tCPUTotal / 1000000.
-					+ " Max CPU time(milliseconds): " + tCPUMax / 1000000. + " Average(milliSeconds): " + (tCPUTotal / (1000. * (numGet + numPost))) + "<BR/><BR/>");
+			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (milliseconds): " + tCPUTotal / 1000.
+					+ " Max CPU time(milliseconds): " + tCPUMax / 1000. + " Average(milliSeconds): " + (tCPUTotal / (1000. * (numGet + numPost))) + "<BR/><BR/>");
 			si.w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			si.w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
 
