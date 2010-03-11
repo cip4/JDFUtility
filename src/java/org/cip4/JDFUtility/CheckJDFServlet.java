@@ -283,7 +283,7 @@ public class CheckJDFServlet extends UtilityServlet
 		out.flush();
 		out.close();
 
-		System.out.println("Exit processMultipartRequest");
+		log.debug("Exit processMultipartRequest");
 	}
 
 	// //////////////////////////////////////////////////////////////////
