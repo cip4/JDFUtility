@@ -318,7 +318,7 @@ public class DumpJDFServlet extends UtilityServlet
 		final DumpDir theDump = getCreateDump(newDir);
 		String header = "Context Path: " + request.getRequestURL().toString();
 		final String contentType = request.getContentType();
-		header += "\nContext Type: " + contentType;
+		header += "\nHTTP Content Type: " + contentType;
 		int contentLength = request.getContentLength();
 		header += "\nContext Length: " + contentLength;
 		header += "\nRemote host: " + request.getRemoteHost() + ":" + request.getRemotePort();
