@@ -219,6 +219,10 @@ public class JDFServletUtil extends Object
 		Runtime.getRuntime().gc(); // clean up memory
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public static boolean isWindows()
 	{
 		return System.getProperty("os.name").startsWith("Win");

@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -94,131 +94,135 @@ import org.cip4.jdflib.util.StringUtil;
  * very trivial http to file servlet,
  * see web.xml for setup parameters
  */
-public class JMFHotFolderServlet extends HttpServlet {
+public class JMFHotFolderServlet extends HttpServlet
+{
 
-    private File baseDir=null;
-    private static int index=0;
-    private static Object mutexInc=new Object();
-    private static Object mutexDel=new Object();
-    private int maxKeep=1000;
-    private Set mimeTypes=null;
-    /**
-     * 
-     */
-    private static final long serialVersionUID = -8902151736245089036L;
+	private File baseDir = null;
+	private static int index = 0;
+	private static Object mutexInc = new Object();
+	private static Object mutexDel = new Object();
+	private int maxKeep = 1000;
+	private Set<String> mimeTypes = null;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8902151736245089036L;
 
-    private static int increment()
-    {
-        synchronized (mutexInc)
-        {
-            return index++;            
-        }
-    }
+	private static int increment()
+	{
+		synchronized (mutexInc)
+		{
+			return index++;
+		}
+	}
 
-    /** Initializes the servlet.
-     */
-    @Override
-	public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        final String root = config.getInitParameter("rootDir");
-        System.out.println("Config root: "+root);
-        baseDir=new File(root);
-        String rootBak=root+".bak";
-        File fBak=new File(rootBak);
-        FileUtil.deleteAll(fBak);
-        final String zapp = config.getInitParameter("flushOnInit");
-        if(StringUtil.parseBoolean(zapp, false))
-        {
-            if(baseDir.isDirectory())
-                FileUtil.deleteAll(baseDir);
-        }
-        else
-        {
-            if(baseDir.isDirectory())
-                baseDir.renameTo(fBak);
-        }
-        baseDir.mkdir(); // create if it aint there
-        final String sMaxKeep = config.getInitParameter("maxKeep");
-        maxKeep=StringUtil.parseInt(sMaxKeep, 1000);
-        final String sMimeTypes=config.getInitParameter("mimeTypes");
-        if(sMimeTypes!=null)
-        {
-            VString vTypes=StringUtil.tokenize(sMimeTypes, null, false);
-            if(!vTypes.contains(JDFConstants.STAR))
-            {
-                mimeTypes=vTypes.getSet();
-            }
-        }
-    }
+	/** Initializes the servlet.
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		final String root = config.getInitParameter("rootDir");
+		System.out.println("Config root: " + root);
+		baseDir = new File(root);
+		String rootBak = root + ".bak";
+		File fBak = new File(rootBak);
+		FileUtil.deleteAll(fBak);
+		final String zapp = config.getInitParameter("flushOnInit");
+		if (StringUtil.parseBoolean(zapp, false))
+		{
+			if (baseDir.isDirectory())
+				FileUtil.deleteAll(baseDir);
+		}
+		else
+		{
+			if (baseDir.isDirectory())
+				baseDir.renameTo(fBak);
+		}
+		baseDir.mkdir(); // create if it aint there
+		final String sMaxKeep = config.getInitParameter("maxKeep");
+		maxKeep = StringUtil.parseInt(sMaxKeep, 1000);
+		final String sMimeTypes = config.getInitParameter("mimeTypes");
+		if (sMimeTypes != null)
+		{
+			VString vTypes = StringUtil.tokenize(sMimeTypes, null, false);
+			if (!vTypes.contains(JDFConstants.STAR))
+			{
+				mimeTypes = vTypes.getSet();
+			}
+		}
+	}
 
-    /** Destroys the servlet.
-     */
-    @Override
-	public void destroy() {
-//      foo		
-    }
+	/** Destroys the servlet.
+	 */
+	@Override
+	public void destroy()
+	{
+		//      foo		
+	}
 
-
-    /** 
-     * Handles all HTTP <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     */
-    @Override
+	/** 
+	 * Handles all HTTP <code>POST</code> methods.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    {
-        if(mimeTypes!=null)
-        {
-            String mimeType=request.getContentType();
-            if(!mimeTypes.contains(mimeType))
-                return; // non of our business
-        }
-        final int inc = increment();
-        if(inc%100==0)
-            System.out.println("jmf dump service "+index);
+	{
+		if (mimeTypes != null)
+		{
+			String mimeType = request.getContentType();
+			if (!mimeTypes.contains(mimeType))
+				return; // non of our business
+		}
+		final int inc = increment();
+		if (inc % 100 == 0)
+			System.out.println("jmf dump service " + index);
 
-        String s=StringUtil.sprintf("m%08i.jmf", ""+inc);
-        File f=FileUtil.getFileInDirectory(baseDir, new File(s));
-        try
-        {
-            FileOutputStream fs=new FileOutputStream(f);
-            StreamUtils.copyThenClose(request.getInputStream(), fs);
-        }
-        catch (Exception e) {
-            System.out.println("jmf hotfolder service - snafu: "+e);
-        }
-        cleanup(inc);
-    }
+		String s = StringUtil.sprintf("m%08i.jmf", "" + inc);
+		File f = FileUtil.getFileInDirectory(baseDir, new File(s));
+		try
+		{
+			FileOutputStream fs = new FileOutputStream(f);
+			StreamUtils.copyThenClose(request.getInputStream(), fs);
+		}
+		catch (Exception e)
+		{
+			System.out.println("jmf hotfolder service - snafu: " + e);
+		}
+		cleanup(inc);
+	}
 
-    /**
-     * @param inc
-     */
-    private void cleanup(final int inc)
-    {
-        if(inc%100==0)
-        {
-            synchronized (mutexDel)
-            {
-                String[] names=baseDir.list();
-                if(names.length>maxKeep)
-                {
-                    Arrays.sort(names);
-                    for(int i=0;i<names.length-maxKeep;i++)
-                    {
-                        File f=new File(names[i]);
-                        f=FileUtil.getFileInDirectory(baseDir, f);
-                        f.delete();
-                    }
-                }
-            }
-        }
-    }
+	/**
+	 * @param inc
+	 */
+	private void cleanup(final int inc)
+	{
+		if (inc % 100 == 0)
+		{
+			synchronized (mutexDel)
+			{
+				String[] names = baseDir.list();
+				if (names.length > maxKeep)
+				{
+					Arrays.sort(names);
+					for (int i = 0; i < names.length - maxKeep; i++)
+					{
+						File f = new File(names[i]);
+						f = FileUtil.getFileInDirectory(baseDir, f);
+						f.delete();
+					}
+				}
+			}
+		}
+	}
 
-    /** Returns a short description of the servlet.
-     */
-    @Override
-	public String getServletInfo() {
-        return "JMFHotFolderServlet";
-    }
+	/** Returns a short description of the servlet.
+	 */
+	@Override
+	public String getServletInfo()
+	{
+		return "JMFHotFolderServlet";
+	}
 
 }

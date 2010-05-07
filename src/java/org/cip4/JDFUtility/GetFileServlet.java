@@ -23,12 +23,7 @@ import org.cip4.jdflib.util.UrlUtil;
  * @author  rainer
  *
  *
- * @web:servlet-init-param	name="" 
- *									value=""
- *									description=""
- *
- * @web:servlet-mapping url-pattern="/FixJDFServlet"
- */
+  */
 public class GetFileServlet extends HttpServlet
 {
 
@@ -47,7 +42,7 @@ public class GetFileServlet extends HttpServlet
 	{
 		super.init(config);
 		final String root = config.getInitParameter("rootDir");
-		System.out.println("Config root: " + root);
+		log.info("Config root: " + root);
 		baseDir = new File(root);
 		baseDir.mkdir(); // create if it aint there
 	}
@@ -83,6 +78,9 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Parses a multipart request.
+	 * @param request 
+	 * @param response 
+	 * @throws IOException 
 	 */
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{

@@ -81,7 +81,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.core.KElement.EnumValidationLevel;
@@ -107,7 +107,7 @@ public class CheckJDFServlet extends UtilityServlet
 	@Override
 	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		final boolean isMultipart = FileUploadBase.isMultipartContent(request);
+		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 		if (isMultipart)
 		{
 			log.debug("Processing multipart request...");
