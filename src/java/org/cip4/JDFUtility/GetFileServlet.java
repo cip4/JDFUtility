@@ -89,7 +89,7 @@ public class GetFileServlet extends HttpServlet
 		File f = FileUtil.getFileInDirectory(baseDir, new File(localName));
 		if (f.exists())
 		{
-			response.setContentType(MimeUtil.getMimeTypeFromExt(localName));
+			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
 			StreamUtils.copyThenClose(new FileInputStream(f), response.getOutputStream());
 		}
 		else

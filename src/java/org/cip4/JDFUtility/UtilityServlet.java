@@ -90,6 +90,8 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.util.CPUTimer;
 import org.cip4.jdflib.util.JDFDate;
+import org.cip4.jdflib.util.MemorySpy;
+import org.cip4.jdflib.util.MemorySpy.MemScope;
 
 /**
  * base servlet class
@@ -242,8 +244,13 @@ public abstract class UtilityServlet extends HttpServlet
 		{
 			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + tTotal / 1. + " Max time(milliseconds): " + tMax + " Average: "
 					+ (tTotal / (numGet + numPost)) + "<BR/>");
-			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 1000000. + " Total CPU time (milliseconds): " + tCPUTotal / 1000.
-					+ " Max CPU time(milliseconds): " + tCPUMax / 1000. + " Average(milliSeconds): " + (tCPUTotal / (1000. * (numGet + numPost))) + "<BR/><BR/>");
+			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 10000 / 100. + " Total CPU time (milliseconds): " + tCPUTotal / 1000.
+					+ " Max CPU time(milliseconds): " + tCPUMax / 10 / 100. + " Average(milliSeconds): " + (tCPUTotal / (numGet + numPost) / 1000.0) + "<BR/><BR/>");
+			MemorySpy spy = new MemorySpy();
+			si.w.println("Memory used (MB): " + (spy.getHeapUsed(MemScope.current) / 10000 / 100.0) + "<br/>");
+			si.w.println("Memory comitted (MB): " + (spy.getHeapUsed(MemScope.commit) / 10000 / 100.0) + "<br/>");
+			si.w.println("Memory free (MB): " + ((spy.getHeapUsed(MemScope.commit) - spy.getHeapUsed(MemScope.current)) / 10000 / 100.0) + "<br/>");
+			si.w.println("Permanent Memory used (MB): " + (spy.getPermGen(MemScope.current) / 10000 / 100.0) + "<br/>");
 			si.w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			si.w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
 
@@ -308,9 +315,7 @@ public abstract class UtilityServlet extends HttpServlet
 		w.println("<h2>Summary of All requests</h2>");
 		w.println("# Get requests: " + numGet + "<BR/>");
 		w.println("# Post requests: " + numPost + "<BR/>");
-		w.println("# Bytes Processed: " + requestLen + "<BR/>");
-		w.println("Free Memory: " + Runtime.getRuntime().freeMemory() + "<BR/>");
-		w.println("Total Memory: " + Runtime.getRuntime().totalMemory() + "<BR/>");
+		w.println("# MB Processed: " + (requestLen / 10000 / 100.) + "<BR/>");
 		return w;
 	}
 

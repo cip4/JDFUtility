@@ -338,7 +338,7 @@ public class DumpJDFServlet extends UtilityServlet
 			if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
 			{
 				final FileInputStream fis = new FileInputStream(f);
-				final String dirName = StringUtil.newExtension(f.getPath(), ".dir");
+				final String dirName = UrlUtil.newExtension(f.getPath(), ".dir");
 				log.info("dump mime: " + dirName);
 				char c = 'a';
 				while (c != '!')

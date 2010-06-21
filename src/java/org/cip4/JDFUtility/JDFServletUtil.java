@@ -137,7 +137,7 @@ public class JDFServletUtil extends Object
 		}
 		tmpName = String.valueOf(tmp);
 		tmpName = prefix + StringUtil.pathToName(tmpName);
-		tmpName = UrlUtil.removeExtension(tmpName);
+		tmpName = UrlUtil.prefix(tmpName);
 
 		File outFile;
 		try
