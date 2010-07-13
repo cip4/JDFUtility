@@ -102,6 +102,243 @@ import org.cip4.jdflib.util.UrlUtil;
 public class SendJDFServlet extends UtilityServlet
 {
 
+	protected class SendCall extends ServletCall
+	{
+		/**
+		 * @param utilityServlet
+		 * @param request
+		 * @param response
+		 */
+		public SendCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
+		{
+			super(utilityServlet, request, response);
+		}
+
+		/**
+		 * 
+		 * @see org.cip4.JDFUtility.ServletCall#processPost()
+		 * @throws ServletException
+		 * @throws IOException
+		 */
+		@Override
+		protected void processPost() throws ServletException, IOException
+		{
+			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			if (isMultipart)
+			{
+				log.debug("Processing multipart request...");
+				processMultipartRequest();
+			}
+		}
+
+		/**
+		 * @param urlToSend
+		 * @param htmlDoc
+		 * @return
+		 */
+		private KElement prepareHeader(final String urlToSend, final XMLDoc htmlDoc)
+		{
+			final KElement html = htmlDoc.getRoot();
+			html.appendElement("LINK").setAttribute("HREF", "http://www.cip4.org/css/styles_pc.css");
+			html.getElement("LINK").setAttribute("TYPE", "text/css");
+			html.getElement("LINK").setAttribute("REL", "stylesheet");
+
+			html.appendElement("head").appendElement("title").appendText("SendJDF " + urlToSend + " output");
+			// html.appendXMLComment("#include virtual=\"/global/navigation/menue_switch.php?section=support\" ");
+			html.appendElement("H1").appendText("SendJDF Response");
+			html.appendElement("br");
+			html.appendElement("H2").appendText("SendJDF " + urlToSend + " output");
+			return html;
+		}
+
+		/**
+		 * @param fileItem
+		 * @param urlToSend
+		 * @param html
+		 * @throws IOException
+		 */
+		private void processFileItem(final FileItem fileItem, final String urlToSend, final KElement html) throws IOException
+		{
+			// Get the first file item
+			// To do: Process all file items
+			html.appendElement("h3").setText("File size: " + fileItem.getSize() / 1024 + "KB");
+			html.appendElement("h3").setText("File type: " + fileItem.getContentType());
+			final InputStream ins = fileItem.getInputStream();
+			final JDFParser p = new JDFParser();
+			final JDFDoc d = p.parseStream(ins);
+			if (d != null && urlToSend != null && (d.getJDFRoot() != null || d.getJMFRoot() != null))
+			{
+				final URL url = UrlUtil.stringToURL(urlToSend);
+
+				final HttpURLConnection urlCon = d.write2HTTPURL(url, null);
+				if (urlCon == null)
+				{
+					errorExit(html, "No connection established to " + urlToSend);
+					return;
+				}
+				else if (urlCon.getResponseCode() != 200)
+				{
+					errorExit(html, "HTML Response code=" + urlCon.getResponseCode());
+				}
+				InputStream inStream;
+				try
+				{
+					inStream = urlCon.getInputStream();
+				}
+				catch (final Exception x)
+				{
+					inStream = null;
+				}
+
+				JDFDoc docResp = null;
+				final boolean success = urlCon.getResponseCode() == 200;
+				String outFileName = null;
+				if (inStream != null)
+				{
+					final JDFParser parser = new JDFParser();
+					parser.parseStream(inStream);
+					docResp = parser.getDocument() == null ? null : new JDFDoc(parser.getDocument());
+					final File outFile = JDFServletUtil.getTmpFile("SendJDFTmp", fileItem, "jdf", ".jdf");
+					if (docResp != null)
+					{
+						docResp.write2File(outFile.getAbsolutePath(), 2, true);
+						outFileName = outFile.getName();
+					}
+				}
+
+				log.info(success ? "Send was successful" : "Send Failed");
+
+				// very basic html output
+				html.appendElement("H2").appendText("Sent " + fileItem.getName() + " to " + urlToSend);
+				html.appendElement("H3").appendText("Return Code: " + urlCon.getResponseCode());
+				html.appendElement("H3").appendText("Headers:");
+				final KElement list = html.appendElement("ul");
+				final Map<String, List<String>> fields = urlCon.getHeaderFields();
+				if (fields != null)
+				{
+					final Iterator<String> it = fields.keySet().iterator();
+					while (it.hasNext())
+					{
+						final String key = it.next();
+						final String value = urlCon.getHeaderField(key);
+						list.appendElement("li").setText(key + ": " + value);
+					}
+				}
+
+				if (success)
+				{
+					if (outFileName != null)
+					{
+						html.appendElement("H2").setText("Returned document");
+						final KElement dl = html.appendElement("a");
+						dl.appendText(outFileName);
+						dl.setAttribute("href", "./SendJDFTmp/" + outFileName, null);
+						html.appendElement("hr");
+						if (docResp != null)
+						{
+							html.appendElement("pre").appendElement("code").setText(docResp.write2String(2));
+						}
+						html.appendElement("hr");
+					}
+					else
+					{
+						html.appendElement("H3").appendText("No Response Stream was received");
+					}
+				}
+				else
+				{
+					final KElement e = html.getCreateXPathElement("H2/Font");
+					e.setAttribute("color", "xff0000");
+					e.appendText("Sending of " + fileItem.getName() + " to " + urlToSend + " failed!!! ");
+				}
+				JDFServletUtil.cleanup("SendJDFTmp");
+
+				fileItem.delete();
+			}
+			else
+			{
+				html.appendText("file:" + fileItem.getName() + " not sent to  " + urlToSend + ". Submission failed!!! ");
+			}
+		}
+
+		/**
+		 * Parses a multipart request.
+		 * @throws ServletException 
+		 * @throws IOException 
+		 */
+		private void processMultipartRequest() throws ServletException, IOException
+		{
+			final List<FileItem> fileItems = JDFServletUtil.getFileList(request);
+
+			FileItem fileItem = null;
+			int nFiles = 0;
+			String urlToSend = null;
+			for (int i = 0; i < fileItems.size(); i++)
+			{
+				Runtime.getRuntime().gc(); // clean up before loading
+				final FileItem item = fileItems.get(i);
+				if (item.isFormField())
+				{
+					System.out.println("Form name: " + item.getFieldName());
+					if (item.getFieldName().equals("sendURL"))
+					{
+						urlToSend = item.getString();
+					}
+				}
+				else if (item.getSize() < 20 || item.getName().length() == 0)
+				{
+					log.warn("Bad File name: " + item.getName());
+				}
+				else
+				// ok
+				{
+					log.info("File name: " + item.getName());
+					fileItem = item;
+					nFiles++;
+				}
+			}
+
+			log.info("File count: " + nFiles);
+
+			final XMLDoc htmlDoc = new XMLDoc("html", null);
+			final KElement html = prepareHeader(urlToSend, htmlDoc);
+			html.appendElement("hr");
+			if (fileItem != null)
+			{
+				processFileItem(fileItem, urlToSend, html);
+			}
+
+			// html.appendXMLComment("#include virtual=\"/global/navigation/menue_switch.php?section=support\" ");
+			// Writes the XMP packet to output
+			// Todo: Use JSP instead of writing directly to output
+
+			writeOutput(htmlDoc);
+		}
+
+		/**
+		 * @param htmlDoc
+		 * @throws IOException
+		 */
+		private void writeOutput(final XMLDoc htmlDoc) throws IOException
+		{
+			response.setContentType("text/html;charset=utf-8");
+			final OutputStream os = response.getOutputStream();
+			htmlDoc.write2Stream(os, 2, false);
+			os.flush();
+			os.close();
+		}
+
+		/**
+		 * @param html
+		 * @param string
+		 */
+		private void errorExit(final KElement html, final String string)
+		{
+			html.appendElement("h2").setText("Error");
+			html.appendText(string);
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -135,240 +372,24 @@ public class SendJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 * @param request
-	 * @param response
-	 * @throws IOException 
-	 * @throws ServletException 
-	*/
-	@Override
-	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		if (isMultipart)
-		{
-			log.debug("Processing multipart request...");
-			processMultipartRequest(request, response);
-		}
-	}
-
-	/**
-	 * Parses a multipart request.
-	 * @param request 
-	 * @param response 
-	 * @throws ServletException 
-	 * @throws IOException 
-	 */
-	private void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
-	{
-		final List<FileItem> fileItems = JDFServletUtil.getFileList(request);
-
-		FileItem fileItem = null;
-		int nFiles = 0;
-		String urlToSend = null;
-		for (int i = 0; i < fileItems.size(); i++)
-		{
-			Runtime.getRuntime().gc(); // clean up before loading
-			final FileItem item = fileItems.get(i);
-			if (item.isFormField())
-			{
-				System.out.println("Form name: " + item.getFieldName());
-				if (item.getFieldName().equals("sendURL"))
-				{
-					urlToSend = item.getString();
-				}
-			}
-			else if (item.getSize() < 20 || item.getName().length() == 0)
-			{
-				log.warn("Bad File name: " + item.getName());
-			}
-			else
-			// ok
-			{
-				log.info("File name: " + item.getName());
-				fileItem = item;
-				nFiles++;
-			}
-		}
-
-		log.info("File count: " + nFiles);
-
-		final XMLDoc htmlDoc = new XMLDoc("html", null);
-		final KElement html = prepareHeader(urlToSend, htmlDoc);
-		html.appendElement("hr");
-		if (fileItem != null)
-		{
-			processFileItem(fileItem, urlToSend, html);
-		}
-
-		// html.appendXMLComment("#include virtual=\"/global/navigation/menue_switch.php?section=support\" ");
-		// Writes the XMP packet to output
-		// Todo: Use JSP instead of writing directly to output
-
-		writeOutput(response, htmlDoc);
-	}
-
-	/**
-	 * @param response
-	 * @param htmlDoc
-	 * @throws IOException
-	 */
-	private void writeOutput(final HttpServletResponse response, final XMLDoc htmlDoc) throws IOException
-	{
-		response.setContentType("text/html;charset=utf-8");
-		final OutputStream os = response.getOutputStream();
-		htmlDoc.write2Stream(os, 2, false);
-		os.flush();
-		os.close();
-	}
-
-	/**
-	 * @param fileItem
-	 * @param urlToSend
-	 * @param html
-	 * @throws IOException
-	 */
-	private void processFileItem(final FileItem fileItem, final String urlToSend, final KElement html) throws IOException
-	{
-		// Get the first file item
-		// To do: Process all file items
-		html.appendElement("h3").setText("File size: " + fileItem.getSize() / 1024 + "KB");
-		html.appendElement("h3").setText("File type: " + fileItem.getContentType());
-		final InputStream ins = fileItem.getInputStream();
-		final JDFParser p = new JDFParser();
-		final JDFDoc d = p.parseStream(ins);
-		if (d != null && urlToSend != null && (d.getJDFRoot() != null || d.getJMFRoot() != null))
-		{
-			final URL url = UrlUtil.stringToURL(urlToSend);
-
-			final HttpURLConnection urlCon = d.write2HTTPURL(url, null);
-			if (urlCon == null)
-			{
-				errorExit(html, "No connection established to " + urlToSend);
-				return;
-			}
-			else if (urlCon.getResponseCode() != 200)
-			{
-				errorExit(html, "HTML Response code=" + urlCon.getResponseCode());
-			}
-			InputStream inStream;
-			try
-			{
-				inStream = urlCon.getInputStream();
-			}
-			catch (final Exception x)
-			{
-				inStream = null;
-			}
-
-			JDFDoc docResp = null;
-			final boolean success = urlCon.getResponseCode() == 200;
-			String outFileName = null;
-			if (inStream != null)
-			{
-				final JDFParser parser = new JDFParser();
-				parser.parseStream(inStream);
-				docResp = parser.getDocument() == null ? null : new JDFDoc(parser.getDocument());
-				final File outFile = JDFServletUtil.getTmpFile("SendJDFTmp", fileItem, "jdf", ".jdf");
-				if (docResp != null)
-				{
-					docResp.write2File(outFile.getAbsolutePath(), 2, true);
-					outFileName = outFile.getName();
-				}
-			}
-
-			log.info(success ? "Send was successful" : "Send Failed");
-
-			// very basic html output
-			html.appendElement("H2").appendText("Sent " + fileItem.getName() + " to " + urlToSend);
-			html.appendElement("H3").appendText("Return Code: " + urlCon.getResponseCode());
-			html.appendElement("H3").appendText("Headers:");
-			final KElement list = html.appendElement("ul");
-			final Map<String, List<String>> fields = urlCon.getHeaderFields();
-			if (fields != null)
-			{
-				final Iterator<String> it = fields.keySet().iterator();
-				while (it.hasNext())
-				{
-					final String key = it.next();
-					final String value = urlCon.getHeaderField(key);
-					list.appendElement("li").setText(key + ": " + value);
-				}
-			}
-
-			if (success)
-			{
-				if (outFileName != null)
-				{
-					html.appendElement("H2").setText("Returned document");
-					final KElement dl = html.appendElement("a");
-					dl.appendText(outFileName);
-					dl.setAttribute("href", "./SendJDFTmp/" + outFileName, null);
-					html.appendElement("hr");
-					if (docResp != null)
-					{
-						html.appendElement("pre").appendElement("code").setText(docResp.write2String(2));
-					}
-					html.appendElement("hr");
-				}
-				else
-				{
-					html.appendElement("H3").appendText("No Response Stream was received");
-				}
-			}
-			else
-			{
-				final KElement e = html.getCreateXPathElement("H2/Font");
-				e.setAttribute("color", "xff0000");
-				e.appendText("Sending of " + fileItem.getName() + " to " + urlToSend + " failed!!! ");
-			}
-			JDFServletUtil.cleanup("SendJDFTmp");
-
-			fileItem.delete();
-		}
-		else
-		{
-			html.appendText("file:" + fileItem.getName() + " not sent to  " + urlToSend + ". Submission failed!!! ");
-		}
-	}
-
-	/**
-	 * @param html
-	 * @param string
-	 */
-	private void errorExit(final KElement html, final String string)
-	{
-		html.appendElement("h2").setText("Error");
-		html.appendText(string);
-	}
-
-	/**
-	 * @param urlToSend
-	 * @param htmlDoc
-	 * @return
-	 */
-	private KElement prepareHeader(final String urlToSend, final XMLDoc htmlDoc)
-	{
-		final KElement html = htmlDoc.getRoot();
-		html.appendElement("LINK").setAttribute("HREF", "http://www.cip4.org/css/styles_pc.css");
-		html.getElement("LINK").setAttribute("TYPE", "text/css");
-		html.getElement("LINK").setAttribute("REL", "stylesheet");
-
-		html.appendElement("head").appendElement("title").appendText("SendJDF " + urlToSend + " output");
-		// html.appendXMLComment("#include virtual=\"/global/navigation/menue_switch.php?section=support\" ");
-		html.appendElement("H1").appendText("SendJDF Response");
-		html.appendElement("br");
-		html.appendElement("H2").appendText("SendJDF " + urlToSend + " output");
-		return html;
-	}
-
-	/**
 	 * Returns a short description of the servlet.
 	 */
 	@Override
 	public String getServletInfo()
 	{
 		return "SendJDF Servlet";
+	}
+
+	/**
+	 * @see org.cip4.JDFUtility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @param request
+	 * @param response
+	 * @return
+	*/
+	@Override
+	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
+	{
+		return new SendCall(this, request, response);
 	}
 
 }

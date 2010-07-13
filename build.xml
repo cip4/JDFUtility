@@ -64,7 +64,7 @@
 		<delete dir="${bin.dir}" />
 		<delete dir="${dist.dir}" />
 	</target>
-	<target name="war" depends="jar" description="Builds web application.">
+	<target name="war" depends="major_jar" description="Builds web application.">
 		<echo>Building the reference device web application...</echo>
 		<buildnumber />
 		<echo>Build number: ${build.number}</echo>

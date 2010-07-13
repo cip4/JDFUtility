@@ -103,6 +103,37 @@ import org.cip4.jdflib.resource.JDFModified;
  */
 public class FixJDFServlet extends UtilityServlet
 {
+	protected class FixCall extends ServletCall
+	{
+		/**
+		 * @param utilityServlet
+		 * @param request
+		 * @param response
+		 */
+		public FixCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
+		{
+			super(utilityServlet, request, response);
+		}
+
+		/**
+		 * 
+		 * @see org.cip4.JDFUtility.ServletCall#processPost()
+		 * @throws ServletException
+		 * @throws IOException
+		 */
+		@Override
+		protected void processPost() throws ServletException, IOException
+		{
+			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			if (isMultipart)
+			{
+				log.debug("Processing multipart request...");
+				processMultipartRequest(request, response);
+			}
+		}
+
+	}
+
 	/**
 	 * 
 	 */
@@ -275,21 +306,15 @@ public class FixJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.JDFUtility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
-	 * @throws IOException 
-	 * @throws ServletException 
+	 * @return
 	*/
 	@Override
-	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
 	{
-		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		if (isMultipart)
-		{
-			log.debug("Processing multipart request...");
-			processMultipartRequest(request, response);
-		}
+		return new FixCall(this, request, response);
 	}
 
 }

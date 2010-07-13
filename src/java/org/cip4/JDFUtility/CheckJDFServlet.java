@@ -97,22 +97,36 @@ import org.cip4.jdflib.validate.JDFValidator;
   */
 public class CheckJDFServlet extends UtilityServlet
 {
-	/**
-	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 * @param request
-	 * @param response
-	 * @throws IOException 
-	 * @throws ServletException 
-	*/
-	@Override
-	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected class CheckJDFCall extends ServletCall
 	{
-		final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		if (isMultipart)
+
+		/**
+		 * @param utilityServlet
+		 * @param request
+		 * @param response
+		 */
+		public CheckJDFCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
 		{
-			log.debug("Processing multipart request...");
-			processMultipartRequest(request, response);
+			super(utilityServlet, request, response);
 		}
+
+		/**
+		 * 
+		 * @see org.cip4.JDFUtility.ServletCall#processPost()
+		 * @throws ServletException
+		 * @throws IOException
+		 */
+		@Override
+		protected void processPost() throws ServletException, IOException
+		{
+			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			if (isMultipart)
+			{
+				log.debug("Processing multipart request...");
+				processMultipartRequest(request, response);
+			}
+		}
+
 	}
 
 	/**
@@ -295,5 +309,17 @@ public class CheckJDFServlet extends UtilityServlet
 	public String getServletInfo()
 	{
 		return "JDFValidator Servlet";
+	}
+
+	/**
+	 * @see org.cip4.JDFUtility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @param request
+	 * @param response
+	 * @return
+	*/
+	@Override
+	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
+	{
+		return new CheckJDFCall(this, request, response);
 	}
 }

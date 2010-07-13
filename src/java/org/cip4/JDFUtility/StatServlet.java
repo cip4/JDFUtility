@@ -84,7 +84,37 @@ import javax.servlet.http.HttpServletResponse;
 public class StatServlet extends UtilityServlet
 {
 
+	protected class StatCall extends ServletCall
+	{
+		/**
+		 * @param utilityServlet
+		 * @param request
+		 * @param response
+		 */
+		public StatCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
+		{
+			super(utilityServlet, request, response);
+		}
+
+		/**
+		 * 
+		 * @see org.cip4.JDFUtility.ServletCall#processPost()
+		 * @throws ServletException
+		 * @throws IOException
+		 */
+		@Override
+		protected void processPost() throws ServletException, IOException
+		{
+			parentServlet.doGet(request, response);
+		}
+	}
+
 	// //////////////////////////////////////////////////////////////////
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Returns a short description of the servlet.
@@ -96,15 +126,15 @@ public class StatServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.JDFUtility.UtilityServlet#processPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.JDFUtility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
+	 * @return
 	*/
 	@Override
-	protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
 	{
-		doGet(request, response);
+		return new StatCall(this, request, response);
 	}
+
 }

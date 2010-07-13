@@ -75,8 +75,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -87,11 +85,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.core.KElement;
-import org.cip4.jdflib.util.CPUTimer;
 import org.cip4.jdflib.util.JDFDate;
-import org.cip4.jdflib.util.MemorySpy;
-import org.cip4.jdflib.util.MemorySpy.MemScope;
+import org.cip4.jdflib.util.StringUtil;
 
 /**
  * base servlet class
@@ -107,6 +102,7 @@ public abstract class UtilityServlet extends HttpServlet
 		super();
 		log = LogFactory.getLog(getClass());
 		startDate = new JDFDate();
+		setCssURL("http://www.cip4.org/css/styles_pc.css");
 	}
 
 	/**
@@ -116,6 +112,7 @@ public abstract class UtilityServlet extends HttpServlet
 	protected long numGet = 0;
 	protected long numPost = 0;
 	protected Log log;
+	private String cssURL;
 	protected static long tTotal = 0;
 	protected static long tCPUTotal = 0;
 	protected static long tMax = 0;
@@ -131,58 +128,9 @@ public abstract class UtilityServlet extends HttpServlet
 	@Override
 	final protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
 	{
-		ServletInfo si = prepareGet(request, response);
-		si.w = processGet(request, response);
-		finalizeGet(request, response, si);
-	}
-
-	/**
-	 * bookkeeping 
-	  * @author Rainer Prosi, Heidelberger Druckmaschinen *
-	 */
-	protected class ServletInfo
-	{
-		public ServletInfo(final HttpServletRequest request)
-		{
-			super();
-			timer = new CPUTimer(true);
-			tStart = System.currentTimeMillis();
-			id = KElement.uniqueID(0);
-			contentLength = request.getContentLength();
-			if (contentLength > 0)
-				requestLen += contentLength;
-		}
-
-		/**
-		 * 
-		 * @return
-		 */
-		public long getTimeProcessed()
-		{
-			long deltaT = System.currentTimeMillis() - tStart;
-			return deltaT;
-		}
-
-		/**
-		 * 
-		 */
-		public void complete()
-		{
-			long timeProcessed = getTimeProcessed();
-			tTotal += timeProcessed;
-			tMax = Math.max(tMax, timeProcessed);
-			long t = timer.getTotalCPUTime() / 1000;// micros is ok
-			tCPUMax = Math.max(tCPUMax, t);
-			if (t > 0)
-				tCPUTotal += t;
-		}
-
-		public long tStart;
-		public CPUTimer timer;
-		String id;
-		PrintWriter w;
-		int contentLength;
-
+		ServletCall si = prepareGet(request, response);
+		si.processGet();
+		si.finalizeGet();
 	}
 
 	/**
@@ -193,74 +141,9 @@ public abstract class UtilityServlet extends HttpServlet
 	@Override
 	final protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
-		ServletInfo si = preparePost(request, response);
-		processPost(request, response);
-		finalizePost(request, response, si);
-	}
-
-	/**
-	 * @param request
-	 * @param response
-	 * @throws IOException 
-	 * @throws ServletException 
-	 */
-	protected abstract void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
-
-	/**
-	 * @param request
-	 * @param response
-	 * @return 
-	 * @throws IOException 
-	 * @throws ServletException 
-	 */
-	protected PrintWriter processGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		final PrintWriter w = setupGet(request, response);
-		return w;
-	}
-
-	/**
-	 * @param request
-	 * @param response
-	 * @param si
-	 */
-	protected void finalizePost(HttpServletRequest request, HttpServletResponse response, ServletInfo si)
-	{
-		long deltaT = si.getTimeProcessed();
-		si.complete();
-		log.info("Processed Post " + getServletInfo() + " request. ID=" + si.id + " Time required:" + deltaT + " Total time:" + tTotal);
-	}
-
-	/**
-	 * @param request
-	 * @param response
-	 * @param si
-	 */
-	protected void finalizeGet(HttpServletRequest request, HttpServletResponse response, ServletInfo si)
-	{
-		long deltaT = si.getTimeProcessed();
-		si.complete();
-		if (si.w != null)
-		{
-			si.w.println("Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + tTotal / 1. + " Max time(milliseconds): " + tMax + " Average: "
-					+ (tTotal / (numGet + numPost)) + "<BR/>");
-			si.w.println("CPU Time Spent (milliSeconds): " + si.timer.getTotalCPUTime() / 10000 / 100. + " Total CPU time (milliseconds): " + tCPUTotal / 1000.
-					+ " Max CPU time(milliseconds): " + tCPUMax / 10 / 100. + " Average(milliSeconds): " + (tCPUTotal / (numGet + numPost) / 1000.0) + "<BR/><BR/>");
-			MemorySpy spy = new MemorySpy();
-			si.w.println("Memory used (MB): " + (spy.getHeapUsed(MemScope.current) / 10000 / 100.0) + "<br/>");
-			si.w.println("Memory comitted (MB): " + (spy.getHeapUsed(MemScope.commit) / 10000 / 100.0) + "<br/>");
-			si.w.println("Memory free (MB): " + ((spy.getHeapUsed(MemScope.commit) - spy.getHeapUsed(MemScope.current)) / 10000 / 100.0) + "<br/>");
-			si.w.println("Permanent Memory used (MB): " + (spy.getPermGen(MemScope.current) / 10000 / 100.0) + "<br/>");
-			si.w.println("<HR/>" + new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
-			si.w.print("<font size='-1' color='gray'> - active since: " + startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss") + "</font></Body></HTML>");
-
-			si.w.flush();
-		}
-		else
-		{
-			log.error("no output print writer, bailing out");
-		}
-		log.info("Processed Get " + getServletInfo() + " request. ID=" + si.id + " Time required:" + deltaT + " Total time:" + tTotal);
+		ServletCall si = preparePost(request, response);
+		si.processPost();
+		si.finalizePost();
 	}
 
 	/**
@@ -268,10 +151,10 @@ public abstract class UtilityServlet extends HttpServlet
 	 * @param response
 	 * @return 
 	 */
-	protected ServletInfo preparePost(HttpServletRequest request, HttpServletResponse response)
+	protected ServletCall preparePost(HttpServletRequest request, HttpServletResponse response)
 	{
 		numPost++;
-		ServletInfo servletInfo = new ServletInfo(request);
+		ServletCall servletInfo = getServletCall(request, response);
 		log.info("Processing Post request# " + numPost + " / " + (numGet + numPost) + " for " + getServletInfo() + " request id=" + servletInfo.id);
 		return servletInfo;
 	}
@@ -279,47 +162,24 @@ public abstract class UtilityServlet extends HttpServlet
 	/**
 	 * @param request
 	 * @param response
-	 * @return 
+	 * @return
 	 */
-	protected ServletInfo prepareGet(HttpServletRequest request, HttpServletResponse response)
-	{
-		numGet++;
-		ServletInfo servletInfo = new ServletInfo(request);
-		log.info("Processing Get request# " + numGet + " / " + (numGet + numPost) + " for " + getServletInfo() + " request id=" + servletInfo.id);
-		return servletInfo;
-	}
+	protected abstract ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response);
 
 	/**
 	 * @param request
 	 * @param response
-	 * @return
-	 * @throws IOException
+	 * @return 
 	 */
-	protected PrintWriter setupGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+	protected ServletCall prepareGet(HttpServletRequest request, HttpServletResponse response)
 	{
-		final String contentType = request.getContentType();
-		String rHost = request.getRemoteHost();
-		int rPort = request.getRemotePort();
-		int contentLength = request.getContentLength();
-		final OutputStream os = response.getOutputStream();
-		final PrintWriter w = new PrintWriter(os);
-		w.print("<HTML>");
-		w.print("<LINK REL=\"stylesheet\" HREF=\"http://www.cip4.org/css/styles_pc.css\" TYPE=\"text/css\" />");
-		w.print("<HEAD><TITLE>" + getServletInfo() + "</TITLE></HEAD>");
-		w.print("<Body><H1>Request Details</H1><HR/>");
-		w.println("<h2>Details for this request	</h2>");
-		w.println("Content Type: " + contentType + "<BR/>");
-		w.println("Content Length: " + contentLength + "<BR/>");
-		w.println("Request URI: " + request.getRequestURL().toString() + "<BR/>");
-		w.println("Remote host: " + rHost + ":" + rPort + "<BR/>");
-		w.println("<h2>Summary of All requests</h2>");
-		w.println("# Get requests: " + numGet + "<BR/>");
-		w.println("# Post requests: " + numPost + "<BR/>");
-		w.println("# MB Processed: " + (requestLen / 10000 / 100.) + "<BR/>");
-		return w;
-	}
+		numGet++;
+		ServletCall servletInfo = getServletCall(request, response);
+		log.info("Processing Get request# " + numGet + " / " + (numGet + numPost) + " for " + getServletInfo() + " request id=" + servletInfo.id);
+		servletInfo.setupGet(request, response);
 
-	// //////////////////////////////////////////////////////////////////
+		return servletInfo;
+	}
 
 	protected File createTmpFile(final FileItem fileItem, final String baseDir, final String ext) throws FileNotFoundException, IOException
 	{
@@ -331,6 +191,42 @@ public abstract class UtilityServlet extends HttpServlet
 		fos.close();
 		System.out.println(ext + " file name: " + zipFile.toString() + " size: " + n);
 		return zipFile;
+	}
+
+	/**
+	 * @param cssURL the cssURL to set
+	 */
+	public void setCssURL(String cssURL)
+	{
+		this.cssURL = cssURL;
+	}
+
+	/**
+	 * @param request 
+	 * @return the cssURL
+	 */
+	public String getCssURL(HttpServletRequest request)
+	{
+		String url = request.getRequestURL().toString();
+		int nTokens = StringUtil.tokenize(url, "/", false).size();
+		String prefix = "";
+		for (int i = 4; i < nTokens; i++)
+			prefix += "../";
+		return prefix + cssURL;
+	}
+
+	/**
+	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @throws ServletException
+	 * @throws IOException
+	*/
+	@Override
+	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		int contentLength = request.getContentLength();
+		if (contentLength > 0)
+			requestLen += contentLength;
+		super.service(request, response);
 	}
 
 	// //////////////////////////////////////////////////////////////////
