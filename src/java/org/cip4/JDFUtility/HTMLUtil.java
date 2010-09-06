@@ -23,4 +23,20 @@ public class HTMLUtil
 		parent.appendElement("br");
 	}
 
+	/**
+	 * append an anchor element
+	 * @param parent
+	 * @param url
+	 * @param text if null, simply copy url, else display text
+	 */
+	public static void appendAnchor(KElement parent, String url, String text)
+	{
+		if (text == null)
+			text = url;
+
+		KElement a = parent.appendElement("a");
+		a.setText(text);
+		a.setAttribute("href", url);
+	}
+
 }
