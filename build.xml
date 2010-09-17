@@ -114,6 +114,7 @@
 		<echo>Web app Context Path: ${path}</echo>
 		<echo>Tomcat Manager URL: ${tomcat.url}</echo>
 		<echo>Tomcat Manager Login: ${username}/${password}</echo>
+		<echo>file:${basedir}/${dist.dir}/${JDFUtility.name}.war</echo>
 		<echo>Loading Tomcat's Ant tasks. Make sure you have copied TOMCAT_HOME/server/lib/catalina-ant.jar to ANT_HOME/lib</echo>
 		<!-- Configure the custom Ant tasks for the Manager application -->
 		<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />

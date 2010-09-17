@@ -126,10 +126,13 @@ public class DumpJDFServlet extends UtilityServlet
 			File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
 			ByteArrayIOStream bos = dumpToFile();
 			KElement body = getHTMLRoot().getCreateElement("body");
+			HTMLUtil.appendHeader(body, 1, "Dump HTML");
 			HTMLUtil.appendLine(body, "Dump Directory: " + newDir);
+			String header = getHeader();
+			HTMLUtil.appendLine(body, header);
 			if (error != null)
 			{
-				body.appendElement("h3").setText("Error updating Proxy: " + error);
+				HTMLUtil.appendHeader(body, 3, "Error updating Proxy: ");
 			}
 			String displayProxy = proxyURL == null ? "" : proxyURL;
 			body.appendElement("h2").setText("proxy url");
@@ -153,6 +156,15 @@ public class DumpJDFServlet extends UtilityServlet
 
 			forward(bos, request);
 			System.gc();
+		}
+
+		private String getHeader()
+		{
+			String params = StringUtil.getNonEmpty(request.getQueryString());
+			String header = "Context Path: " + request.getRequestURL().toString();
+			if (params != null)
+				header += "?" + params;
+			return header;
 		}
 
 		/**
@@ -244,7 +256,7 @@ public class DumpJDFServlet extends UtilityServlet
 				newDir.mkdirs();
 			}
 			final DumpDir theDump = getCreateDump(newDir);
-			String header = "Context Path: " + request.getRequestURL().toString();
+			String header = getHeader();
 			final String contentType = request.getContentType();
 			header += "\nHTTP Content Type: " + contentType;
 			contentLength = request.getContentLength();

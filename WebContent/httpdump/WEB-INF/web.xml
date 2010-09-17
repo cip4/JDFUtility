@@ -9,7 +9,7 @@
 		<servlet-class>org.cip4.JDFUtility.DumpJDFServlet</servlet-class>
 		<init-param>
 			<param-name>rootDir</param-name>
-			<param-value>C:/httpdump</param-value>
+			<param-value>/httpdump</param-value>
 			<description>Local location (root) of the directory to dump to</description>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

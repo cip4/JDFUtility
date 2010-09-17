@@ -28,8 +28,9 @@ public class HTMLUtil
 	 * @param parent
 	 * @param url
 	 * @param text if null, simply copy url, else display text
+	 * @return the anchor element
 	 */
-	public static void appendAnchor(KElement parent, String url, String text)
+	public static KElement appendAnchor(KElement parent, String url, String text)
 	{
 		if (text == null)
 			text = url;
@@ -37,6 +38,27 @@ public class HTMLUtil
 		KElement a = parent.appendElement("a");
 		a.setText(text);
 		a.setAttribute("href", url);
+		return a;
+	}
+
+	/**
+	 * append an anchor element
+	 * @param parent
+	 * @param depth header level (1-6)
+	 * @param text  
+	 * @return the h1 - h6 element
+	 */
+	public static KElement appendHeader(KElement parent, int depth, String text)
+	{
+
+		if (depth < 1)
+			depth = 1;
+		if (depth > 6)
+			depth = 6;
+
+		KElement h = parent.appendElement("h" + depth);
+		h.setText(text);
+		return h;
 	}
 
 }

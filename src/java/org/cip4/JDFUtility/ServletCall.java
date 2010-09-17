@@ -15,8 +15,8 @@ import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.util.CPUTimer;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.MemorySpy;
-import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.MemorySpy.MemScope;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * bookkeeping 
