@@ -85,6 +85,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.FastFiFo;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
 
@@ -94,6 +96,75 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public abstract class UtilityServlet extends HttpServlet
 {
+	protected class RequestStats
+	{
+		/**
+		 * 
+		 * @param method
+		 * @param url
+		 */
+		public RequestStats(String method, String url)
+		{
+			super();
+			this.method = method;
+			this.url = url;
+			timeStamp = System.currentTimeMillis();
+		}
+
+		/**
+		 * 
+		 * @param request the request
+		 */
+		public RequestStats(HttpServletRequest request)
+		{
+			super();
+			this.method = request.getMethod();
+			this.url = getRequestURL(request);
+			timeStamp = System.currentTimeMillis();
+		}
+
+		private final String url;
+		private final long timeStamp;
+		private final String method;
+
+		private String getRequestURL(HttpServletRequest request)
+		{
+			String params = StringUtil.getNonEmpty(request.getQueryString());
+			String url = request.getRequestURL().toString();
+			if (params != null)
+				url += "?" + params;
+			return url;
+		}
+
+		public String getUrl()
+		{
+			return url;
+		}
+
+		public long getTimeStamp()
+		{
+			return timeStamp;
+		}
+
+		public String getMethod()
+		{
+			return method;
+		}
+
+		/**
+		 * get the row of values for this (time method url)
+		 * @return the row
+		 */
+		public VString getRow()
+		{
+			VString v = new VString();
+			v.add(new JDFDate(getTimeStamp()).getTimeISO());
+			v.add(getMethod());
+			v.add(getUrl());
+			return v;
+		}
+	}
+
 	/**
 	 * 
 	 */
@@ -102,6 +173,14 @@ public abstract class UtilityServlet extends HttpServlet
 		super();
 		log = LogFactory.getLog(getClass());
 		startDate = new JDFDate();
+		numGet = 0;
+		numPost = 0;
+		tTotal = 0;
+		tCPUTotal = 0;
+		tMax = 0;
+		tCPUMax = 0;
+		fifo = new FastFiFo<UtilityServlet.RequestStats>(50);
+
 		setCssURL("http://www.cip4.org/css/styles_pc.css");
 	}
 
@@ -109,16 +188,17 @@ public abstract class UtilityServlet extends HttpServlet
 	 * 
 	 */
 	private static final long serialVersionUID = -6858617993170970143L;
-	protected long numGet = 0;
-	protected long numPost = 0;
+	protected long numGet;
+	protected long numPost;
 	protected Log log;
 	private String cssURL;
-	protected static long tTotal = 0;
-	protected static long tCPUTotal = 0;
-	protected static long tMax = 0;
-	protected static long tCPUMax = 0;
+	protected long tTotal;
+	protected long tCPUTotal;
+	protected long tMax;
+	protected long tCPUMax;
 	protected long requestLen;
 	protected final JDFDate startDate;
+	FastFiFo<RequestStats> fifo;
 
 	/**
 	 * Handles the HTTP <code>GET</code> method.
@@ -223,6 +303,7 @@ public abstract class UtilityServlet extends HttpServlet
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		fifo.push(new RequestStats(request));
 		int contentLength = request.getContentLength();
 		if (contentLength > 0)
 			requestLen += contentLength;

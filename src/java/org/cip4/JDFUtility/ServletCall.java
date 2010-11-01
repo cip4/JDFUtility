@@ -45,7 +45,7 @@ public abstract class ServletCall
 		id = KElement.uniqueID(0);
 		this.request = request;
 		this.response = response;
-		this.parentServlet = utilityServlet;
+		parentServlet = utilityServlet;
 		log = LogFactory.getLog(getClass());
 		doc = null;
 
@@ -67,12 +67,12 @@ public abstract class ServletCall
 	public void complete()
 	{
 		long timeProcessed = getTimeProcessed();
-		UtilityServlet.tTotal += timeProcessed;
-		UtilityServlet.tMax = Math.max(UtilityServlet.tMax, timeProcessed);
+		parentServlet.tTotal += timeProcessed;
+		parentServlet.tMax = Math.max(parentServlet.tMax, timeProcessed);
 		long t = timer.getTotalCPUTime() / 1000;// micros is ok
-		UtilityServlet.tCPUMax = Math.max(UtilityServlet.tCPUMax, t);
+		parentServlet.tCPUMax = Math.max(parentServlet.tCPUMax, t);
 		if (t > 0)
-			UtilityServlet.tCPUTotal += t;
+			parentServlet.tCPUTotal += t;
 	}
 
 	/**
@@ -102,14 +102,14 @@ public abstract class ServletCall
 		{
 			KElement body = getHTMLRoot().getCreateElement("body");
 			body.appendElement("h2").setText("Summary of All requests");
-			HTMLUtil.appendLine(body, "# Get requests: " + this.parentServlet.numGet);
-			HTMLUtil.appendLine(body, "# Post requests: " + this.parentServlet.numPost);
-			HTMLUtil.appendLine(body, "# MB Processed: " + (this.parentServlet.requestLen / 10000 / 100.));
-			HTMLUtil.appendLine(body, "Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + UtilityServlet.tTotal / 1. + " Max time(milliseconds): "
-					+ UtilityServlet.tMax + " Average: " + (UtilityServlet.tTotal / (this.parentServlet.numGet + this.parentServlet.numPost)));
-			HTMLUtil.appendLine(body, "CPU Time Spent (milliSeconds): " + timer.getTotalCPUTime() / 10000 / 100. + " Total CPU time (milliseconds): " + UtilityServlet.tCPUTotal
-					/ 1000. + " Max CPU time(milliseconds): " + UtilityServlet.tCPUMax / 10 / 100. + " Average(milliSeconds): "
-					+ (UtilityServlet.tCPUTotal / (this.parentServlet.numGet + this.parentServlet.numPost) / 1000.0));
+			HTMLUtil.appendLine(body, "# Get requests: " + parentServlet.numGet);
+			HTMLUtil.appendLine(body, "# Post requests: " + parentServlet.numPost);
+			HTMLUtil.appendLine(body, "# MB Processed: " + (parentServlet.requestLen / 10000 / 100.));
+			HTMLUtil.appendLine(body, "Time Spent (milliSeconds): " + deltaT + " Total time(milliseconds): " + parentServlet.tTotal / 1. + " Max time(milliseconds): "
+					+ parentServlet.tMax + " Average: " + (parentServlet.tTotal / (parentServlet.numGet + parentServlet.numPost)));
+			HTMLUtil.appendLine(body, "CPU Time Spent (milliSeconds): " + timer.getTotalCPUTime() / 10000 / 100. + " Total CPU time (milliseconds): " + parentServlet.tCPUTotal
+					/ 1000. + " Max CPU time(milliseconds): " + parentServlet.tCPUMax / 10 / 100. + " Average(milliSeconds): "
+					+ (parentServlet.tCPUTotal / (parentServlet.numGet + parentServlet.numPost) / 1000.0));
 			MemorySpy spy = new MemorySpy();
 			HTMLUtil.appendLine(body, null);
 			HTMLUtil.appendLine(body, "Memory used (MB): " + (spy.getHeapUsed(MemScope.current) / 10000 / 100.0));
@@ -120,7 +120,7 @@ public abstract class ServletCall
 			HTMLUtil.appendLine(body, new JDFDate().getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			body.setXPathAttribute("font/@size", "-1");
 			body.setXPathAttribute("font/@color", "gray");
-			body.getElement("font").setText("- active since: " + this.parentServlet.startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
+			body.getElement("font").setText("- active since: " + parentServlet.startDate.getFormattedDateTime("MMM' 'dd' 'yyyy' - 'HH:mm:ss"));
 			try
 			{
 				ServletOutputStream outputStream = response.getOutputStream();
@@ -139,10 +139,9 @@ public abstract class ServletCall
 		}
 		else
 		{
-			this.parentServlet.log.error("no output print writer, bailing out");
+			parentServlet.log.error("no output print writer, bailing out");
 		}
-		this.parentServlet.log.info("Processed Get " + this.parentServlet.getServletInfo() + " request. ID=" + id + " Time required:" + deltaT + " Total time:"
-				+ UtilityServlet.tTotal);
+		parentServlet.log.info("Processed Get " + parentServlet.getServletInfo() + " request. ID=" + id + " Time required:" + deltaT + " Total time:" + parentServlet.tTotal);
 	}
 
 	/**
@@ -151,7 +150,7 @@ public abstract class ServletCall
 	{
 		long deltaT = getTimeProcessed();
 		complete();
-		log.info("Processed Post " + this.parentServlet.getServletInfo() + " request. ID=" + id + " Time required:" + deltaT + " Total time:" + UtilityServlet.tTotal);
+		log.info("Processed Post " + parentServlet.getServletInfo() + " request. ID=" + id + " Time required:" + deltaT + " Total time:" + parentServlet.tTotal);
 	}
 
 	/**
@@ -210,8 +209,8 @@ public abstract class ServletCall
 		KElement root = doc.getRoot();
 		root.setXPathAttribute("link/@rel", "stylesheet");
 
-		root.setXPathAttribute("link/@href", this.parentServlet.getCssURL(request));
+		root.setXPathAttribute("link/@href", parentServlet.getCssURL(request));
 		root.setXPathAttribute("link/@type", "text/css");
-		root.getCreateXPathElement("head/title").setText(this.parentServlet.getServletInfo());
+		root.getCreateXPathElement("head/title").setText(parentServlet.getServletInfo());
 	}
 }

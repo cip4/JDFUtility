@@ -87,6 +87,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.DumpDir;
@@ -128,13 +129,38 @@ public class DumpJDFServlet extends UtilityServlet
 			KElement body = getHTMLRoot().getCreateElement("body");
 			HTMLUtil.appendHeader(body, 1, "Dump HTML");
 			HTMLUtil.appendLine(body, "Dump Directory: " + newDir);
-			String header = getHeader();
+			String header = getRequestURL();
 			HTMLUtil.appendLine(body, header);
 			if (error != null)
 			{
 				HTMLUtil.appendHeader(body, 3, "Error updating Proxy: ");
 			}
 			String displayProxy = proxyURL == null ? "" : proxyURL;
+
+			proxyForm(body, displayProxy);
+
+			body.appendElement("h2").setText("History");
+			KElement table = HTMLUtil.appendTable(body, new VString("Time Method URL", null));
+			RequestStats[] stats = fifo.peekArray();
+			if (stats != null)
+			{
+				for (int i = stats.length - 1; i >= 0; i--)
+				{
+					HTMLUtil.appendTableRow(table, stats[i].getRow());
+				}
+			}
+
+			body.appendElement("h2").setText("Summary");
+			HTMLUtil.appendLine(body, "# Total Forwards: " + (numForward + numBadForward));
+			HTMLUtil.appendLine(body, "# Successfull Forwards: " + numForward);
+			HTMLUtil.appendLine(body, "# Failed Forwards: " + numBadForward);
+
+			forward(bos, request);
+			System.gc();
+		}
+
+		private void proxyForm(KElement body, String displayProxy)
+		{
 			body.appendElement("h2").setText("proxy url");
 			KElement form = body.appendElement("form");
 			form.setAttribute("action", request.getContextPath());
@@ -148,17 +174,9 @@ public class DumpJDFServlet extends UtilityServlet
 			input.setAttribute("type", "submit");
 			input.setAttribute("name", "submit");
 			input.setAttribute("value", "update proxy");
-
-			body.appendElement("h2").setText("Summary");
-			HTMLUtil.appendLine(body, "# Total Forwards: " + (numForward + numBadForward));
-			HTMLUtil.appendLine(body, "# Successfull Forwards: " + numForward);
-			HTMLUtil.appendLine(body, "# Failed Forwards: " + numBadForward);
-
-			forward(bos, request);
-			System.gc();
 		}
 
-		private String getHeader()
+		protected String getRequestURL()
 		{
 			String params = StringUtil.getNonEmpty(request.getQueryString());
 			String header = "Context Path: " + request.getRequestURL().toString();
@@ -256,7 +274,7 @@ public class DumpJDFServlet extends UtilityServlet
 				newDir.mkdirs();
 			}
 			final DumpDir theDump = getCreateDump(newDir);
-			String header = getHeader();
+			String header = getRequestURL();
 			final String contentType = request.getContentType();
 			header += "\nHTTP Content Type: " + contentType;
 			contentLength = request.getContentLength();
