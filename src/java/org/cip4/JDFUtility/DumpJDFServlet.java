@@ -138,7 +138,19 @@ public class DumpJDFServlet extends UtilityServlet
 			String displayProxy = proxyURL == null ? "" : proxyURL;
 
 			proxyForm(body, displayProxy);
+			printHistory(body);
 
+			body.appendElement("h2").setText("Summary");
+			HTMLUtil.appendLine(body, "# Total Forwards: " + (numForward + numBadForward));
+			HTMLUtil.appendLine(body, "# Successfull Forwards: " + numForward);
+			HTMLUtil.appendLine(body, "# Failed Forwards: " + numBadForward);
+
+			forward(bos, request);
+			System.gc();
+		}
+
+		private void printHistory(KElement body)
+		{
 			body.appendElement("h2").setText("History");
 			KElement table = HTMLUtil.appendTable(body, new VString("Time Method URL", null));
 			RequestStats[] stats = fifo.peekArray();
@@ -149,14 +161,6 @@ public class DumpJDFServlet extends UtilityServlet
 					HTMLUtil.appendTableRow(table, stats[i].getRow());
 				}
 			}
-
-			body.appendElement("h2").setText("Summary");
-			HTMLUtil.appendLine(body, "# Total Forwards: " + (numForward + numBadForward));
-			HTMLUtil.appendLine(body, "# Successfull Forwards: " + numForward);
-			HTMLUtil.appendLine(body, "# Failed Forwards: " + numBadForward);
-
-			forward(bos, request);
-			System.gc();
 		}
 
 		private void proxyForm(KElement body, String displayProxy)
