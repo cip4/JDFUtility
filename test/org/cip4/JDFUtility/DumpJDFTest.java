@@ -84,8 +84,8 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.jmf.JDFMessage.EnumFamily;
 import org.cip4.jdflib.jmf.JDFMessage.EnumType;
 import org.cip4.jdflib.util.ByteArrayIOStream;
+import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
-import org.cip4.jdflib.util.UrlUtil.UrlPart;
 
 /**
  * tests the httpdump servlet
@@ -126,7 +126,7 @@ public class DumpJDFTest extends JDFTestCaseBase
 				System.out.println(i);
 			UrlPart p = UrlUtil.writeToURL("http://localhost:8080/httpdump/forMartin/", null, UrlUtil.GET, UrlUtil.TEXT_PLAIN, null);
 			ByteArrayIOStream byteArrayIOStream = new ByteArrayIOStream();
-			IOUtils.copy(p.inStream, byteArrayIOStream);
+			IOUtils.copy(p.getResponseStream(), byteArrayIOStream);
 			byteArrayIOStream.getInputStream();
 
 		}
