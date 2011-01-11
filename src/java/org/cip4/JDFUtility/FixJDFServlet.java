@@ -117,7 +117,7 @@ public class FixJDFServlet extends UtilityServlet
 
 		/**
 		 * 
-		 * @see org.cip4.JDFUtility.ServletCall#processPost()
+		 * @see org.cip4.jdfutility.ServletCall#processPost()
 		 * @throws ServletException
 		 * @throws IOException
 		 */
@@ -306,7 +306,7 @@ public class FixJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.JDFUtility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
 	 * @return
