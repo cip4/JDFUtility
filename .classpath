@@ -17,5 +17,14 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-util-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-server-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-http-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-io-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-continuation-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-servlet-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-servlets-7.2.0.v20101020.jar"/>
+	<classpathentry kind="lib" path="src/lib/jetty-security-7.2.0.v20101020.jar"/>
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>
