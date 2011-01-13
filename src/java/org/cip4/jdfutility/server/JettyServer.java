@@ -248,6 +248,15 @@ public abstract class JettyServer
 	 */
 	public final void start()
 	{
+		if (server == null)
+			try
+			{
+				runServer();
+			}
+			catch (Exception e1)
+			{
+				//nop
+			}
 		try
 		{
 			server.start();
@@ -265,13 +274,16 @@ public abstract class JettyServer
 	 */
 	public final void stop()
 	{
-		try
+		if (server != null)
 		{
-			server.stop();
-		}
-		catch (Exception e)
-		{
-			// nop - we leave
+			try
+			{
+				server.stop();
+			}
+			catch (Exception e)
+			{
+				// nop - we leave
+			}
 		}
 	}
 
@@ -281,7 +293,8 @@ public abstract class JettyServer
 	 */
 	public void destroy()
 	{
-		server.destroy();
+		if (server != null)
+			server.destroy();
 	}
 
 	/**
