@@ -125,6 +125,10 @@ public abstract class JettyServer
 		return context;
 	}
 
+	/**
+	 * set the port 
+	 * @param port the port to set
+	 */
 	public void setPort(int port)
 	{
 		this.port = port;
@@ -304,6 +308,31 @@ public abstract class JettyServer
 	public int getPort()
 	{
 		return port;
+	}
+
+	public boolean isRunning()
+	{
+		return server.isRunning();
+	}
+
+	public boolean isStarted()
+	{
+		return server.isStarted();
+	}
+
+	public boolean isStarting()
+	{
+		return server.isStarting();
+	}
+
+	public boolean isStopped()
+	{
+		return server.isStopped();
+	}
+
+	public boolean isStopping()
+	{
+		return server.isStopping();
 	}
 
 }
