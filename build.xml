@@ -9,6 +9,7 @@
 		<tstamp />
 
 		<property name="ant.build.javac.target" value="1.5" />
+   		<property name="servlet.name" value="JDFUtility" />
 
    		<property name="JDFUtility.name" value="JDFUtility" />
 		<property file="version.properties"/>
@@ -130,6 +131,7 @@
 	</target>
 	<target name="install" description="Install web application" depends="-tomcat-init,war">
 		<!-- tomcat's server need to be running for this task to complete succesfully -->
+		<echo> installs the reference web application on ${tomcat.url} at ${path} </echo>
 		<install url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${JDFUtility.name}.war" />
 	</target>
 	<target name="redeploy" depends="-tomcat-init,war" description="Undeploys and redeploys the web application">
