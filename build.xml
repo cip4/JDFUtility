@@ -9,9 +9,10 @@
 		<tstamp />
 
 		<property name="ant.build.javac.target" value="1.5" />
-   		<property name="servlet.name" value="JDFUtility" />
+		<property name="servlet.name" value="JDFUtility" />
+		<property name="exe.name" value="HTTPDump" />
+		
 
-   		<property name="JDFUtility.name" value="JDFUtility" />
 		<property file="version.properties"/>
 		<property name="src.dir" value="./src" />
 		<property name="java.src.dir" value="${src.dir}/java" />
@@ -21,9 +22,10 @@
 		<property name="lib.dir" value="${src.dir}/lib" />
 		<property name="bin.dir" value="./bin" />
 		<property name="dist.dir" value="./dist" />
+		<property name="exe.dist.dir" value="${dist.dir}/${exe.name}-exe" />		
 		<property name="build.debug" value="true" />
-		<property name="base.filename" value="${JDFUtility.name}-${DSTAMP}" />
-		<property name="major.filename" value="${JDFUtility.name}-${major.version}" />		
+		<property name="base.filename" value="${servlet.name}-${DSTAMP}" />
+		<property name="major.filename" value="${servlet.name}-${major.version}" />
 
 		<property name="verbose" value="true" />
 		<!-- Sets class path -->
@@ -58,6 +60,16 @@
 	<target name="major_jar" depends="jar" description="Builds a JAR archive containing the JDFLib-J binaries.">
 		<echo>Copying JAR file: ${dist.dir}/${major.filename}.jar</echo>
 		<copy file="${dist.dir}/${base.filename}.jar" tofile="${dist.dir}/${major.filename}.jar"/>
+	</target>
+	<target name="httpdump_jar" depends="compile" description="Builds a JAR archive containing the JDFLib-J binaries.">
+		<echo>Copying JAR file: ${dist.dir}/${major.filename}.jar</echo>
+		<jar jarfile="${dist.dir}/httpdump.jar" basedir="${bin.dir}" >
+			<manifest>
+				<attribute name="Main-Class" value="org.cip4.jdfutility.exe.HTTPDump" />
+				<attribute name="Bundle-Name" value="Bambi ${major.version}.${minor.version}.${build.number}" />
+				<attribute name="Bundle-Vendor" value="CIP4" />
+			</manifest>
+		</jar>
 	</target>
 
 	<target name="clean" depends="-init" description="Cleans the build.">
@@ -99,15 +111,15 @@
 			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
 			<replacefilter token="@build.majorversion@" value="${major.version}" />
 			<replacefilter token="@build.minorversion@" value="${minor.version}" />
-		</replace>		
+		</replace>
 		<!-- Builds compressed WAR file -->
-		<jar basedir="${war.dir}" destfile="${dist.dir}/${JDFUtility.name}.war" filesonly="false"/>
+		<jar basedir="${war.dir}" destfile="${dist.dir}/${servlet.name}.war" filesonly="false"/>
 	</target>
-		<target name="-tomcat-init" depends="-init">
+	<target name="-tomcat-init" depends="-init">
 		<echo>Initializing optional targets for deploying directly into Tomcat...</echo>
 		<!-- Tomcat tasks -->
 		<!-- Configure the context path for this application -->
-		<property name="path" value="/${JDFUtility.name}" />
+		<property name="path" value="/${servlet.name}" />
 		<!-- Configure properties to access the Manager application -->
 		<property name="tomcat.url" value="http://localhost:8080/manager" />
 		<property name="username" value="tomcat" />
@@ -115,7 +127,7 @@
 		<echo>Web app Context Path: ${path}</echo>
 		<echo>Tomcat Manager URL: ${tomcat.url}</echo>
 		<echo>Tomcat Manager Login: ${username}/${password}</echo>
-		<echo>file:${basedir}/${dist.dir}/${JDFUtility.name}.war</echo>
+		<echo>file:${basedir}/${dist.dir}/${servlet.name}.war</echo>
 		<echo>Loading Tomcat's Ant tasks. Make sure you have copied TOMCAT_HOME/server/lib/catalina-ant.jar to ANT_HOME/lib</echo>
 		<!-- Configure the custom Ant tasks for the Manager application -->
 		<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask" />
@@ -132,12 +144,92 @@
 	<target name="install" description="Install web application" depends="-tomcat-init,war">
 		<!-- tomcat's server need to be running for this task to complete succesfully -->
 		<echo> installs the reference web application on ${tomcat.url} at ${path} </echo>
-		<install url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${JDFUtility.name}.war" />
+		<install url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${servlet.name}.war" />
 	</target>
 	<target name="redeploy" depends="-tomcat-init,war" description="Undeploys and redeploys the web application">
 		<!-- tomcat's server need to be running for this task to complete succesfully -->
 		<echo> Undeploys and Deploys the reference web application... </echo>
 		<undeploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" />
-		<deploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${JDFUtility.name}.war" />
+		<deploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${servlet.name}.war" />
+	</target>
+
+
+	<target name="httpdump-exe" depends="war,httpdump_jar" description="Builds exe folder">
+		<!-- Builds exploded WAR file -->
+		<delete dir="${exe.dist.dir}" />
+
+		<copy todir="${exe.dist.dir}" overwrite="true">
+			<fileset dir="${war.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<move tofile="${exe.dist.dir}/lib" file="${war.dir}/WEB-INF/lib"/>
+		<!-- this way we can reuse the jsmooth files etc. -->
+		<move tofile="${exe.dist.dir}/lib/httpdump.jar" file="${dist.dir}/httpdump.jar"/>
+		<delete dir="${exe.dist.dir}/httpdump" />
+		<delete dir="${exe.dist.dir}/jmfHotFolder" />
+		<delete dir="${exe.dist.dir}/WEB-INF" />
+
+		<copy overwrite="true" todir="${exe.dist.dir}/lib" flatten="true">
+			<fileset dir="${lib.dir}">
+				<include name="jetty*.jar" />
+				<include name="jsp-api.jar" />
+				<include name="servlet*.jar" />
+			</fileset>
+		</copy>
+	</target>
+	<!-- windows exe -->
+	<target name="httpdump-windist" depends="httpdump-exe">
+		<copy overwrite="true" file="${src.dir}/exe/windows/HTTPDump.exe" toFile="${exe.dist.dir}/${exe.name}.exe" />
+		<zip destfile="${base.filename}.zip">
+			<zipfileset dir="${exe.dist.dir}" prefix="${dist.dir}" />
+		</zip>
+	</target>
+
+	<target name="windist-compile" depends="-init" description="This target is only need if the EXE file needs to be recompiled.">
+		<echo>Loading JSmooth Ant tasks. Make sure you have jsmoothgen-ant.jar (http://jsmooth.sourceforge.net) installed in ANT_HOME/lib</echo>
+		<taskdef name="jsmoothgen" classname="net.charabia.jsmoothgen.ant.JSmoothGen" />
+		<jsmoothgen project="${src.dir}/exe/windows/dump.jsmooth" skeletonroot="${src.dir}/exe/windows/skeletons"/>
+	</target>
+
+	<!-- For special app bundle on the Mac -->
+	<target name="httpdump-appledist" depends="httpdump-exe" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
+		<echo>Building Mac OS X application bundle...</echo>
+		<echo>Loading JarBundler Ant tasks. Make sure you have installed http://informagen.com/JarBundler/ in ANT_HOME/lib</echo>
+		<echo>if you get  an error such as:
+			java.lang.NoClassDefFoundError: org/apache/xml/serialize/OutputFormat
+			you should add 'xercesimpl.jar' and 'xml-apis.jar' in ANT_HOME/lib.
+			If running from eclipse - also add it to the list of ant jars in window/preferences//ant/runtime//ClassPath/Ant home entries
+		</echo>
+		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+		<jarbundler dir="${dist.dir}" 
+			name="${exe.name}" 
+			mainclass="org.cip4.jdfutility.exe.HTTPDump" 
+			bundleid="org.cip4.jdfutility.exe.HTTPDump" 
+			jvmversion="1.5+" 
+			shortname="${exe.name}" 
+			infostring="HTTP Dump debugging tool" 
+			signature="${exe.name}" 
+			version="${major.version}.${minor.version}.${build.number}" 
+			icon="${src.dir}/exe/macosx/icons/dump.icns" 
+			vmoptions="-Xmx512m" 
+			workingdirectory="$JAVAROOT/.."
+			stubfile="${src.dir}/exe/macosx/JavaApplicationStub">
+			<jarfileset dir="${exe.dist.dir}/lib">
+				<include name="*.jar" />
+			</jarfileset>
+			<resourcefileset dir="${exe.dist.dir}">
+				<include name="*.*" />
+				<include name="css/*" />
+				<include name="config/*" />
+			</resourcefileset>
+
+			<javaproperty name="apple.laf.useScreenMenuBar" value="true" />
+		</jarbundler>
+		<zip destfile="${dist.dir}/${base.filename}-mac.zip">
+			<zipfileset dir="${dist.dir}/${exe.name}.app" prefix="${exe.name}.app/" />
+			<zipfileset dir="${dist.dir}/${exe.name}.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="${exe.name}.app" />
+		</zip>
 	</target>
 </project>
