@@ -7,18 +7,21 @@
 		<echo>Initializing. Using build settings from ./build.properties...</echo>
 		<!-- Sets properties -->
 		<tstamp/>
-   		<property name="servlet.name" value="httpdump" />
+   		<property name="exe.name" value="httpdump" />
+   		<property name="main.class" value="org.cip4.jdfutility.exe.HTTPDump" />
+		
 		<property file="version.properties"/>
 		<property name="src.dir" value="./src" />
-		<property name="web.src.dir" value="./WebContent/${servlet.name}" />
+		<property name="web.src.dir" value="./WebContent/${exe.name}" />
 		<property name="web.config.dir" value="${web.src.dir}/config" />
 		<property name="test.src.dir" value="./test" />
 		<property name="lib.dir" value="${src.dir}/lib" />
-		<property name="bin.dir" value="./bin/${servlet.name}" />
-		<property name="dist.dir" value="./dist/${servlet.name}" />
+		<property name="bin.dir" value="./bin/${exe.name}" />
+		<property name="dist.dir" value="./dist/${exe.name}" />
+		<property name="exe.dist.dir" value="${dist.dir}/${exe.name}-exe" />
 		<property name="build.debug" value="true" />
-		<property name="base.filename" value="${servlet.name}-${DSTAMP}" />
-		<property name="major.filename" value="${servlet.name}" />		
+		<property name="base.filename" value="${exe.name}-${DSTAMP}" />
+		<property name="major.filename" value="${exe.name}" />		
 
 		<property name="verbose" value="true" />
 		<!-- Sets class path -->
@@ -28,11 +31,27 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
+		<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask"  />
+		<taskdef name="makerunscript" classname="com.citizenhawk.makerunscript.MakeRunScript" />
+		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
+	</target>
+	
+	<target name="prepare" depends="-init">
 		<!-- Creates directories -->
 		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}" />
+
+		<copy overwrite="true" todir="${lib.dir}" flatten="true">
+			<fileset dir="../JDFLibJ/dist">
+				<include name="JDFLibJ-2.1.4a.jar" />
+			</fileset>
+			<fileset dir="../jdfutility/dist">
+				<include name="JDFUtility-2.1.4a.jar" />
+			</fileset>
+		</copy>
 	</target>
-	<target name="compile" depends="-init" description="Compiles source code.">
+
+	<target name="compile" depends="prepare" description="Compiles source code.">
 		<echo>Compiling...</echo>
 		<javac destdir="${bin.dir}" debug="${build.debug}" source="1.5" target="1.5">
 			<src path="${src.dir}" />
@@ -87,13 +106,13 @@
 			<replacefilter token="@build.timestamp@" value="${DSTAMP}" />
 		</replace>		-->
 		<!-- Builds compressed WAR file -->
-		<jar basedir="${war.dir}" destfile="${dist.dir}/${servlet.name}.war" filesonly="false"/>
+		<jar basedir="${war.dir}" destfile="${dist.dir}/${exe.name}.war" filesonly="false"/>
 	</target>
 		<target name="-tomcat-init" depends="-init">
 		<echo>Initializing optional targets for deploying directly into Tomcat...</echo>
 		<!-- Tomcat tasks -->
 		<!-- Configure the context path for this application -->
-		<property name="path" value="/${servlet.name}" />
+		<property name="path" value="/${exe.name}" />
 		<!-- Configure properties to access the Manager application -->
 		<property name="tomcat.url" value="http://localhost:8080/manager" />
 		<property name="username" value="tomcat" />
@@ -117,12 +136,121 @@
 	<target name="install" description="Install web application" depends="-tomcat-init,war">
 		<!-- tomcat's server need to be running for this task to complete succesfully -->
 		<echo> installs the reference web application on ${tomcat.url} at ${path} </echo>
-		<install url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${servlet.name}.war" />
+		<install url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${exe.name}.war" />
 	</target>
 	<target name="redeploy" depends="-tomcat-init,war" description="Undeploys and redeploys the web application">
 		<!-- tomcat's server need to be running for this task to complete succesfully -->
 		<echo> Undeploys and Deploys the reference web application on ${tomcat.url} at ${path} </echo>
 		<undeploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" />
-		<deploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${servlet.name}.war" />
+		<deploy url="${tomcat.url}" username="${username}" password="${password}" path="${path}" war="file:${basedir}/${dist.dir}/${exe.name}.war" />
+	</target>
+	
+	<target name="exe" depends="war" description="Builds exe folder">
+		<!-- Builds exploded WAR file -->
+		<delete dir="${exe.dist.dir}" />
+
+		<copy todir="${exe.dist.dir}" overwrite="true">
+			<fileset dir="${war.dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<move tofile="${exe.dist.dir}/lib" file="${war.dir}/WEB-INF/lib"/>
+		<delete dir="${exe.dist.dir}/WEB-INF" />
+
+		<copy overwrite="true" todir="${exe.dist.dir}/lib" flatten="true">
+			<fileset dir="${lib.dir}">
+				<include name="jetty*.jar" />
+				<include name="jsp-api.jar" />
+				<include name="servlet*.jar" />
+			</fileset>
+		</copy>
+		<makerunscript basedir="${exe.dist.dir}">
+			<scriptfile file="${exe.dist.dir}/${exe.name}.bat" os="windows" />
+			<scriptfile file="${exe.dist.dir}/${exe.name}.sh" os="*nix" />
+			<java maxmemory="500m" classname="${main.class}">
+				<classpath>
+					<fileset dir="${exe.dist.dir}/lib">
+						<include name="*.jar" />
+					</fileset>
+				</classpath>
+			</java>
+		</makerunscript>
+		<!-- create mac command -->
+		<echo file="${exe.dist.dir}/${exe.name}.command">#!/bin/sh
+			cd "`dirname "$0"`"
+        </echo>
+		<concat append="yes" destfile="${exe.dist.dir}/${exe.name}.command">
+			<fileset file="${exe.dist.dir}/${exe.name}.sh" />
+		</concat>
+		<chmod perm="777" file="${exe.dist.dir}/${exe.name}.command" />
+		<zip destfile="${exe.dist.dir}.zip">
+			<zipfileset dir="${exe.dist.dir}" />
+			<zipfileset dir="${exe.dist.dir}" includes="${exe.name}.*" filemode="755" />
+	    </zip>
+
+	</target>
+
+	<!-- windows exe -->
+	<target name="windist" depends="exe">
+		<launch4j>
+			<config headerType="gui" outfile="${exe.dist.dir}/${exe.name}.exe"
+				dontWrapJar="false"
+				jar="${exe.dist.dir}/lib/JDFUtility-2.1.4a.jar"
+				icon="${src.dir}/exe/windows/icons/dump.ico">
+
+				<!-- runtime classpath, from current directory -->
+				<classPath mainClass="${main.class}">
+					<cp>lib/*.jar</cp>
+				</classPath>
+				<jre minVersion="1.5.0">
+				</jre>
+
+			</config>
+		</launch4j>
+		<zip destfile="${exe.dist.dir}-win.zip">
+			<zipfileset dir="${exe.dist.dir}" prefix="${dist.dir}" />
+		</zip>
+	</target>
+
+
+	<!-- For special app bundle on the Mac -->
+	<target name="appledist" depends="windist" description="Assembles stand alone Macintosh Bundle. Must build on a Mac (>= 10.2).">
+		<echo>Building Mac OS X application bundle...</echo>
+		<echo>Loading JarBundler Ant tasks. Make sure you have installed http://informagen.com/JarBundler/ in ANT_HOME/lib</echo>
+		<echo>if you get  an error such as:
+			java.lang.NoClassDefFoundError: org/apache/xml/serialize/OutputFormat
+			you should add 'xercesimpl.jar' and 'xml-apis.jar' in ANT_HOME/lib.
+			If running from eclipse - also add it to the list of ant jars in window/preferences//ant/runtime//ClassPath/Ant home entries
+		</echo>
+		<jarbundler dir="${dist.dir}" 
+			name="${exe.name}" 
+			mainclass="${main.class}" 
+			bundleid="org.cip4.bambi.server.${exe.name}" 
+			jvmversion="1.5+" 
+			shortname="${exe.name}" 
+			infostring="${info}" 
+			signature="${exe.name}" 
+			version="${major.version}.${minor.version}.${build.number}" 
+			icon="${src.dir}/exe/macosx/icons/dump.icns" 
+			vmoptions="-Xmx512m" 
+			workingdirectory="$JAVAROOT/.."
+			stubfile="${src.dir}/exe/macosx/JavaApplicationStub">
+			<jarfileset dir="${exe.dist.dir}/lib">
+				<include name="*.jar" />
+			</jarfileset>
+			<resourcefileset dir="${exe.dist.dir}">
+				<include name="*.*" />
+				<exclude name="${exe.name}.*" />
+				<include name="css/*" />
+				<include name="config/*" />
+			</resourcefileset>
+
+			<javaproperty name="apple.laf.useScreenMenuBar" value="true" />
+		</jarbundler>
+		<zip destfile="${dist.dir}/${base.filename}-mac.zip">
+			<zipfileset dir="${dist.dir}/${exe.name}.app" prefix="${exe.name}.app/" />
+			<zipfileset dir="${dist.dir}/${exe.name}.app" includes="Contents/MacOS/JavaApplicationStub" filemode="755" prefix="${exe.name}.app" />
+		</zip>
 	</target>
 </project>
