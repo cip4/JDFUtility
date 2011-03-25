@@ -95,8 +95,7 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public abstract class JettyServer
 {
-
-	protected int port;
+	protected static int thePort = -1;
 	protected String context;
 	protected Server server;
 	protected final Log log;
@@ -129,9 +128,9 @@ public abstract class JettyServer
 	 * set the port 
 	 * @param port the port to set
 	 */
-	public void setPort(int port)
+	public static void setPort(int port)
 	{
-		this.port = port;
+		thePort = port;
 	}
 
 	/**
@@ -144,7 +143,7 @@ public abstract class JettyServer
 		super();
 		log = LogFactory.getLog(getClass());
 		context = "";
-		port = 8080;
+		thePort = 8080;
 	}
 
 	/**
@@ -155,7 +154,7 @@ public abstract class JettyServer
 	 */
 	public final void runServer() throws Exception, InterruptedException
 	{
-		server = new Server(port);
+		server = new Server(thePort);
 
 		HandlerList handlers = new HandlerList();
 		server.setHandler(handlers);
@@ -181,7 +180,7 @@ public abstract class JettyServer
 	{
 		try
 		{
-			return "http://" + InetAddress.getLocalHost().getHostName() + ":" + port + context;
+			return "http://" + InetAddress.getLocalHost().getHostName() + ":" + thePort + context;
 		}
 		catch (UnknownHostException e)
 		{
@@ -302,34 +301,59 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * get the port number
+	 * get the port number the port is always a singleton in a jetty environment
 	 * @return
 	 */
-	public int getPort()
+	public static int getPort()
 	{
-		return port;
+		return thePort;
 	}
 
+	/**
+	 * 
+	 * @see #JettyServer.isRunning()
+	 * @return
+	 */
 	public boolean isRunning()
 	{
 		return server.isRunning();
 	}
 
+	/**
+	 * 
+	 * @see #JettyServer.isStarted()
+	 * @return
+	 */
 	public boolean isStarted()
 	{
 		return server.isStarted();
 	}
 
+	/**
+	 * 
+	 * @see #JettyServer.isStarting()
+	 * @return
+	 */
 	public boolean isStarting()
 	{
 		return server.isStarting();
 	}
 
+	/**
+	 * 
+	 * @see #JettyServer.isStopped()
+	 * @return
+	 */
 	public boolean isStopped()
 	{
 		return server.isStopped();
 	}
 
+	/**
+	 * 
+	 * @see #JettyServer.isStopping()
+	 * @return
+	 */
 	public boolean isStopping()
 	{
 		return server.isStopping();
