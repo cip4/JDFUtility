@@ -97,7 +97,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		@Override
 		public void windowClosing(final WindowEvent e)
 		{
-			dieHard();
+			new DieHard().start();
 		}
 
 	}
@@ -148,7 +148,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		p2.add(new JLabel("port: "));
 		portField = new JTextField(server.getBaseURL());
 		portField.setEditable(true);
-		portField.setText("" + server.getPort());
+		portField.setText("" + JettyServer.getPort());
 		p2.add(portField);
 		panel.add(p2);
 		return panel;
@@ -181,7 +181,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 			if (button.getText().contains("Start"))
 			{
 				button.setText("Stop Server");
-				server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
+				JettyServer.setPort(StringUtil.parseInt(portField.getText(), JettyServer.getPort()));
 				urlField.setText(server.getBaseURL());
 				try
 				{
@@ -198,8 +198,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 			}
 			else
 			{
-				button.setText("Stopping");
-				dieHard();
+				new Stopper().start();
 			}
 		}
 	}
@@ -207,11 +206,44 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	/**
 	 * 
 	 */
-	private void dieHard()
+	private class Stopper extends Thread
 	{
-		server.stop();
-		server.destroy();
-		ThreadUtil.notify(stopper);
+		private Stopper()
+		{
+			super("StopThread");
+			button.setText("Stopping server");
+			button.setEnabled(false);
+		}
+
+		@Override
+		public void run()
+		{
+			server.stop();
+			while (server.isStopping())
+				ThreadUtil.sleep(100);
+			button.setText("Start Server");
+			button.setEnabled(true);
+		}
 	}
 
+	private class DieHard extends Thread
+	{
+		private DieHard()
+		{
+			super("DieHard");
+			button.setText("shutting down");
+			button.setEnabled(false);
+		}
+
+		/**
+		 * 
+		 */
+		@Override
+		public void run()
+		{
+			server.stop();
+			server.destroy();
+			ThreadUtil.notify(stopper);
+		}
+	}
 }

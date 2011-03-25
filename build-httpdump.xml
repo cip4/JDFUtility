@@ -209,7 +209,7 @@
 			</config>
 		</launch4j>
 		<zip destfile="${exe.dist.dir}-win.zip">
-			<zipfileset dir="${exe.dist.dir}" prefix="${dist.dir}" />
+			<zipfileset dir="${exe.dist.dir}" prefix="${exe.name}-exe" />
 		</zip>
 	</target>
 
