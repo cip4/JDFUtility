@@ -86,7 +86,7 @@ public abstract class JettyConsole
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final JettyServer server;
+	protected final JettyServer server;
 	final Log log;
 
 	/**
