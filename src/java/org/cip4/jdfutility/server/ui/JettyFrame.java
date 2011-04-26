@@ -80,6 +80,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdflib.util.ThreadUtil.MyMutex;
@@ -111,6 +113,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	private final MyMutex stopper;
 	JTextField urlField;
 	JTextField portField;
+	protected final Log log;
 
 	/**
 	 * 
@@ -119,6 +122,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	public JettyFrame(JettyServer server)
 	{
 		super();
+		log = LogFactory.getLog(getClass());
 		setTitle(getFrameName());
 		this.server = server;
 		this.stopper = new MyMutex();
@@ -187,13 +191,9 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 				{
 					server.runServer();
 				}
-				catch (InterruptedException e)
-				{
-					// nop					
-				}
 				catch (Exception e)
 				{
-					// nop
+					log.error("Exception cought starting server", e);
 				}
 			}
 			else
