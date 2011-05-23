@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="src/lib/jetty-servlet-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="src/lib/jetty-servlets-7.2.0.v20101020.jar"/>
 	<classpathentry kind="lib" path="src/lib/jetty-security-7.2.0.v20101020.jar"/>
-	<classpathentry kind="lib" path="/SVN_Root/Work/JDFLibJ/lib/commons-io-2.0.jar"/>
-	<classpathentry kind="lib" path="/SVN_Root/Work/JDFLibJ/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="src/lib/commons-io-2.0.jar"/>
+	<classpathentry kind="lib" path="src/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
