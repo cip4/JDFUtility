@@ -5,12 +5,35 @@ package org.cip4.jdfutility.html;
 
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.core.XMLDoc;
 
 /**
   * @author Rainer Prosi, Heidelberger Druckmaschinen *
  */
 public class HTMLUtil
 {
+	/**
+	 * return an empty xhtml root element
+	 *  
+	 * @return
+	 */
+	public static KElement createHTMLRoot()
+	{
+		return new XMLDoc("html", "http://www.w3.org/1999/xhtml").getRoot();
+	}
+
+	/**
+	 * 
+	 * set a css
+	 * @param css the url to the css
+	 * @param root
+	 */
+	public static void setCSS(KElement root, final String css)
+	{
+		root.setXPathAttribute("link/@rel", "stylesheet");
+		root.setXPathAttribute("link/@href", css);
+		root.setXPathAttribute("link/@type", "text/css");
+	}
 
 	/**
 	 * 
@@ -93,6 +116,16 @@ public class HTMLUtil
 		for (String col : row)
 			tr.appendElement("td").setText(col);
 		return tr;
+	}
+
+	/**
+	 * set the title
+	 * @param root
+	 * @param title
+	 */
+	public static void setTitle(KElement root, String title)
+	{
+		root.getCreateXPathElement("head/title").setText(title);
 	}
 
 }

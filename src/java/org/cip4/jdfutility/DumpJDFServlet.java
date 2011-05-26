@@ -290,7 +290,7 @@ public class DumpJDFServlet extends UtilityServlet
 			{
 				bos = new ByteArrayIOStream(request.getInputStream());
 
-				final File f = theDump.newFileFromStream(header, bos.getInputStream());
+				final File f = theDump.newFileFromStream(header, bos.getInputStream(), null);
 				if (contentLength < 0)
 				{
 					final FileInputStream fis = new FileInputStream(f);

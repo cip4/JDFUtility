@@ -206,12 +206,11 @@ public abstract class ServletCall
 	{
 		if (doc != null)
 			return;
-		doc = new XMLDoc("html", "http://www.w3.org/1999/xhtml");
+		doc = HTMLUtil.createHTMLRoot().getOwnerDocument_KElement();
 		KElement root = doc.getRoot();
-		root.setXPathAttribute("link/@rel", "stylesheet");
-
-		root.setXPathAttribute("link/@href", parentServlet.getCssURL(request));
-		root.setXPathAttribute("link/@type", "text/css");
-		root.getCreateXPathElement("head/title").setText(parentServlet.getServletInfo());
+		String css = parentServlet.getCssURL(request);
+		HTMLUtil.setCSS(root, css);
+		HTMLUtil.setTitle(root, parentServlet.getServletInfo());
 	}
+
 }
