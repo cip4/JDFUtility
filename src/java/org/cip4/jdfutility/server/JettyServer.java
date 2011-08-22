@@ -258,7 +258,7 @@ public abstract class JettyServer
 			}
 			catch (Exception e1)
 			{
-				//nop
+				log.error("Snafu creating server: ", e1);
 			}
 		try
 		{
@@ -266,8 +266,7 @@ public abstract class JettyServer
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Snafu starting server: ", e);
 		}
 	}
 
@@ -285,7 +284,7 @@ public abstract class JettyServer
 			}
 			catch (Exception e)
 			{
-				// nop - we leave
+				log.error("Snafu stopping server: ", e);
 			}
 		}
 	}
@@ -316,7 +315,7 @@ public abstract class JettyServer
 	 */
 	public boolean isRunning()
 	{
-		return server.isRunning();
+		return server != null && server.isRunning();
 	}
 
 	/**
@@ -326,7 +325,7 @@ public abstract class JettyServer
 	 */
 	public boolean isStarted()
 	{
-		return server.isStarted();
+		return server != null && server.isStarted();
 	}
 
 	/**
@@ -336,7 +335,7 @@ public abstract class JettyServer
 	 */
 	public boolean isStarting()
 	{
-		return server.isStarting();
+		return server != null && server.isStarting();
 	}
 
 	/**
@@ -346,7 +345,7 @@ public abstract class JettyServer
 	 */
 	public boolean isStopped()
 	{
-		return server.isStopped();
+		return server == null || server.isStopped();
 	}
 
 	/**
@@ -356,7 +355,7 @@ public abstract class JettyServer
 	 */
 	public boolean isStopping()
 	{
-		return server.isStopping();
+		return server != null && server.isStopping();
 	}
 
 }
