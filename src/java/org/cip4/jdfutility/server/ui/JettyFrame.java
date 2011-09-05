@@ -109,6 +109,17 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JettyServer server;
+
+	/**
+	 * 
+	 * get my server
+	 * @return
+	 */
+	protected JettyServer getServer()
+	{
+		return server;
+	}
+
 	private final JButton button;
 	private final MyMutex stopper;
 	JTextField urlField;
