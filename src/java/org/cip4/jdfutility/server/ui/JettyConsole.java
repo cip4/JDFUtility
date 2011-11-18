@@ -100,14 +100,16 @@ public abstract class JettyConsole
 		log = LogFactory.getLog(getClass());
 		this.server = server;
 		init(args);
-		try
-		{
-			server.runServer();
-		}
-		catch (Exception e)
-		{
-			log.fatal(e);
-		}
+		run();
+	}
+
+	/**
+	 * run in a standard interactive console
+	 *  
+	 */
+	public void run()
+	{
+		start();
 		System.out.println("press any key to stop");
 		try
 		{
@@ -117,8 +119,24 @@ public abstract class JettyConsole
 		{
 			// NOP
 		}
-		dieHard();
+		stop();
 		System.out.println("ciao");
+	}
+
+	/**
+	 * 
+	 * start the actual server
+	 */
+	public void start()
+	{
+		try
+		{
+			server.runServer();
+		}
+		catch (Exception e)
+		{
+			log.fatal(e);
+		}
 	}
 
 	/**
@@ -133,7 +151,7 @@ public abstract class JettyConsole
 	/**
 	 * 
 	 */
-	private void dieHard()
+	public void stop()
 	{
 		server.stop();
 		server.destroy();
