@@ -184,6 +184,7 @@ public abstract class JettyServer
 		}
 		catch (UnknownHostException e)
 		{
+			log.fatal("the network looks real bad...", e);
 			return null;
 		}
 	}
