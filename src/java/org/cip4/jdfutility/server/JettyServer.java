@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2011 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -149,10 +149,13 @@ public abstract class JettyServer
 	/**
 	 * 
 	 * the doing routine to run a jetty server
+	 * 
+	 * it is generally a bad idea to overwrite this routine - it is not final to allow an empty null server
+	 * 
 	 * @throws Exception
 	 * @throws InterruptedException
 	 */
-	public final void runServer() throws Exception, InterruptedException
+	public void runServer() throws Exception, InterruptedException
 	{
 		server = new Server(thePort);
 
@@ -169,7 +172,6 @@ public abstract class JettyServer
 		handlers.addHandler(new RedirectHandler());
 
 		server.start();
-
 	}
 
 	/**
@@ -253,6 +255,7 @@ public abstract class JettyServer
 	public final void start()
 	{
 		if (server == null)
+		{
 			try
 			{
 				runServer();
@@ -261,6 +264,7 @@ public abstract class JettyServer
 			{
 				log.error("Snafu creating server: ", e1);
 			}
+		}
 		try
 		{
 			server.start();

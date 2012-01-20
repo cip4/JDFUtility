@@ -68,139 +68,77 @@
  */
 package org.cip4.jdfutility.server;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.jdflib.util.ThreadUtil;
+import org.cip4.jdflib.util.ThreadUtil.MyMutex;
 
 /**
- * starter / stopper class when using a windows service
- * @see NullService for an example implementation
+ * null service for automatically not running a service
  * @author rainer prosi
- * @date Oct 26, 2011
+ * @date Jan 20, 2012
  */
-public abstract class JettyService
+public class NullService extends JettyService
 {
-	protected final Log log;
-	protected JettyServer theServer = null;
-	protected static JettyService theService = null;
+	private class NullThread extends Thread
+	{
 
-	/**
-	 * this gets the actual server instance
-	 * @param args 
-	 * @return
-	 */
-	public abstract JettyServer getServer(String[] args);
+		public NullThread(String arg0)
+		{
+			super(arg0);
+		}
+
+		@Override
+		public void run()
+		{
+			ThreadUtil.wait(mutex, 0);
+		}
+
+	}
 
 	/**
 	 * 
 	 */
-	public JettyService()
+	public NullService()
 	{
 		super();
-		log = LogFactory.getLog(getClass());
+		mutex = new MyMutex();
 	}
 
-	/**
-	 * 
-	 * main ... this main obviously won't work but is an example main. see BambiService for a working implementation
-	 * @param args
-	 * 
-	 */
-	public static void main(String[] args)
-	{
-		LogConfigurator.configureLog(".", "jetty.log");
-		theService = null;
-		theService.doMain(args);
-	}
-
-	/**
-	 * 
-	 * start
-	 * @param args
-	 */
-	public static final void start(String[] args)
-	{
-		theService.doStart(args);
-	}
+	private final MyMutex mutex;
 
 	/**
 	 * 
 	 * main ...
 	 * @param args
 	 */
-	public static final void stop(String[] args)
+	public static void main(String[] args)
 	{
-		theService.doStop(args);
+		theService = new NullService();
+		theService.doMain(args);
 	}
 
 	/**
+	 * @see org.cip4.jdfutility.server.JettyService#getServer(java.lang.String[])
 	 * 
-	 * 
-	 * @param args
-	 * @return
+	 * never called ...
 	 */
-	public int doMain(String[] args)
+	@Override
+	public JettyServer getServer(String[] args)
 	{
-		log.info("main() called, # args: " + args.length);
-		for (String arg : args)
-		{
-			log.info("arg: " + arg);
-		}
-
-		String arg0 = args.length > 0 ? args[0] : "";
-		if ("start".equalsIgnoreCase(arg0))
-		{
-			return doStart(args);
-		}
-		else if ("stop".equalsIgnoreCase(arg0))
-		{
-			return doStop(args);
-		}
-		else
-		{
-			log.error("Unknown parameter: " + arg0);
-			return 1;
-		}
+		return null;
 	}
 
-	/**
-	 * start the actual server
-	 * @param args
-	 * @return 
-	 */
+	@Override
 	protected int doStart(String[] args)
 	{
-		if (theServer != null)
-		{
-			log.error("server already started - ignoring start");
-			return 2;
-		}
-		theServer = getServer(args);
-		if (theServer == null)
-		{
-			log.error("server couldn't start");
-		}
-		else
-		{
-			theServer.start();
-		}
+		new NullThread("nullthread").start();
 		return 0;
 	}
 
-	/**
-	 * stop the actual server
-	 * @param args
-	 * @return 
-	 */
+	@Override
 	protected int doStop(String[] args)
 	{
-		if (theServer == null)
-		{
-			log.error("server already stopped - ignoring stop");
-			return 2;
-		}
-		theServer.stop();
-		theServer = null;
+		ThreadUtil.notifyAll(mutex);
 		return 0;
 	}
+
 }

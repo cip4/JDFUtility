@@ -35,11 +35,28 @@
 				<include name="**/*.jar" />
 			</fileset>
 		</path>
+	</target>
+	
+	<target name="prepare" depends="-init">
 		<!-- Creates directories -->
 		<mkdir dir="${bin.dir}" />
 		<mkdir dir="${dist.dir}" />
+		<copy overwrite="true" file="../JDFLibJ/version.properties" todir="." />
+
+		<copy overwrite="true" todir="${lib.dir}" flatten="true">
+			<fileset dir="../JDFLibJ/dist">
+				<include name="JDFLibJ-2.1.4a.jar" />
+			</fileset>
+			<fileset dir="../JDFLibJ/lib">
+				<include name="xml-apis.jar" />
+				<include name="xercesImpl.jar" />
+				<include name="commons-*.jar" />
+				<include name="activation*.jar" />
+			</fileset>
+		</copy>
 	</target>
-	<target name="compile" depends="-init" description="Compiles source code.">
+
+	<target name="compile" depends="prepare" description="Compiles source code.">
 		<echo>Compiling...</echo>
 		<javac destdir="${bin.dir}" debug="${build.debug}">
 			<src path="${java.src.dir}" />
