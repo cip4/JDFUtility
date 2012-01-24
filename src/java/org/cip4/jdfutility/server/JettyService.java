@@ -175,7 +175,7 @@ public abstract class JettyService
 			log.error("server already started - ignoring start");
 			return 2;
 		}
-		theServer = getServer(args);
+		theServer = getLicensedServer(args);
 		if (theServer == null)
 		{
 			log.error("server couldn't start");
@@ -185,6 +185,33 @@ public abstract class JettyService
 			theServer.start();
 		}
 		return 0;
+	}
+
+	/**
+	 * 
+	 * @param args
+	 * @return
+	 */
+	private JettyServer getLicensedServer(String[] args)
+	{
+		if (isLicensed(args))
+			return getServer(args);
+		else
+			return new NullServer();
+	}
+
+	/**
+	 * you can overwrite this for a license check and return a null server in case licensing fails
+	 * this implementation simply checks for the non-existence of an environment variable JettyNoStart
+	 * 
+	 * @param args
+	 * @return
+	 */
+	protected boolean isLicensed(String[] args)
+	{
+		boolean isLicensed = System.getenv("JettyNoStart") == null;
+		log.info("checking license - isLicensed=" + isLicensed);
+		return isLicensed;
 	}
 
 	/**

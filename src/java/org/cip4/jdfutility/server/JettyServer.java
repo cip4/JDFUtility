@@ -252,7 +252,7 @@ public abstract class JettyServer
 	 * 
 	 * @see Server start()
 	 */
-	public final void start()
+	public void start()
 	{
 		if (server == null)
 		{
@@ -279,7 +279,7 @@ public abstract class JettyServer
 	 * 
 	 * @see Server stop()
 	 */
-	public final void stop()
+	public void stop()
 	{
 		if (server != null)
 		{

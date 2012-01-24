@@ -70,75 +70,141 @@ package org.cip4.jdfutility.server;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdflib.util.ThreadUtil.MyMutex;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  * null service for automatically not running a service
  * @author rainer prosi
  * @date Jan 20, 2012
  */
-public class NullService extends JettyService
+public class NullServer extends JettyServer
 {
 	private class NullThread extends Thread
 	{
-
+		/**
+		 * 
+		 * @param arg0
+		 */
 		public NullThread(String arg0)
 		{
 			super(arg0);
 		}
 
+		/**
+		 * 
+		 * @see java.lang.Thread#run()
+		 */
 		@Override
 		public void run()
 		{
 			ThreadUtil.wait(mutex, 0);
 		}
-
 	}
 
 	/**
 	 * 
 	 */
-	public NullService()
+	public NullServer()
 	{
 		super();
+		log.info("creating null server");
 		mutex = new MyMutex();
+		theThread = null;
 	}
 
 	private final MyMutex mutex;
+	private NullThread theThread;
 
 	/**
 	 * 
-	 * main ...
-	 * @param args
+	 * @see org.cip4.jdfutility.server.JettyServer#start()
 	 */
-	public static void main(String[] args)
+	@Override
+	public void start()
 	{
-		theService = new NullService();
-		theService.doMain(args);
+		log.info("starting null server");
+		theThread = new NullThread("nullthread");
+		theThread.start();
 	}
 
 	/**
-	 * @see org.cip4.jdfutility.server.JettyService#getServer(java.lang.String[])
 	 * 
-	 * never called ...
+	 * @see org.cip4.jdfutility.server.JettyServer#stop()
 	 */
 	@Override
-	public JettyServer getServer(String[] args)
+	public void stop()
+	{
+		log.info("stopping null server");
+		ThreadUtil.notifyAll(mutex);
+		theThread = null;
+	}
+
+	/**
+	 * @see org.cip4.jdfutility.server.JettyServer#getHome()
+	 */
+	@Override
+	protected String getHome()
 	{
 		return null;
 	}
 
+	/**
+	 * @see org.cip4.jdfutility.server.JettyServer#createServletHandler()
+	 */
 	@Override
-	protected int doStart(String[] args)
+	protected ServletContextHandler createServletHandler()
 	{
-		new NullThread("nullthread").start();
-		return 0;
+		return null;
 	}
 
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#isRunning()
+	 */
 	@Override
-	protected int doStop(String[] args)
+	public boolean isRunning()
 	{
-		ThreadUtil.notifyAll(mutex);
-		return 0;
+		return theThread != null;
+	}
+
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#isStarted()
+	 */
+	@Override
+	public boolean isStarted()
+	{
+		return theThread != null;
+	}
+
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#isStarting()
+	 */
+	@Override
+	public boolean isStarting()
+	{
+		return false;
+	}
+
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#isStopped()
+	 */
+	@Override
+	public boolean isStopped()
+	{
+		return theThread == null;
+	}
+
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#isStopping()
+	 */
+	@Override
+	public boolean isStopping()
+	{
+		return false;
 	}
 
 }
