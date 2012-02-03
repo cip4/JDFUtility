@@ -79,6 +79,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.util.StringUtil;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -170,8 +171,17 @@ public abstract class JettyServer
 
 		handlers.addHandler(context);
 		handlers.addHandler(new RedirectHandler());
-
+		addMoreHandlers(handlers);
 		server.start();
+	}
+
+	/**
+	 * hook to add more handlers if required
+	 * @param handlers
+	 */
+	protected void addMoreHandlers(HandlerList handlers)
+	{
+		// nop		
 	}
 
 	/**
@@ -204,7 +214,7 @@ public abstract class JettyServer
 		protected MyResourceHandler(String strip)
 		{
 			super();
-			this.strip = strip;
+			this.strip = StringUtil.getNonEmpty(strip);
 		}
 
 		private final String strip;
@@ -212,10 +222,15 @@ public abstract class JettyServer
 		@Override
 		public Resource getResource(String url) throws MalformedURLException
 		{
-			if (url.startsWith(strip))
-				url = url.substring(strip.length());
+			if (strip != null)
+			{
+				if (url.startsWith(strip))
+					url = url.substring(strip.length());
+			}
 			if ("".equals(url) || "/".equals(url))
+			{
 				return null;
+			}
 			return super.getResource(url);
 		}
 	}
@@ -230,7 +245,6 @@ public abstract class JettyServer
 		{
 			response.sendRedirect(getHome());
 			arg1.setHandled(true);
-
 		}
 	}
 

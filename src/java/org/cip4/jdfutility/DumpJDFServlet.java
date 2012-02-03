@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -72,6 +72,9 @@ package org.cip4.jdfutility;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -79,6 +82,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -95,6 +99,7 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.zip.ZipReader;
 import org.cip4.jdfutility.html.HTMLUtil;
 
 /**
@@ -300,17 +305,11 @@ public class DumpJDFServlet extends UtilityServlet
 
 				if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
 				{
-					final FileInputStream fis = new FileInputStream(f);
-					final String dirName = UrlUtil.newExtension(f.getPath(), ".dir");
-					log.info("dump mime: " + dirName);
-					char c = 'a';
-					while (c != '!')
-					{
-						c = (char) fis.read();
-					}
-
-					final Multipart mp = MimeUtil.getMultiPart(fis);
-					MimeUtil.writeToDir(mp, new File(dirName));
+					dumpMime(bos, f.getPath());
+				}
+				else if (UrlUtil.APPLICATION_ZIP.equalsIgnoreCase(contentType))
+				{
+					dumpZip(bos, f.getPath());
 				}
 			}
 			catch (final Exception e)
@@ -319,6 +318,36 @@ public class DumpJDFServlet extends UtilityServlet
 			}
 			System.gc();
 			return bos;
+		}
+
+		protected void dumpMime(final ByteArrayIOStream bos, String path) throws FileNotFoundException, IOException, MessagingException
+		{
+			final InputStream fis = bos.getInputStream();
+			final String dirName = UrlUtil.newExtension(path, "mime.dir");
+			log.info("dump mime: " + dirName);
+
+			final Multipart mp = MimeUtil.getMultiPart(fis);
+			MimeUtil.writeToDir(mp, new File(dirName));
+		}
+
+		protected void dumpZip(final ByteArrayIOStream bos, String path) throws FileNotFoundException, IOException, MessagingException
+		{
+			final InputStream fis = bos.getInputStream();
+			final String dirName = UrlUtil.newExtension(path, "zip.dir");
+			log.info("dump zip: " + dirName);
+			//			FileUtil.streamToFile(fis, dirName + ".zip");
+			ZipReader zip = new ZipReader(fis);
+			zip.unPack(new File(dirName));
+		}
+
+		protected void skipHeader(final InputStream fis) throws IOException
+		{
+			char c = 'a';
+			while (c != '!')
+			{
+				c = (char) fis.read();
+			}
+			c = (char) fis.read();
 		}
 
 		/**
