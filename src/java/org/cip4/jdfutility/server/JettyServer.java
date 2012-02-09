@@ -162,6 +162,7 @@ public abstract class JettyServer
 
 		HandlerList handlers = new HandlerList();
 		server.setHandler(handlers);
+		addMoreHandlers(handlers);
 
 		ResourceHandler resourceHandler = createResourceHandler();
 		handlers.addHandler(resourceHandler);
@@ -171,7 +172,6 @@ public abstract class JettyServer
 
 		handlers.addHandler(context);
 		handlers.addHandler(new RedirectHandler());
-		addMoreHandlers(handlers);
 		server.start();
 	}
 

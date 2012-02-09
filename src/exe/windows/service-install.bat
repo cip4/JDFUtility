@@ -3,6 +3,6 @@ set CP="lib\Bambi.jar;lib\BambiCore.jar;lib\JDFLibJ-2.1.4a.jar;lib\JDFUtility-2.
 
 set START_VAR=--StartClass=%CLASS% --StartParams=start
 set STOP_VAR=--StopClass=%CLASS% --StopParams=stop
-set SERVICE_LOGS=--LogPath=C:\BambiData\logs --LogLevel=Info --StdOutput=auto --StdError=auto
+set SERVICE_LOGS=--LogPath=.\logs --LogLevel=Info --StdOutput=auto --StdError=auto
 
 "__launcher__" __serviceid__ --DisplayName="__description__" --Install="__launcher__" --StartPath="__startpath__" --Classpath=%CP% --StartMode=jvm --StopMode=jvm %START_VAR% %STOP_VAR% %SERVICE_LOGS%
