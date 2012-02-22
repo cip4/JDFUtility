@@ -147,8 +147,8 @@ public abstract class JettyService
 			log.info("arg: " + arg);
 		}
 
-		String arg0 = args.length > 0 ? args[0] : "";
-		if ("start".equalsIgnoreCase(arg0))
+		String arg0 = args.length > 0 ? args[0] : "## no parameters ##";
+		if ("start".equalsIgnoreCase(arg0) || args.length == 0)
 		{
 			return doStart(args);
 		}
