@@ -8,4 +8,4 @@ set STOP_VAR=--StopClass=%CLASS% --StopParams=stop
 
 set SERVICE_LOGS=--LogPath=.\logs --LogLevel=Info --StdOutput=auto --StdError=auto
 
-"__launcher__" __serviceid__ --Description="__description__" --DisplayName="__displayname__" --Install="__launcher__" --StartPath="__startpath__" --Classpath=%CP% --StartMode=jvm --StopMode=jvm %START_VAR% %STOP_VAR% %SERVICE_LOGS%
+"__launcher__" __serviceid__ --JavaHome="__javahome__" --Jvm="__javahome__\bin\client\jvm.dll" --Description="__description__" --DisplayName="__displayname__" --Install="__launcher__" --StartPath="__startpath__" --Classpath=%CP% --StartMode=jvm --StopMode=jvm %START_VAR% %STOP_VAR% %SERVICE_LOGS%
