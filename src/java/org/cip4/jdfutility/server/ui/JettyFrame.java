@@ -163,7 +163,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		p2.add(new JLabel("port: "));
 		portField = new JTextField(server.getBaseURL());
 		portField.setEditable(true);
-		portField.setText("" + JettyServer.getPort());
+		portField.setText("" + server.getPort());
 		p2.add(portField);
 		panel.add(p2);
 		return panel;
@@ -196,7 +196,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 			if (button.getText().contains("Start"))
 			{
 				button.setText("Stop Server");
-				JettyServer.setPort(StringUtil.parseInt(portField.getText(), JettyServer.getPort()));
+				server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
 				urlField.setText(server.getBaseURL());
 				try
 				{

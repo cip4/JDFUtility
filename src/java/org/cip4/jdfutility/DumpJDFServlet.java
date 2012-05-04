@@ -80,6 +80,7 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 
 import javax.mail.MessagingException;
@@ -285,11 +286,22 @@ public class DumpJDFServlet extends UtilityServlet
 			}
 			final DumpDir theDump = getCreateDump(newDir);
 			String header = getRequestURL();
-			final String contentType = request.getContentType();
-			header += "\nHTTP Content Type: " + contentType;
 			contentLength = request.getContentLength();
-			header += "\nContext Length: " + contentLength;
+			header += "\nmethod: " + request.getMethod();
+			header += "\nContent Length: " + contentLength;
 			header += "\nRemote host: " + request.getRemoteHost() + ":" + request.getRemotePort();
+
+			@SuppressWarnings("unchecked")
+			Enumeration<String> set = request.getHeaderNames();
+			if (set != null)
+			{
+				header += "\nHTTP Header List: \n";
+				while (set.hasMoreElements())
+				{
+					String key = set.nextElement();
+					header += "  " + key + "=" + request.getHeader(key) + "\n";
+				}
+			}
 			ByteArrayIOStream bos = null;
 			try
 			{
@@ -302,7 +314,7 @@ public class DumpJDFServlet extends UtilityServlet
 					contentLength = fis.available() - header.length() - 28;
 				}
 				requestLen += contentLength;
-
+				final String contentType = request.getContentType();
 				if (contentType != null && contentType.toLowerCase().startsWith("multipart/related"))
 				{
 					dumpMime(bos, f.getPath());

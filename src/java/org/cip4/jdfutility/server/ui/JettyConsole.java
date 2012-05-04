@@ -145,7 +145,7 @@ public abstract class JettyConsole
 	 */
 	protected void init(MyArgs args)
 	{
-		JettyServer.setPort(args.intParameter('p', 8080, 10));
+		server.setPort(args.intParameter('p', 8080, 10));
 	}
 
 	/**

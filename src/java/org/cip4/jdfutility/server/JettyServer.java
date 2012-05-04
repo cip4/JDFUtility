@@ -129,7 +129,7 @@ public abstract class JettyServer
 	 * set the port 
 	 * @param port the port to set
 	 */
-	public static void setPort(int port)
+	public void setPort(int port)
 	{
 		thePort = port;
 	}
@@ -322,7 +322,7 @@ public abstract class JettyServer
 	 * get the port number the port is always a singleton in a jetty environment
 	 * @return
 	 */
-	public static int getPort()
+	public int getPort()
 	{
 		return thePort;
 	}
