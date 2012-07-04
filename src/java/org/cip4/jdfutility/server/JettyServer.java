@@ -81,9 +81,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
@@ -159,9 +162,15 @@ public abstract class JettyServer
 	public void runServer() throws Exception, InterruptedException
 	{
 		server = new Server(thePort);
+		HandlerList handlers = createHandlerList();
+		HandlerCollection handlerbase = createBaseCollection(handlers);
+		server.setHandler(handlerbase);
+		server.start();
+	}
 
+	protected HandlerList createHandlerList()
+	{
 		HandlerList handlers = new HandlerList();
-		server.setHandler(handlers);
 		addMoreHandlers(handlers);
 
 		ResourceHandler resourceHandler = createResourceHandler();
@@ -172,7 +181,21 @@ public abstract class JettyServer
 
 		handlers.addHandler(context);
 		handlers.addHandler(new RedirectHandler());
-		server.start();
+		return handlers;
+	}
+
+	/**
+	 * 
+	 * create the base handler collection that contains all handlers to be processed multiple times
+	 * @param handlers 
+	 * @return
+	 */
+	protected HandlerCollection createBaseCollection(HandlerList handlers)
+	{
+		HandlerCollection handlerbase = new HandlerCollection();
+		handlerbase.addHandler(handlers);
+		addHttpLogger(handlerbase);
+		return handlerbase;
 	}
 
 	/**
@@ -182,6 +205,31 @@ public abstract class JettyServer
 	protected void addMoreHandlers(HandlerList handlers)
 	{
 		// nop		
+	}
+
+	/**
+	 * hook to add http loggers or other post handling handlers, if required
+	 * @param handlerbase
+	 */
+	protected void addHttpLogger(HandlerCollection handlerbase)
+	{
+		RequestLog requestLog = createRequestLog();
+		if (requestLog != null)
+		{
+			RequestLogHandler requestLogHandler = new RequestLogHandler();
+			requestLogHandler.setRequestLog(requestLog);
+			handlerbase.addHandler(requestLogHandler);
+			log.info("adding http log handler");
+		}
+	}
+
+	/**
+	 * create a request log  - the default method does not
+	 * @return
+	 */
+	protected RequestLog createRequestLog()
+	{
+		return null;
 	}
 
 	/**
@@ -224,12 +272,12 @@ public abstract class JettyServer
 		{
 			if (strip != null)
 			{
-				if (url.startsWith(strip))
+				if (url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
 					url = url.substring(strip.length());
 			}
 			if ("".equals(url) || "/".equals(url))
 			{
-				return null;
+				return super.getResource(getHome());
 			}
 			return super.getResource(url);
 		}
@@ -237,7 +285,6 @@ public abstract class JettyServer
 
 	private class RedirectHandler extends AbstractHandler
 	{
-
 		/**
 		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 		 */
@@ -376,5 +423,4 @@ public abstract class JettyServer
 	{
 		return server != null && server.isStopping();
 	}
-
 }

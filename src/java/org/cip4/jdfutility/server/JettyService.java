@@ -70,11 +70,14 @@ package org.cip4.jdfutility.server;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.core.VString;
+import org.cip4.jdflib.util.ThreadUtil;
+import org.cip4.jdflib.util.ThreadUtil.MyMutex;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 
 /**
  * starter / stopper class when using a windows service
- * @see NullService for an example implementation
+ * see DummyService for an example implementation
  * @author rainer prosi
  * @date Oct 26, 2011
  */
@@ -83,6 +86,7 @@ public abstract class JettyService
 	protected final Log log;
 	protected JettyServer theServer = null;
 	protected static JettyService theService = null;
+	private MyMutex mutex;
 
 	/**
 	 * this gets the actual server instance
@@ -98,6 +102,10 @@ public abstract class JettyService
 	{
 		super();
 		log = LogFactory.getLog(getClass());
+		if (theService == null)
+			theService = this;
+		else
+			log.error("You are creating a second JettyService. This is generally a very bad idea.");
 	}
 
 	/**
@@ -131,6 +139,16 @@ public abstract class JettyService
 	public static final void stop(String[] args)
 	{
 		theService.doStop(args);
+	}
+
+	/**
+	 * 
+	 * @return true if we are in a jetty service environment
+	 *  
+	 */
+	public static final boolean isJettyEnvironment()
+	{
+		return theService != null;
 	}
 
 	/**
@@ -183,6 +201,7 @@ public abstract class JettyService
 		else
 		{
 			theServer.start();
+			mutex = new MyMutex();
 		}
 		return 0;
 	}
@@ -194,10 +213,28 @@ public abstract class JettyService
 	 */
 	private JettyServer getLicensedServer(String[] args)
 	{
+		if (args == null)
+			args = new String[] {};
 		if (isLicensed(args))
+		{
 			return getServer(args);
+		}
 		else
-			return new NullServer();
+		{
+			log.warn("not licensed - retrieving nonlicensed server");
+			return getNullServer(args);
+		}
+	}
+
+	/**
+	 * 
+	 * overwrite this if you want a different unlicensed server implementation. null is also an option in case you want to fail miserably
+	 * @param args 
+	 * @return
+	 */
+	protected JettyServer getNullServer(String[] args)
+	{
+		return new VString(args).contains("-nonull") ? null : new NullServer();
 	}
 
 	/**
@@ -215,6 +252,19 @@ public abstract class JettyService
 	}
 
 	/**
+	 * wait for the server to stop - usefull to keep the main thread alive
+	 *  
+	 */
+	public void waitStopped()
+	{
+		if (mutex != null)
+		{
+			log.info("waiting for server stop");
+			ThreadUtil.wait(mutex, 0);
+		}
+	}
+
+	/**
 	 * stop the actual server
 	 * @param args
 	 * @return 
@@ -228,6 +278,7 @@ public abstract class JettyService
 		}
 		theServer.stop();
 		theServer = null;
+		ThreadUtil.notifyAll(mutex);
 		return 0;
 	}
 }
