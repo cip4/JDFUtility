@@ -161,11 +161,17 @@ public abstract class JettyServer
 	 */
 	public void runServer() throws Exception, InterruptedException
 	{
+		if (server != null)
+		{
+			log.error("server already existing - whazzup");
+		}
+		log.info("creating new server at port: " + thePort);
 		server = new Server(thePort);
 		HandlerList handlers = createHandlerList();
 		HandlerCollection handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
 		server.start();
+		log.info("completed starting new server at port: " + thePort);
 	}
 
 	protected HandlerList createHandlerList()
@@ -334,6 +340,7 @@ public abstract class JettyServer
 		{
 			log.error("Snafu starting server: ", e);
 		}
+		log.info("finished starting server");
 	}
 
 	/**
@@ -344,6 +351,7 @@ public abstract class JettyServer
 	{
 		if (server != null)
 		{
+			log.info("Stopping server");
 			try
 			{
 				server.stop();
@@ -352,6 +360,11 @@ public abstract class JettyServer
 			{
 				log.error("Snafu stopping server: ", e);
 			}
+			log.info("Stopped server");
+		}
+		else
+		{
+			log.warn("Stopping null server");
 		}
 	}
 

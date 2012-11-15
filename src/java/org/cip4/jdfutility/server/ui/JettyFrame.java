@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.ThreadUtil;
-import org.cip4.jdflib.util.ThreadUtil.MyMutex;
+import org.cip4.jdflib.util.thread.MyMutex;
 import org.cip4.jdfutility.server.JettyServer;
 
 /**

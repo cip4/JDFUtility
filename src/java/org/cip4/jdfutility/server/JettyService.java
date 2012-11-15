@@ -72,8 +72,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.ThreadUtil;
-import org.cip4.jdflib.util.ThreadUtil.MyMutex;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.jdflib.util.thread.MyMutex;
 
 /**
  * starter / stopper class when using a windows service
@@ -174,7 +174,13 @@ public abstract class JettyService
 		}
 		else if (vArgs.contains("stop"))
 		{
-			return doStop(args);
+			int i = doStop(args);
+			if (i == 0)
+				log.info("exiting normally after stop: " + i);
+			else
+				log.warn("abnormal exit" + i);
+			System.exit(i);
+			return i;
 		}
 		else
 		{
@@ -267,7 +273,7 @@ public abstract class JettyService
 	}
 
 	/**
-	 * stop the actual server
+	 * stop the actual server - note: calls exit so MUST be called last
 	 * @param args
 	 * @return 
 	 */

@@ -69,7 +69,7 @@
 package org.cip4.jdfutility.server;
 
 import org.cip4.jdflib.util.ThreadUtil;
-import org.cip4.jdflib.util.ThreadUtil.MyMutex;
+import org.cip4.jdflib.util.thread.MyMutex;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
