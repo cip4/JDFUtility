@@ -319,7 +319,7 @@ public class DumpJDFServlet extends UtilityServlet
 				{
 					dumpMime(bos, f.getPath());
 				}
-				else if (UrlUtil.APPLICATION_ZIP.equalsIgnoreCase(contentType))
+				else if (UrlUtil.isZIPType(contentType))
 				{
 					dumpZip(bos, f.getPath());
 				}
