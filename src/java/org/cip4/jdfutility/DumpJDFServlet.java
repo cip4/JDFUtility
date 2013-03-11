@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -312,6 +312,7 @@ public class DumpJDFServlet extends UtilityServlet
 				{
 					final FileInputStream fis = new FileInputStream(f);
 					contentLength = fis.available() - header.length() - 28;
+					fis.close();
 				}
 				requestLen += contentLength;
 				final String contentType = request.getContentType();
