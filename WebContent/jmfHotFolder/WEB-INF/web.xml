@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<distributable />
+	<servlet>
+		<servlet-name>JMFHotFolderServlet</servlet-name>
+		<display-name>JMF HTTP to File conversion Servlet</display-name>
+		<description>logs any received data in a temp file</description>
+		<servlet-class>org.cip4.JDFUtility.JMFHotFolderServlet</servlet-class>
+		<init-param>
+			<param-name>rootDir</param-name>
+			<param-value>C:/jmfdump</param-value>
+			<description>Local location (root) of the directory to dump to</description>
+		</init-param>
+		<init-param>
+			<param-name>flushOnInit</param-name>
+			<param-value>false</param-value>
+			<description>if false, the directory including all contents gets moved to $rootDir.bak on init
+			$rootDir.bak always gets removed, thus you have one restart prior to losing massages
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>maxKeep</param-name>
+			<param-value>222</param-value>
+			<description>maximum number of jmfs that are retained in the directory
+			note that this is a rough number and may be exceeded for performance optimization
+			note also that in the bast of all worlds, the consuming application will clean up by itself
+			</description>
+		</init-param>
+		<init-param>
+			<param-name>mimeTypes</param-name>
+			<param-value>text/xml application/vnd.cip4-jmf+xml</param-value>
+			<description>blank separated list of acceptable mime types, * is any
+			</description>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JMFHotFolderServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>120</session-timeout>
+	</session-config>
+</web-app>
