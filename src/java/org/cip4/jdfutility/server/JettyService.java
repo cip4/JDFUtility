@@ -88,6 +88,37 @@ public abstract class JettyService
 	protected static JettyService theService = null;
 	private MyMutex mutex;
 
+	private class StopExit extends Thread
+	{
+		/**
+		 * 
+		 */
+		StopExit()
+		{
+			super("StopExit");
+			setDaemon(true);
+		}
+
+		/**
+		 * 
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run()
+		{
+			try
+			{
+				Thread.sleep(42420);
+				log.warn("exiting ungracefully");
+				System.exit(2);
+			}
+			catch (final InterruptedException x)
+			{
+				//nop
+			}
+		}
+	}
+
 	/**
 	 * this gets the actual server instance
 	 * @param args 
@@ -179,7 +210,7 @@ public abstract class JettyService
 				log.info("exiting normally after stop: " + i);
 			else
 				log.warn("abnormal exit" + i);
-			System.exit(i);
+			new StopExit().start();
 			return i;
 		}
 		else

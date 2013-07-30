@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -148,8 +148,7 @@ public class FixJDFServlet extends UtilityServlet
 	 */
 	protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		List<FileItem> fileItems = JDFServletUtil.getFileList(request);
-
+		List<FileItem> fileItems = new FileItemList(request, 20 * 1024 * 1024).getFileList(true, true);
 		FileItem fileItem = null;
 		EnumVersion version = null;
 		int nFiles = 0;

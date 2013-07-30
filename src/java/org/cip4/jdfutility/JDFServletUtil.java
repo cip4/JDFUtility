@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -78,10 +78,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
@@ -172,27 +169,13 @@ public class JDFServletUtil extends Object
 	 * @param request
 	 * @return
 	 * @throws ServletException
+	 * @deprecated - use 4 parameter version
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static List<FileItem> getFileList(final HttpServletRequest request) throws ServletException
 	{
-		// Create a factory for disk-based file items
-		final FileItemFactory factory = new DiskFileItemFactory();
-
-		// Create a new file upload handler
-		final ServletFileUpload upload = new ServletFileUpload(factory);
-
-		List<FileItem> fileItems = null;
-		try
-		{
-			fileItems = upload.parseRequest(request);
-			upload.setSizeMax(1024 * 1024 * 20); // 20 MB
-		}
-		catch (final FileUploadException fue)
-		{
-			throw new ServletException("Could not parse multipart request.", fue);
-		}
-		return fileItems;
+		FileItemList fil = new FileItemList(request, 20 * 1024 * 1024);
+		return fil.getFileList(true, true);
 	}
 
 	/**
@@ -222,10 +205,13 @@ public class JDFServletUtil extends Object
 	/**
 	 * 
 	 * @return
+	 * @deprecated use {@link PlatformUtil}.isWindows()
+	 *
 	 */
+	@Deprecated
 	public static boolean isWindows()
 	{
-		return System.getProperty("os.name").startsWith("Win");
+		return PlatformUtil.isWindows();
 	}
 
 }
