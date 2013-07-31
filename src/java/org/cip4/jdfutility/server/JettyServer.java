@@ -268,10 +268,10 @@ public abstract class JettyServer
 	 * @author rainer prosi
 	 * @date Dec 10, 2010
 	 */
-	private class MyResourceHandler extends ResourceHandler
+	protected class MyResourceHandler extends ResourceHandler
 	{
 
-		protected MyResourceHandler(String strip)
+		public MyResourceHandler(String strip)
 		{
 			super();
 			this.strip = StringUtil.getNonEmpty(strip);

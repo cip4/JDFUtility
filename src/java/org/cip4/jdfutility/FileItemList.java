@@ -74,6 +74,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.ServletException;
@@ -87,6 +88,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.util.StreamUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * 
@@ -140,20 +142,35 @@ public class FileItemList
 		else
 		{
 			reqParameters = new JDFAttributeMap();
-			Map<String, String> parameterMap = request.getParameterMap();
+			Map<String, String[]> parameterMap = request.getParameterMap();
 			if (parameterMap != null)
 			{
-				reqParameters.putAll(parameterMap);
+				Set<String> keySet = parameterMap.keySet();
+				for (String key : keySet)
+				{
+					String[] vals = parameterMap.get(key);
+					if (vals != null && vals.length > 0)
+					{
+						reqParameters.put(key, vals[0]);
+					}
+				}
 			}
-			try
+			if (UrlUtil.POST.equalsIgnoreCase(request.getMethod()))
 			{
-				if (filesize > 0)
-					upload.setSizeMax(filesize);
-				fileItems = upload.parseRequest(request);
+				try
+				{
+					if (filesize > 0)
+						upload.setSizeMax(filesize);
+					fileItems = upload.parseRequest(request);
+				}
+				catch (final FileUploadException fue)
+				{
+					throw new ServletException("Could not parse multipart request.", fue);
+				}
 			}
-			catch (final FileUploadException fue)
+			else
 			{
-				throw new ServletException("Could not parse multipart request.", fue);
+				fileItems = null;
 			}
 		}
 	}
