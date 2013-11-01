@@ -132,7 +132,7 @@ public abstract class JettyConsole
 		{
 			server.runServer();
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			log.fatal(e);
 		}

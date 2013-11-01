@@ -165,13 +165,13 @@ public abstract class JettyServer
 		{
 			log.error("server already existing - whazzup");
 		}
-		log.info("creating new server at port: " + thePort);
+		log.info("creating new server at port: " + thePort + context);
 		server = new Server(thePort);
 		HandlerList handlers = createHandlerList();
 		HandlerCollection handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
 		server.start();
-		log.info("completed starting new server at port: " + thePort);
+		log.info("completed starting new server at port: " + thePort + context);
 	}
 
 	/**
@@ -300,6 +300,7 @@ public abstract class JettyServer
 		/**
 		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 		 */
+		@Override
 		public void handle(String pathInContext, Request arg1, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
 		{
 			response.sendRedirect(getHome());
@@ -333,16 +334,16 @@ public abstract class JettyServer
 			{
 				runServer();
 			}
-			catch (Exception e1)
+			catch (Throwable e1)
 			{
-				log.error("Snafu creating server: ", e1);
+				log.error("Snafu creating server at Port: " + thePort + context, e1);
 			}
 		}
 		try
 		{
 			server.start();
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			log.error("Snafu starting server: ", e);
 		}
@@ -362,7 +363,7 @@ public abstract class JettyServer
 			{
 				server.stop();
 			}
-			catch (Exception e)
+			catch (Throwable e)
 			{
 				log.error("Snafu stopping server: ", e);
 			}

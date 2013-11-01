@@ -189,6 +189,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
 		if (button.equals(arg0.getSource()))
@@ -202,7 +203,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 				{
 					server.runServer();
 				}
-				catch (Exception e)
+				catch (Throwable e)
 				{
 					log.error("Exception cought starting server", e);
 				}

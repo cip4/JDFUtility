@@ -223,7 +223,7 @@ public class DumpJDFServlet extends UtilityServlet
 					w.print("<HTML><HEAD><TITLE>JDF Test DUMP</TITLE></HEAD></HTML>");
 					w.flush();
 				}
-				catch (final Exception e)
+				catch (final Throwable e)
 				{
 					log.error("whazzup? ", e);
 				}
@@ -325,7 +325,7 @@ public class DumpJDFServlet extends UtilityServlet
 					dumpZip(bos, f.getPath());
 				}
 			}
-			catch (final Exception e)
+			catch (final Throwable e)
 			{
 				log.error("dump service - snafu: ", e);
 			}
