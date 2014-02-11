@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="src/lib/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="src/lib/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="src/lib/mailapi.jar"/>
-	<classpathentry kind="lib" path="src/lib/servlet-api-2.4.jar"/>
+	<classpathentry kind="lib" path="src/lib/servlet-api-2.4.jar" sourcepath="/Users/rainerprosi/.m2/repository/javax/servlet/servlet-api/2.4/servlet-api-2.4-sources.jar"/>
 	<classpathentry kind="lib" path="src/lib/xercesImpl-2.7.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JDFLibJ"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
