@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2012 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -85,9 +85,9 @@ public class NullServer extends JettyServer
 		 * 
 		 * @param arg0
 		 */
-		public NullThread(String arg0)
+		public NullThread()
 		{
-			super(arg0);
+			super("nullthread");
 		}
 
 		/**
@@ -97,7 +97,9 @@ public class NullServer extends JettyServer
 		@Override
 		public void run()
 		{
+			log.info("Starting dummy null server thread");
 			ThreadUtil.wait(mutex, 0);
+			log.info("Completed dummy null server thread");
 		}
 	}
 
@@ -123,7 +125,7 @@ public class NullServer extends JettyServer
 	public void start()
 	{
 		log.info("starting null server");
-		theThread = new NullThread("nullthread");
+		theThread = new NullThread();
 		theThread.start();
 	}
 
