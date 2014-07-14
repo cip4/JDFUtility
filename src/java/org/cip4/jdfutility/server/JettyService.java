@@ -73,6 +73,7 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdflib.util.logging.LogConfigurator;
+import org.cip4.jdflib.util.net.ProxyUtil;
 import org.cip4.jdflib.util.thread.MyMutex;
 
 /**
@@ -241,6 +242,7 @@ public abstract class JettyService
 		}
 		else
 		{
+			ProxyUtil.setUseSystemDefault(true);
 			theServer.start();
 			mutex = new MyMutex();
 			return 0;
