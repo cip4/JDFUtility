@@ -1,0 +1,111 @@
+package org.cip4.jdfutility;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.lf5.util.StreamUtils;
+import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.UrlUtil;
+
+/**
+ *
+ * @author  rainer
+ *
+ *
+  */
+public class GetFileServlet extends HttpServlet
+{
+
+	private static Log log = LogFactory.getLog(GetFileServlet.class.getName());
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8902154436245089036L;
+	private File baseDir = null;
+
+	/** Initializes the servlet.
+	 */
+	@Override
+	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		final String root = config.getInitParameter("rootDir");
+		log.info("Config root: " + root);
+		baseDir = new File(root);
+		baseDir.mkdir(); // create if it aint there
+	}
+
+	/** Destroys the servlet.
+	 */
+	@Override
+	public void destroy()
+	{
+		//      foo		
+	}
+
+	/** Handles the HTTP <code>GET</code> method.
+	 * @param request servlet request
+	 * @param response servlet response
+	 * @throws IOException 
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		processRequest(request, response);
+	}
+
+	/** Handles the HTTP <code>POST</code> method.
+	 * @param request servlet request
+	 * @param response servlet response
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		processRequest(request, response);
+	}
+
+	/**
+	 * Parses a multipart request.
+	 * @param request 
+	 * @param response 
+	 * @throws IOException 
+	 */
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException
+	{
+		OutputStream os = response.getOutputStream();
+		String localName = request.getPathInfo();
+		File f = FileUtil.getFileInDirectory(baseDir, new File(localName));
+		if (f.exists())
+		{
+			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
+			StreamUtils.copyThenClose(new FileInputStream(f), response.getOutputStream());
+		}
+		else
+		{
+			response.setContentType(UrlUtil.TEXT_HTML);
+			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
+			os.write(localName.getBytes());
+			os.write("</HTML>".getBytes());
+		}
+	}
+
+	/** Returns a short description of the servlet.
+	 */
+	@Override
+	public String getServletInfo()
+	{
+		return "GETFile Servlet";
+	}
+
+}
