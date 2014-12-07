@@ -108,7 +108,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final JettyServer server;
+	protected final JettyServer server;
 
 	/**
 	 * 
@@ -196,9 +196,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		{
 			if (button.getText().contains("Start"))
 			{
-				button.setText("Stop Server");
-				server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
-				urlField.setText(server.getBaseURL());
+				started();
 				try
 				{
 					server.runServer();
@@ -213,6 +211,24 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 				new Stopper().start();
 			}
 		}
+	}
+
+	/**
+	 * 
+	 */
+	protected void started()
+	{
+		button.setText("Stop Server");
+		server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
+		urlField.setText(server.getBaseURL());
+		portField.setEditable(false);
+	}
+
+	protected void stopped()
+	{
+		button.setText("Start Server");
+		button.setEnabled(true);
+		portField.setEditable(true);
 	}
 
 	/**
@@ -233,8 +249,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 			server.stop();
 			while (server.isStopping())
 				ThreadUtil.sleep(100);
-			button.setText("Start Server");
-			button.setEnabled(true);
+			stopped();
 		}
 	}
 
