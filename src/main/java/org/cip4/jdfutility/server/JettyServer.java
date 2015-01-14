@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -103,6 +103,7 @@ public abstract class JettyServer
 	protected String context;
 	protected Server server;
 	protected final Log log;
+	protected static JettyServer theServer;
 
 	/**
 	 * @param context 
@@ -132,7 +133,7 @@ public abstract class JettyServer
 	 * set the port 
 	 * @param port the port to set
 	 */
-	public void setPort(int port)
+	public static void setPort(int port)
 	{
 		thePort = port;
 	}
@@ -295,6 +296,11 @@ public abstract class JettyServer
 		}
 	}
 
+	/**
+	 * 
+	 * @author rainer prosi
+	 *
+	 */
 	private class RedirectHandler extends AbstractHandler
 	{
 		/**
@@ -308,6 +314,10 @@ public abstract class JettyServer
 		}
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	protected ResourceHandler createResourceHandler()
 	{
 		ResourceHandler resourceHandler = new MyResourceHandler(context);
@@ -389,7 +399,7 @@ public abstract class JettyServer
 	 * get the port number the port is always a singleton in a jetty environment
 	 * @return
 	 */
-	public int getPort()
+	public static int getPort()
 	{
 		return thePort;
 	}
@@ -443,4 +453,25 @@ public abstract class JettyServer
 	{
 		return server != null && server.isStopping();
 	}
+
+	/**
+	 * @return
+	 */
+	public static JettyServer getServer()
+	{
+		return theServer;
+	}
+
+	/**
+	 * 
+	 */
+	public static void shutdown()
+	{
+		if (theServer != null)
+		{
+			theServer.stop();
+			theServer = null;
+		}
+	}
+
 }
