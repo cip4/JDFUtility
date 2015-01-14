@@ -148,7 +148,6 @@ public abstract class JettyServer
 		super();
 		log = LogFactory.getLog(getClass());
 		context = "";
-		thePort = 8080;
 	}
 
 	/**
