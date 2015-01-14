@@ -330,6 +330,16 @@ public abstract class JettyServer
 	 */
 	protected abstract String getHome();
 
+	/**
+	 * 
+	 * @return
+	 */
+	protected abstract int getDefaultPort();
+
+	/**
+	 * 
+	 * @return
+	 */
 	protected abstract ServletContextHandler createServletHandler();
 
 	/**

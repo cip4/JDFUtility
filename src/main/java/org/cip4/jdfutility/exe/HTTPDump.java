@@ -1,9 +1,7 @@
-package org.cip4.jdfutility.exe;
-
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -68,6 +66,8 @@ package org.cip4.jdfutility.exe;
  *  
  * 
  */
+package org.cip4.jdfutility.exe;
+
 import org.apache.log4j.BasicConfigurator;
 import org.cip4.jdfutility.DumpJDFServlet;
 import org.cip4.jdfutility.server.JettyServer;
@@ -125,6 +125,16 @@ public final class HTTPDump extends JettyServer
 	protected String getHome()
 	{
 		return context + "/overview";
+	}
+
+	/**
+	 * 
+	 * @see org.cip4.jdfutility.server.JettyServer#getDefaultPort()
+	 */
+	@Override
+	protected int getDefaultPort()
+	{
+		return 8080;
 	}
 
 }
