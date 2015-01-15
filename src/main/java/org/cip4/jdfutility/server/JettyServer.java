@@ -99,6 +99,7 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public abstract class JettyServer
 {
+
 	protected static int thePort = -1;
 	protected String context;
 	protected Server server;
@@ -481,6 +482,25 @@ public abstract class JettyServer
 			theServer.stop();
 			theServer = null;
 		}
+	}
+
+	/**
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return getServerType() + " [context=" + context + "]";
+	}
+
+	/**
+	 * get the server type as a string
+	 * @return
+	 */
+	public String getServerType()
+	{
+		return getClass().getSimpleName();
 	}
 
 }
