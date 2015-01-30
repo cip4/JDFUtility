@@ -11,6 +11,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <jdflibj.version>2.1.5.80-SNAPSHOT</jdflibj.version>
+        <build>xxx</build>
     </properties>
     <scm>
         <url>https://stash.cip4.org/scm/tool/jdfutility.git</url>
@@ -77,7 +79,7 @@
         <dependency>
             <groupId>org.cip4.lib.jdf</groupId>
             <artifactId>JDFLibJ</artifactId>
-            <version>2.1.5.80-SNAPSHOT</version>
+            <version>${jdflibj.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
