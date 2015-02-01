@@ -294,6 +294,12 @@ public abstract class JettyServer
 			}
 			return super.getResource(url);
 		}
+
+		@Override
+		public String toString()
+		{
+			return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getResourceBase() + "]";
+		}
 	}
 
 	/**
