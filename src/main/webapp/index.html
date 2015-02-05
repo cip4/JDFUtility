@@ -6,13 +6,11 @@
 </head>
 <body style="background: #ffffff">
 <h2>CheckJDF</h2>
-
 Checks the validity of an uploaded JDF or ZIP file and reports problems.
-<br/>
 Note the known buglet that ZIP files should not contain any non-ascii
 characters.
 
-<hr/>
+<br />
 
 <form method="post" enctype="multipart/form-data"
       action="CheckJDFServlet">File to check (JDF, JMF or zip): <input
@@ -39,11 +37,11 @@ progress although the results in the raw output should be correct.
 
 <!-- FixJDF starts here -->
 
-<hr size="5" noshade="noshade"/>
+<br/>
 <h2>FixJDF</h2>
 Updates a JDF File to a selected version, replacing deprecated syntax
 with recommended syntax.
-<hr/>
+
 <form method="post" enctype="multipart/form-data" action="FixJDFServlet">
     File: <input type="file" name="file1"/> <br/>
     <input type="radio" name="Version" value="Retain"/>Update to Version
@@ -60,24 +58,10 @@ with recommended syntax.
 
 </form>
 
-<hr/>
-<!-- SendDF starts here -->
 
-<hr size="5" noshade="noshade"/>
-<h2>SendJDF</h2>
-Sends a JDF File to a selected URL.
-<hr/>
-<form method="post" enctype="multipart/form-data"
-      action="SendJDFServlet">File: <input type="file" name="file2"/>
-    <br/>
-    URL:<br/>
-    <input name="sendURL" type="text" size="80" maxlength="80"><br/>
-    <br/>
-    <input value="send JDF File" type="submit"/><br/>
-</form>
-<hr/>
-<p>build ${build}, ${timestamp}</p>
-<p>JDFLibJ ${jdflibj.version}</p>
+<br/>
+<small><b>JDFToolbox</b> build ${build} (${timestamp}) <i>based on JDFLibJ ${jdflibj.version}</i></small>
+
 
 </body>
 </html>
