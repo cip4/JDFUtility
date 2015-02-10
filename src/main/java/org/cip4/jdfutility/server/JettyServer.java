@@ -100,7 +100,7 @@ import org.eclipse.jetty.util.resource.Resource;
 public abstract class JettyServer
 {
 
-	protected static int thePort = -1;
+	protected int thePort;
 	protected String context;
 	protected Server server;
 	protected final Log log;
@@ -134,7 +134,7 @@ public abstract class JettyServer
 	 * set the port 
 	 * @param port the port to set
 	 */
-	public static void setPort(int port)
+	public void setPort(int port)
 	{
 		thePort = port;
 	}
@@ -149,6 +149,7 @@ public abstract class JettyServer
 		super();
 		log = LogFactory.getLog(getClass());
 		context = "";
+		thePort = 8080;
 	}
 
 	/**
@@ -415,7 +416,7 @@ public abstract class JettyServer
 	 * get the port number the port is always a singleton in a jetty environment
 	 * @return
 	 */
-	public static int getPort()
+	public int getPort()
 	{
 		return thePort;
 	}
