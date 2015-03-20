@@ -11,7 +11,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-        <jdflibj.version>2.1.5.80-SNAPSHOT</jdflibj.version>
+        <jdflibj.version>2.1.5.83-SNAPSHOT</jdflibj.version>
         <build>xxx</build>
     </properties>
     <scm>
