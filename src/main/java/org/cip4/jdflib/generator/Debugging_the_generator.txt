@@ -1,0 +1,35 @@
+Debugging the auto file generator
+
+First the schema is interpreted into schemaComplexType,
+then this data is used to write the auto files
+
+1. from the auto file side (i.e. file JDFAutoAcknowledge.java)
+    1.0 where does the schema interpretation start ?
+        vComplexType = SchemaDoc.getSchemaInfo("Core", true)
+            complexType = SchemaDoc.fillComplexType(...)
+                complexTypeLocal = GeneratorUtil.getAllValidAttributes()
+                complexTypeLocal = GeneratorUtil.getAllValidElements()
+                    GeneratorUtil.fillElementIntoComplexType()
+                        elementName = schemaElem.getStrElementName();
+                        
+    
+    1.1 where is the auto file written ?
+        JavaCoreStringUtil.getStrJavaCoreFile
+        
+    1.2 where is AtrInfoTable written into the file ?
+        String strComplexTypeName = schemaComplexType.m_SchemaComplexTypeName;
+        Vector vAttributes = schemaComplexType.m_vSchemaAttributes;
+        JavaCoreStringUtil.appendAtrInfoTable(strComplexTypeName, vAttributes, strbufResult)
+        
+        1.2.1 where is schemaComplexType.m_vSchemaAttributes computed ?
+            see 1.0 complexType = SchemaDoc.fillComplexType(...)
+        
+    1.3 where is ElemInfoTable written into the file ?
+        Vector vElements = schemaComplexType.m_vSchemaElements;
+        JavaCoreStringUtil.appendElemInfoTable(vElements, strbufResult)
+        
+        1.3.1 where is schemaComplexType.m_vSchemaElements computed ?
+            see 1.0 complexType = SchemaDoc.fillComplexType(...)
+        
+
+2. from the schema side
