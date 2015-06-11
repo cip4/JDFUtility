@@ -160,7 +160,7 @@ public class CheckJDFServlet extends UtilityServlet
 		FileItem fileItem = null;
 		boolean bUseSchema = false;
 		boolean bIgnorePrivate = false;
-		boolean prettyFormat = true;
+		boolean prettyFormat = false;
 
 		String language = "EN";
 		String devcapName = null;
@@ -179,9 +179,9 @@ public class CheckJDFServlet extends UtilityServlet
 				{
 					bIgnorePrivate = true;
 				}
-				else if ("PrettyFormat".equals(fieldName) && !"true".equals(item.getString()))
+				else if ("PrettyFormat".equals(fieldName) && "true".equals(item.getString()))
 				{
-					prettyFormat = false;
+					prettyFormat = true;
 				}
 				else if (fieldName.equals("Language"))
 				{
