@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -85,7 +85,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cip4.jdflib.core.JDFElement.EnumValidationLevel;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
-import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
 
@@ -97,6 +96,11 @@ import org.cip4.jdflib.validate.JDFValidator;
   */
 public class CheckJDFServlet extends UtilityServlet
 {
+	/**
+	 * 
+	 * @author rainer prosi
+	 *
+	 */
 	protected class CheckJDFCall extends ServletCall
 	{
 
@@ -151,31 +155,29 @@ public class CheckJDFServlet extends UtilityServlet
 		FileItem fileItem = null;
 		boolean bUseSchema = false;
 		boolean bIgnorePrivate = false;
+		boolean prettyFormat = false;
+
 		String language = "EN";
 		String devcapName = null;
 		File devcapFile = null;
-		for (int i = 0; i < fileItems.size(); i++)
+		for (FileItem item : fileItems)
 		{
 			Runtime.getRuntime().gc(); // clean up before loading
-			final FileItem item = fileItems.get(i);
 			final String fieldName = item.getFieldName();
 
 			if (item.isFormField())
 			{
-				if (fieldName.equals("UseSchema"))
+				if ("UseSchema".equals(fieldName) && "true".equals(item.getString()))
 				{
-					if (item.getString().equals("true"))
-					{
-						bUseSchema = true;
-					}
+					bUseSchema = true;
 				}
-				else if (fieldName.equals("IgnorePrivate"))
+				else if ("IgnorePrivate".equals(fieldName) && "true".equals(item.getString()))
 				{
-					if (item.getString().equals("true"))
-					{
-						bIgnorePrivate = true;
-					}
-					log.debug("IgnorePrivate: " + bIgnorePrivate);
+					bIgnorePrivate = true;
+				}
+				else if ("PrettyFormat".equals(fieldName) && !"true".equals(item.getString()))
+				{
+					prettyFormat = false;
 				}
 				else if (fieldName.equals("Language"))
 				{
@@ -184,6 +186,10 @@ public class CheckJDFServlet extends UtilityServlet
 					{
 						language = "nl";
 					}
+					if (language.equalsIgnoreCase("deutsch"))
+					{
+						language = "de";
+					}
 					language = language.substring(0, 2).toUpperCase();
 					log.debug("Language: " + language);
 				}
@@ -191,7 +197,7 @@ public class CheckJDFServlet extends UtilityServlet
 			else if ("devcapFile".equals(fieldName))
 			{
 				devcapName = item.getName();
-				System.out.println("devcapFile: " + devcapName);
+				log.info("devcapFile: " + devcapName);
 				if (devcapFile != null && devcapFile.length() > 0)
 				{
 					devcapFile = createTmpFile(item, "CheckJDFTmp", "devcap");
@@ -225,12 +231,13 @@ public class CheckJDFServlet extends UtilityServlet
 			checker.bQuiet = true;
 			checker.setIgnorePrivate(bIgnorePrivate);
 			checker.level = EnumValidationLevel.Complete;
-			checker.xslStyleSheet = "./checkjdf.xsl";
+			if (prettyFormat)
+				checker.xslStyleSheet = "./checkjdf.xsl";
+
 			if (devcapFile != null && devcapFile.canRead())
 			{
 				checker.devCapFile = devcapFile.getAbsolutePath();
-				System.out.println(devcapFile.getAbsolutePath());
-
+				log.info("Devcap file: " + devcapFile.getAbsolutePath());
 			}
 
 			if (bUseSchema) // using schema
@@ -245,7 +252,7 @@ public class CheckJDFServlet extends UtilityServlet
 			if (fileItem != null)
 			{
 				final String fileItemName = fileItem.getName();
-				log.info("FIName: " + fileItemName);
+				log.info("fileItem Name: " + fileItemName);
 				final String lower = fileItemName.toLowerCase();
 				if (lower.endsWith(".zip"))
 				{
@@ -265,17 +272,11 @@ public class CheckJDFServlet extends UtilityServlet
 				}
 				final KElement root = d.getRoot();
 				root.setAttribute("Language", language);
-				final File outFile = JDFServletUtil.getTmpFile("CheckJDFTmp", fileItem, "check_", ".xml");
-				String sURL = "./CheckJDFTmp/" + outFile.getName();
-				sURL = StringUtil.escape(sURL, UrlUtil.m_URIEscape, "%", 16, 2, 0x21, -1);
-				root.setAttribute("XMLUrl", sURL);
-				// MS IE sucks! replace non escape with __
-				root.setAttribute("XMLFile", fileItemName);
-				log.info("URL: " + sURL);
-				// root.setAttribute("XMLUrl","./CheckJDFTmp/"+outFile.getName());
-				d.write2File(outFile.getPath(), 2, true);
-				d.setXSLTURL("./checkjdf.xsl");
-				xmlString = d.write2String(0);
+
+				if (prettyFormat)
+					d.setXSLTURL("./checkjdf.xsl");
+
+				xmlString = d.write2String(2);
 				fileItem.delete();
 				JDFServletUtil.cleanup("CheckJDFTmp");
 			}
@@ -283,7 +284,7 @@ public class CheckJDFServlet extends UtilityServlet
 			{
 				d = checker.processSingleStream(null, null, null);
 				d.setXSLTURL("./checkjdf.xsl");
-				xmlString = d.write2String(0);
+				xmlString = d.write2String(2);
 			}
 		}
 		catch (final IOException ioe)
@@ -296,8 +297,6 @@ public class CheckJDFServlet extends UtilityServlet
 		out.println(xmlString);
 		out.flush();
 		out.close();
-
-		log.debug("Exit processMultipartRequest");
 	}
 
 	// //////////////////////////////////////////////////////////////////
