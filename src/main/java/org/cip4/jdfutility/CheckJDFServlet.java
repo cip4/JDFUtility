@@ -96,6 +96,11 @@ import org.cip4.jdflib.validate.JDFValidator;
   */
 public class CheckJDFServlet extends UtilityServlet
 {
+	public CheckJDFServlet()
+	{
+		super();
+	}
+
 	/**
 	 * 
 	 * @author rainer prosi
@@ -155,14 +160,13 @@ public class CheckJDFServlet extends UtilityServlet
 		FileItem fileItem = null;
 		boolean bUseSchema = false;
 		boolean bIgnorePrivate = false;
-		boolean prettyFormat = false;
+		boolean prettyFormat = true;
 
 		String language = "EN";
 		String devcapName = null;
 		File devcapFile = null;
 		for (FileItem item : fileItems)
 		{
-			Runtime.getRuntime().gc(); // clean up before loading
 			final String fieldName = item.getFieldName();
 
 			if (item.isFormField())
@@ -212,8 +216,8 @@ public class CheckJDFServlet extends UtilityServlet
 				log.warn("Bad File name: " + item.getName());
 			}
 			else
-			// ok
 			{
+				Runtime.getRuntime().gc(); // clean up before loading
 				log.info("File name: " + item.getName());
 				fileItem = item;
 			}

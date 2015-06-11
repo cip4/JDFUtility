@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -190,13 +190,16 @@ public class JDFServletUtil extends Object
 		lastCleanup = modNow;
 		final File tmpDir = new File(baseDir + dirNam);
 		final File[] tmpFiles = tmpDir.listFiles();
-		for (int n = 0; n < tmpFiles.length; n++)
+		if (tmpFiles != null)
 		{
-			final File oldFile = tmpFiles[n];
-			if (modNow - 3600000 > oldFile.lastModified())
-			{ // 3600 seconds timeout
-				oldFile.delete();
-				System.out.println("deleting " + oldFile.getName() + " " + String.valueOf(oldFile.lastModified()) + " " + String.valueOf(modNow));
+			for (int n = 0; n < tmpFiles.length; n++)
+			{
+				final File oldFile = tmpFiles[n];
+				if (modNow - 3600000 > oldFile.lastModified())
+				{ // 3600 seconds timeout
+					oldFile.delete();
+					System.out.println("deleting " + oldFile.getName() + " " + String.valueOf(oldFile.lastModified()) + " " + String.valueOf(modNow));
+				}
 			}
 		}
 		Runtime.getRuntime().gc(); // clean up memory
