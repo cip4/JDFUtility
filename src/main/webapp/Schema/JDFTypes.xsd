@@ -2,7 +2,7 @@
 <!--	The CIP4 Software License, Version 1.0
 	
 	
-	Copyright (c) 2001-2009 The International Cooperation for the Integration of 
+	Copyright (c) 2001-2015 The International Cooperation for the Integration of
 	Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without modification, 
@@ -59,8 +59,8 @@
 	Processes in Prepress, Press and Postpress , please see &lt;http://www.cip4.org/&gt;.
 	
 -->
-<!--JDF specification V 1.3-->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jdftyp="http://www.CIP4.org/JDFSchema_1_3_Types" targetNamespace="http://www.CIP4.org/JDFSchema_1_3_Types" elementFormDefault="qualified" attributeFormDefault="unqualified" version="V1.3-002">
+<!--JDF specification V 1.5-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jdftyp="http://www.CIP4.org/JDFSchema_1_5_Types" targetNamespace="http://www.CIP4.org/JDFSchema_1_5_Types" elementFormDefault="qualified" attributeFormDefault="unqualified" version="V1.5-001">
 	<!--Simple Type Declarations-->
 	<xs:simpleType name="boolean">
 		<xs:restriction base="xs:boolean">
@@ -222,6 +222,7 @@
 			<xs:enumeration value="1.2"/>
 			<xs:enumeration value="1.3"/>
 			<xs:enumeration value="1.4"/>
+			<xs:enumeration value="1.5"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="JDFJMFVersions">
@@ -628,6 +629,12 @@
 			<xs:enumeration value="AsServer"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eAutomation_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Static"/>
+			<xs:enumeration value="Dynamic"/>
+		</xs:restriction>
+	</xs:simpleType>	
 	<xs:simpleType name="eAutoRotatePages_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="None"/>
@@ -685,6 +692,7 @@
 			<xs:enumeration value="Collecting"/>
 			<xs:enumeration value="Gathering"/>
 			<xs:enumeration value="List"/>
+			<xs:enumeration value="None"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eBinding_">
@@ -760,6 +768,7 @@
 			<xs:enumeration value="Pallet"/>
 			<xs:enumeration value="Roll"/>
 			<xs:enumeration value="Sheet"/>
+			<xs:enumeration value="SheetStream"/>
 			<xs:enumeration value="Stack"/>
 			<xs:enumeration value="StrappedStack"/>
 			<xs:enumeration value="StrappedCompensatedStack"/>
@@ -801,13 +810,15 @@
 	</xs:simpleType>
 	<xs:simpleType name="eChannelType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="Phone"/>
+			<xs:enumeration value="ComputerName"/>
 			<xs:enumeration value="Email"/>
 			<xs:enumeration value="Fax"/>
-			<xs:enumeration value="WWW"/>
-			<xs:enumeration value="JMF"/>
-			<xs:enumeration value="PrivateDirectory"/>
 			<xs:enumeration value="InstantMessaging"/>
+			<xs:enumeration value="JMF"/>
+			<xs:enumeration value="Mobile"/>
+			<xs:enumeration value="Phone"/>
+			<xs:enumeration value="PrivateDirectory"/>
+			<xs:enumeration value="WWW"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eCharacterProblem_">
@@ -986,6 +997,7 @@
 			<xs:enumeration value="PagePoolStart"/>
 			<xs:enumeration value="PagePoolListStart"/>
 			<xs:enumeration value="PagePoolListEnd"/>
+			<xs:enumeration value="PagePoolEnd"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eConsumption_">
@@ -1002,7 +1014,13 @@
 			<xs:enumeration value="Element"/>
 		</xs:restriction>
 	</xs:simpleType>
-		<xs:simpleType name="eContext_MDM">
+	<xs:simpleType name="eContextQueriedResources">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Job"/>
+			<xs:enumeration value="Global"/>
+		</xs:restriction>
+	</xs:simpleType>	
+	<xs:simpleType name="eContext_MDM">
 			<xs:restriction base="jdftyp:EnumerationBaseType">
 				<xs:enumeration value="Set"/>
 				<xs:enumeration value="Document"/>
@@ -1021,7 +1039,6 @@
 				<xs:enumeration value="Object"/>
 			</xs:restriction>
 		</xs:simpleType>
-
 	<xs:simpleType name="eCostType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Chargeable"/>
@@ -1484,6 +1501,12 @@
 			<xs:enumeration value="Stopped"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eEndStatusOfQueue_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Aborted"/>
+			<xs:enumeration value="Completed"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eErrorState_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="TestNotSupported"/>
@@ -1639,6 +1662,7 @@
 		<xs:enumeration value="boolean"/>
 		<xs:enumeration value="dateTime"/>
 		<xs:enumeration value="duration"/>
+		<xs:enumeration value="NamedFeature"/>
 	</xs:restriction>
 	</xs:simpleType>
 	<!-- 090722 RP added new enum; same as eGeneralIDDataType + PartIDKeys -->
@@ -1670,8 +1694,12 @@
 	</xs:simpleType>
 	<xs:simpleType name="eGrainDirection_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="ShortEdge"/>
-			<xs:enumeration value="LongEdge"/>
+			<xs:enumeration value="Any"/><!-- First in 1.5 -->
+			<xs:enumeration value="ShortEdge"/><!-- Last in 1.4 -->
+			<xs:enumeration value="LongEdge"/><!-- Last in 1.4 -->
+			<xs:enumeration value="SameDirection"/><!-- First in 1.5 -->
+			<xs:enumeration value="XDirection"/><!-- First in 1.4 -->
+			<xs:enumeration value="YDirection"/><!-- First in 1.4 -->
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eHoleReferenceEdge_">
@@ -1828,7 +1856,7 @@
 			<xs:enumeration value="53"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="eIDPParamsJobSheetOccurence">
+	<xs:simpleType name="eIDPParamsJobSheetOccurrence">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Always"/>
 			<xs:enumeration value="End"/>
@@ -1928,6 +1956,7 @@
 	</xs:simpleType>
 	<xs:simpleType name="eImageType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="All"/>
 			<xs:enumeration value="Color"/>
 			<xs:enumeration value="Grayscale"/>
 			<xs:enumeration value="Monochrome"/>
@@ -1983,6 +2012,13 @@
 	<xs:simpleType name="eIntentPriority_">
 		<xs:restriction base="jdftyp:EnumerationBaseType"/>
 	</xs:simpleType>
+	<xs:simpleType name="eInternalColorModel_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Basic"/>
+			<xs:enumeration value="Enhanced"/>
+			<xs:enumeration value="Explicit"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eJogSide_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Left"/>
@@ -1996,6 +2032,14 @@
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Receiver"/>
 			<xs:enumeration value="Sender"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eKnockoutSource_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="ClipPath"/>
+			<xs:enumeration value="SourceClipPath"/>
+			<xs:enumeration value="TrimClipPath"/>
+			<xs:enumeration value="TrimBox"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eLaminatingMethod_">
@@ -2043,6 +2087,12 @@
 			<xs:enumeration value="FinishedPage"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eLogicalStackSequence_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="SheetIndex"/>
+			<xs:enumeration value="DescendingSheetIndex"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eLotControl_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Controlled"/>
@@ -2054,6 +2104,13 @@
 			<xs:enumeration value="Brief"/>
 			<xs:enumeration value="Full"/>
 			<xs:enumeration value="Amount"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eMappingSelection_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="UsePDLValues"/>
+			<xs:enumeration value="UseLocalPrinterValues"/>
+			<xs:enumeration value="UseProcessColorValues"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eMarkActivationContext_">
@@ -2077,18 +2134,11 @@
 	</xs:simpleType>
 	<xs:simpleType name="eMarkContext_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="Sheet"/>
 			<xs:enumeration value="BinderySignature"/>
 			<xs:enumeration value="Cell"/>
 			<xs:enumeration value="CellPair"/>
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="eMappingSelection_">
-		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="UsePDLValues"/>
-			<xs:enumeration value="UseLocalPrinterValues"/>
-			<xs:enumeration value="UseProcessColorValues"/>
+			<xs:enumeration value="Sheet"/>
+			<xs:enumeration value="Tile"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eMarkJustification_">
@@ -2175,6 +2225,18 @@
 			<xs:enumeration value="Both"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eMediaSubstrateType_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="PS1"/>
+			<xs:enumeration value="PS2"/>
+			<xs:enumeration value="PS3"/>
+			<xs:enumeration value="PS4"/>
+			<xs:enumeration value="PS5"/>
+			<xs:enumeration value="PS6"/>
+			<xs:enumeration value="PS7"/>
+			<xs:enumeration value="PS8"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eMediaType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="CorrugatedBoard"/>
@@ -2190,11 +2252,14 @@
 			<xs:enumeration value="Other"/>
 			<xs:enumeration value="Paper"/>
 			<xs:enumeration value="Plate"/>
+			<xs:enumeration value="Screen"/>
 			<xs:enumeration value="SelfAdhesive"/>
 			<xs:enumeration value="Sleeve"/>
 			<xs:enumeration value="ShrinkFoil"/>
+			<xs:enumeration value="Textile"/>
 			<xs:enumeration value="Transparency"/>
 			<xs:enumeration value="Unknown"/>
+			<xs:enumeration value="Vinyl"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eMediaUnit_">
@@ -2429,6 +2494,7 @@
 	<xs:simpleType name="ePartitionKeys_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="BinderySignatureName"/>
+			<xs:enumeration value="BinderySignaturePaginationIndex"/>
 			<xs:enumeration value="BlockName"/>
 			<xs:enumeration value="BundleItemIndex"/>
 			<xs:enumeration value="CellIndex"/>
@@ -2455,21 +2521,22 @@
 			<xs:enumeration value="LayerIDs"/>
 			<xs:enumeration value="Location"/>
 			<xs:enumeration value="Metadata0"/>
-		<xs:enumeration value="Metadata1"/>
-		<xs:enumeration value="Metadata2"/>
-		<xs:enumeration value="Metadata3"/>
-		<xs:enumeration value="Metadata4"/>
-		<xs:enumeration value="Metadata5"/>
-		<xs:enumeration value="Metadata6"/>
-		<xs:enumeration value="Metadata7"/>
-		<xs:enumeration value="Metadata8"/>
-		<xs:enumeration value="Metadata9"/>
-		<xs:enumeration value="Option"/>
+			<xs:enumeration value="Metadata1"/>
+			<xs:enumeration value="Metadata2"/>
+			<xs:enumeration value="Metadata3"/>
+			<xs:enumeration value="Metadata4"/>
+			<xs:enumeration value="Metadata5"/>
+			<xs:enumeration value="Metadata6"/>
+			<xs:enumeration value="Metadata7"/>
+			<xs:enumeration value="Metadata8"/>
+			<xs:enumeration value="Metadata9"/>
+			<xs:enumeration value="Option"/>
 			<xs:enumeration value="PageNumber"/>
 			<xs:enumeration value="PageTags"/>
 			<xs:enumeration value="PlateLayout"/>
 			<xs:enumeration value="PartVersion"/>
 			<xs:enumeration value="PreflightRule"/>
+			<xs:enumeration value="ProductPart"/>
 			<xs:enumeration value="PreviewType"/>
 			<xs:enumeration value="RibbonName"/>
 			<xs:enumeration value="Run"/>
@@ -2479,6 +2546,7 @@
 			<xs:enumeration value="RunSet"/>
 			<xs:enumeration value="SectionIndex"/>
 			<xs:enumeration value="Separation"/>
+			<xs:enumeration value="SetCopies"/>
 			<xs:enumeration value="SetDocIndex"/>
 			<xs:enumeration value="SetIndex"/>
 			<xs:enumeration value="SetRunIndex"/>
@@ -2533,12 +2601,6 @@
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="ePlateType_">
-		<xs:restriction base="jdftyp:EnumerationBaseType">
-			<xs:enumeration value="Content"/>
-			<xs:enumeration value="Dummy"/>
-		</xs:restriction>
-	</xs:simpleType>
-	<xs:simpleType name="ePlateType2_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Exposed"/>
 			<xs:enumeration value="Dummy"/>
@@ -2680,10 +2742,13 @@
 	</xs:simpleType>
 	<xs:simpleType name="ePreviewType_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Animation"/>
+			<xs:enumeration value="Identification"/>
 			<xs:enumeration value="Separation"/>
 			<xs:enumeration value="SeparatedThumbNail"/>
 			<xs:enumeration value="SeparationRaw"/>
 			<xs:enumeration value="ThumbNail"/>
+			<xs:enumeration value="Static3D"/>
 			<xs:enumeration value="Viewable"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -2698,6 +2763,20 @@
 			<xs:enumeration value="PNG"/>
 			<xs:enumeration value="CIP3Multiple"/>
 			<xs:enumeration value="CIP3Single"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ePrintPass_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="OneShot"/>
+			<xs:enumeration value="MultiShot"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ePrintingTechnology_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Flexo"/>
+			<xs:enumeration value="Gravure"/>
+			<xs:enumeration value="Offset"/>
+			<xs:enumeration value="Screen"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="ePrintingType_">
@@ -2930,6 +3009,13 @@
 			<xs:enumeration value="RetryForever"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eRestrictions_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="WithinImposedSheetSet"/>
+			<xs:enumeration value="WithinLogicalStack"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eRingSystem_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="2HoleEuro"/>
@@ -3047,6 +3133,24 @@
 			<xs:enumeration value="Both"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eSheetCondition_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Begin"/>
+			<xs:enumeration value="End"/>
+			<xs:enumeration value="BeginSet"/>
+			<xs:enumeration value="EndSet"/>
+			<xs:enumeration value="PagePoolBegin"/>
+			<xs:enumeration value="PagePoolEnd"/>
+			<xs:enumeration value="PagePoolListBegin"/>
+			<xs:enumeration value="PagePoolListEnd"/>
+			<xs:enumeration value="LogicalStackBegin"/>
+			<xs:enumeration value="LogicalStackEnd"/>
+			<xs:enumeration value="LogicalStackSetBegin"/>
+			<xs:enumeration value="LogicalStackSetEnd"/>
+			<xs:enumeration value="ImposedSheetSetBegin"/>
+			<xs:enumeration value="ImposedSheetSetEnd"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eSheetLay_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Left"/>
@@ -3136,7 +3240,17 @@
 			<xs:enumeration value="TwoSidedFlipY"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="eSides3_">
+	<xs:simpleType name="eSidesDPParams_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="OneSidedBack"/>
+			<xs:enumeration value="OneSidedBackFlipX"/>
+			<xs:enumeration value="OneSidedBackFlipY"/><!-- Last in 1.4 -->
+			<xs:enumeration value="OneSidedFront"/><!-- Last in 1.4 -->
+			<xs:enumeration value="TwoSided"/>
+			<xs:enumeration value="TwoSidedFlipX"/><!-- Last in 1.4 -->
+			<xs:enumeration value="TwoSidedFlipY"/><!-- Last in 1.4 -->
+		</xs:restriction>
+	</xs:simpleType>	<xs:simpleType name="eSides3_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="OneSided"/>
 			<xs:enumeration value="OneSidedBack"/>
@@ -3174,22 +3288,22 @@
 			<xs:enumeration value="ICCLAB"/>
 			<xs:enumeration value="ICCRGB"/>
 			<xs:enumeration value="Lab"/>
-			<xs:enumeration value="Separtation"/>
+			<xs:enumeration value="Separation"/>
 			<xs:enumeration value="YUV"/>
 			<xs:enumeration value="All"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eSourceCSsList_">
 		<xs:list itemType="jdftyp:eSourceCSs_"/>
-	</xs:simpleType>
+	</xs:simpleType>	
 	<xs:simpleType name="eSourceObject_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="All"/>
 			<xs:enumeration value="ImagePhotographic"/>
 			<xs:enumeration value="ImageScreenShot"/>
-			<xs:enumeration value="Text"/>
 			<xs:enumeration value="LineArt"/>
 			<xs:enumeration value="SmoothShades"/>
+			<xs:enumeration value="Text"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eSourceObjects_">
@@ -3296,6 +3410,12 @@
 			<xs:enumeration value="Bottom"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:simpleType name="eTemplateType_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Normal"/>
+			<xs:enumeration value="ConditionalSheets"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:simpleType name="eThreadMaterial_">
 		<xs:restriction base="jdftyp:EnumerationBaseType">
 			<xs:enumeration value="Cotton"/>
@@ -3309,6 +3429,12 @@
 			<xs:enumeration value="Round"/>
 			<xs:enumeration value="FlatBacked"/>
 			<xs:enumeration value="RoundBacked"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="eTightBackingStitchingParams_">
+		<xs:restriction base="jdftyp:EnumerationBaseType">
+			<xs:enumeration value="Flat"/>
+			<xs:enumeration value="Pressure"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="eTo_">
@@ -3484,6 +3610,9 @@
 	<!--Definitions of the types to be used for partition key attributes/-->
 	<xs:simpleType name="pBinderySignatureName">
 		<xs:restriction base="jdftyp:NMTOKEN"/>
+	</xs:simpleType>
+	<xs:simpleType name="pBinderySignaturePaginationIndex">
+		<xs:restriction base="jdftyp:IntegerRangeList"/>
 	</xs:simpleType>
 	<xs:simpleType name="pBlockName">
 		<xs:restriction base="jdftyp:NMTOKEN"/>
