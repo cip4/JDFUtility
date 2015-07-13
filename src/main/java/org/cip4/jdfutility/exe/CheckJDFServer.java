@@ -69,6 +69,7 @@
 package org.cip4.jdfutility.exe;
 
 import org.apache.log4j.BasicConfigurator;
+import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdfutility.CheckJDFServlet;
 import org.cip4.jdfutility.server.JettyServer;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -100,9 +101,18 @@ public final class CheckJDFServer extends JettyServer
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		CheckJDFServer check = new CheckJDFServer();
-		HTTPFrame frame = new HTTPFrame(check);
-		System.exit(frame.waitCompleted());
+		MyArgs ma = new MyArgs(args, "C", null, null);
+		if (ma.boolParameter('C'))
+		{
+			CheckJDF check = new CheckJDF();
+			check.validate(args, null);
+		}
+		else
+		{
+			CheckJDFServer check = new CheckJDFServer();
+			HTTPFrame frame = new HTTPFrame(check);
+			System.exit(frame.waitCompleted());
+		}
 	}
 
 	@Override
@@ -124,7 +134,7 @@ public final class CheckJDFServer extends JettyServer
 	@Override
 	protected String getHome()
 	{
-		return context + "/overview";
+		return "/";
 	}
 
 	/**

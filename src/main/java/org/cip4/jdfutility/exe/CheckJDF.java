@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2008 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -72,7 +72,7 @@
 //Copyright:    Copyright (c) 2002
 //Autor:        Joerg Gonnermann, Dietrich Mucha
 //Firma:        Heidelberger Druckmaschinen AG
-package org.cip4.jdflib;
+package org.cip4.jdfutility.exe;
 
 import java.io.File;
 import java.io.InputStream;
@@ -116,7 +116,7 @@ public class CheckJDF extends JDFValidator
 
 			+ "-? usage info\n" + "-q is quiet for valid files\n" + "-Q is completely quiet for all files\n" + "-n will report all elements from foreign name spaces\n"
 			+ "-c requires all required elements and attributes to exist, else incomplete JDF is OK\n" + "-d location of a device capabilities file to test against\n"
-			+ "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3)\n" + "-m print multiple IDs\n"
+			+ "-f force version to a given jdf version (1.0, 1.1, 1.2, 1.3, 1.4, 1.5)\n" + "-m print multiple IDs\n"
 			+ "-P device capabilities parameter. Use present value lists, otherwise allowed value lists\n"
 			+ "-u URL to send the JMF to. In this case, checkJDF will validate the response from the URL\n" + "-U check for dangling URL attributes\n" + "-h proxy host name\n"
 			+ "-p proxy port name\n"
@@ -143,8 +143,6 @@ public class CheckJDF extends JDFValidator
 	 */
 	public static void main(String argv[])
 	{
-		// job.jdf -n -c -v or
-		// job.jdf -n -c -v -q if only invalid elements are of interest
 		CheckJDF checker = new CheckJDF();
 		checker.validate(argv, null);
 	}
@@ -170,7 +168,7 @@ public class CheckJDF extends JDFValidator
 
 	private String parseArgs(String[] commandLineArgs)
 	{
-		MyArgs args = new MyArgs(commandLineArgs, "?cmqPQvVntwU", "dlfLuhpTxX", null);
+		MyArgs args = new MyArgs(commandLineArgs, "?cCmnPqQtUvVw", "dlfLhpTuxX", null);
 
 		if (args.boolParameter('?'))
 		{

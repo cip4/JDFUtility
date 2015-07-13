@@ -135,7 +135,6 @@ public class CheckJDFServlet extends UtilityServlet
 				processMultipartRequest(request, response);
 			}
 		}
-
 	}
 
 	/**
@@ -153,7 +152,7 @@ public class CheckJDFServlet extends UtilityServlet
 	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		List<FileItem> fileItems = new FileItemList(request, 20 * 1024 * 1024).getFileList(true, true);
+		List<FileItem> fileItems = new FileItemList(request, 42 * 1024 * 1024).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items
@@ -273,6 +272,7 @@ public class CheckJDFServlet extends UtilityServlet
 				{
 					final InputStream s = fileItem.getInputStream();
 					d = checker.processSingleStream(s, fileItemName, null);
+					d.setXSLTURL(checker.xslStyleSheet);
 				}
 				final KElement root = d.getRoot();
 				root.setAttribute("Language", language);
@@ -287,7 +287,6 @@ public class CheckJDFServlet extends UtilityServlet
 			else
 			{
 				d = checker.processSingleStream(null, null, null);
-				d.setXSLTURL("./checkjdf.xsl");
 				xmlString = d.write2String(2);
 			}
 		}
