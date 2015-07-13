@@ -1,0 +1,29 @@
+<JMF HDM:Auth="10004FB1E5EC539E126D820D2A3F40B3428F" SenderID="MessageService@INTEGRATION" TimeStamp="2013-04-18T19:44:07+02:00" xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:HDM="www.heidelberg.com/schema/HDM" xmlns:jdf="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Signal HDM:Persistance="Include" ID="m130418194406.201_007220" SenderID="ImageSetter:Suprasetter@SHOOTER2" Time="2013-04-18T19:43:24+02:00" Type="Resource" xsi:type="SignalResource" xmlns="http://www.CIP4.org/JDFSchema_1_1" xmlns:HDM="www.heidelberg.com/schema/HDM" xmlns:jdf="http://www.CIP4.org/JDFSchema_1_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ResourceQuParams Exact="true" JobID="86195" JobPartID="ImO2.I" ResourceName="ExposedMedia">
+      <Part Separation="Magenta" SheetName="tisk_FB 001" Side="Front" SignatureName="Sig002" />
+    </ResourceQuParams>
+    <ResourceInfo>
+      <MISDetails CostType="Chargeable" DeviceOperationMode="Productive" WorkType="Original">
+        <Comment />
+      </MISDetails>
+      <AmountPool>
+        <PartAmount HDM:IncrementalAmount="1">
+          <Part Separation="Magenta" SheetName="tisk_FB 001" Side="Front" SignatureName="Sig002" />
+        </PartAmount>
+      </AmountPool>
+      <ExposedMedia Class="Handling" ID="r130418194406.202_007221" PartIDKeys="SignatureName SheetName Side Separation" Status="Unavailable">
+        <ExposedMedia SignatureName="Sig002">
+          <ExposedMedia SheetName="tisk_FB 001">
+            <ExposedMedia Side="Front">
+              <ExposedMedia Separation="Magenta" Status="Available" />
+              <Media Brand="CX102" Dimension="2919.68503937 2239.37007874" HoleType="S-generic" MediaType="Plate" MediaTypeDetails="Aluminum">
+                <Location LocationName="AutoLoader" />
+              </Media>
+            </ExposedMedia>
+          </ExposedMedia>
+        </ExposedMedia>
+      </ExposedMedia>
+    </ResourceInfo>
+  </Signal>
+</JMF>
