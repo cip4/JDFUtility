@@ -249,7 +249,7 @@ public class CheckJDFServlet extends UtilityServlet
 				final File fs = new File(schemaPath);
 				schemaPath = UrlUtil.getRelativeURL(fs, null, true);
 
-				checker.setJDFSchemaLocation(new File(schemaPath));
+				checker.setJDFSchemaLocation("https://toolbox.cip4.org/jdf/Schema/JDF.xsd");
 			}
 
 			if (fileItem != null)
