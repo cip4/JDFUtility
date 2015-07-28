@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -87,7 +87,6 @@ import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.jmf.JDFJMF;
@@ -211,8 +210,7 @@ public class FixJDFServlet extends UtilityServlet
 			if (fileItem != null)
 			{
 				InputStream ins = fileItem.getInputStream();
-				JDFParser p = new JDFParser();
-				JDFDoc d = p.parseStream(ins);
+				JDFDoc d = JDFDoc.parseStream(ins);
 				if (d != null)
 				{
 					KElement k = d.getRoot();
