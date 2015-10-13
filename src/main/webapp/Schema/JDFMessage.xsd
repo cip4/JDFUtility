@@ -1655,6 +1655,7 @@
 				<Version First="1.3" Path="@ModuleIndex" />
 				<Version First="1.5" Path="@Orientation" />
 				<Version First="1.2" Path="@ProductID" />
+				<Version First="1.5" Path="@Scope" />
 				<Version First="1.2" Path="@Status" />
 				<Version First="1.3" Path="@Usage" />
 				<Version First="1.3" Path="AmountPool" />
