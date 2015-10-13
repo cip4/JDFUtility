@@ -270,7 +270,7 @@ public abstract class JettyServer
 	 * @author rainer prosi
 	 * @date Dec 10, 2010
 	 */
-	protected class MyResourceHandler extends ResourceHandler
+	public class MyResourceHandler extends ResourceHandler
 	{
 
 		public MyResourceHandler(String strip)
