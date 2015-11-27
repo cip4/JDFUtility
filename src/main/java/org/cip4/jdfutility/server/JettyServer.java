@@ -498,7 +498,7 @@ public abstract class JettyServer
 	@Override
 	public String toString()
 	{
-		return getServerType() + " [context=" + context + "]";
+		return getServerType() + " [context=" + context + ":" + thePort + "]";
 	}
 
 	/**
@@ -508,6 +508,15 @@ public abstract class JettyServer
 	public String getServerType()
 	{
 		return getClass().getSimpleName();
+	}
+
+	/**
+	 * 
+	 * @param server
+	 */
+	public static void setServer(JettyServer server)
+	{
+		theServer = server;
 	}
 
 }

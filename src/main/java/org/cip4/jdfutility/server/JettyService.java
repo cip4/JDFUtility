@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2014 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -85,7 +85,6 @@ import org.cip4.jdflib.util.thread.MyMutex;
 public abstract class JettyService
 {
 	protected final Log log;
-	protected JettyServer theServer = null;
 	protected static JettyService theService = null;
 	protected MyMutex mutex;
 
@@ -229,12 +228,12 @@ public abstract class JettyService
 	 */
 	protected int doStart(String[] args)
 	{
-		if (theServer != null)
+		if (JettyServer.getServer() != null)
 		{
 			log.error("server already started - ignoring start");
 			return 2;
 		}
-		theServer = getLicensedServer(args);
+		JettyServer theServer = getLicensedServer(args);
 		if (theServer == null)
 		{
 			log.error("server couldn't start");
@@ -245,6 +244,7 @@ public abstract class JettyService
 			ProxyUtil.setUseSystemDefault(true);
 			theServer.start();
 			mutex = new MyMutex();
+			JettyServer.setServer(theServer);
 			return 0;
 		}
 	}
@@ -314,13 +314,14 @@ public abstract class JettyService
 	 */
 	protected int doStop(String[] args)
 	{
-		if (theServer == null)
+		JettyServer server = JettyServer.getServer();
+		if (server == null)
 		{
 			log.error("server already stopped - ignoring stop");
 			return 2;
 		}
-		theServer.stop();
-		theServer = null;
+		server.stop();
+		JettyServer.setServer(null);
 		ThreadUtil.notifyAll(mutex);
 		return 0;
 	}
