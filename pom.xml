@@ -13,9 +13,9 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 	</properties>
 	<scm>
-		<url>https://stash.cip4.org/scm/tool/jdfutility.git</url>
-		<developerConnection>scm:git:https://stash.cip4.org/scm/tool/jdfutility.git</developerConnection>
-		<connection>scm:git:https://stash.cip4.org/scm/tool/jdfutility.git</connection>
+		<url>https://bitbucket.cip4.org/scm/tool/jdfutility.git</url>
+		<developerConnection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfutility.git</developerConnection>
+		<connection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfutility.git</connection>
 	</scm>
 	<repositories>
 		<repository>
