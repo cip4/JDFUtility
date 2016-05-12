@@ -75,12 +75,11 @@ import java.net.URL;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.FilenameUtils;
-import org.junit.Test;
 
 /**
  * Just a simple dummy test.
  */
-public class JDFUtilityTestBase extends TestCase
+public abstract class JDFUtilityTestBase extends TestCase
 {
 	static protected final String sm_dirTestData = getTestDataDir();
 
@@ -97,11 +96,5 @@ public class JDFUtilityTestBase extends TestCase
 		{
 			return null;
 		}
-	}
-
-	@Test
-	public void testDummy()
-	{
-		assertNotNull(sm_dirTestData);
 	}
 }
