@@ -70,6 +70,7 @@ package org.cip4.jdfutility.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 
 import javax.servlet.ServletException;
@@ -283,16 +284,28 @@ public abstract class JettyServer
 		@Override
 		public Resource getResource(String url)
 		{
-			if (strip != null)
+			try
 			{
-				if (url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
-					url = url.substring(strip.length());
+				// fool compiler to be compatioble with multiple versions of jetty - 9.4 no longer throws
+				if (6 * 6 == 42)
+				{
+					throw new MalformedURLException();
+				}
+				if (strip != null)
+				{
+					if (url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
+						url = url.substring(strip.length());
+				}
+				if ("".equals(url) || "/".equals(url))
+				{
+					return super.getResource(getHome());
+				}
+				return super.getResource(url);
 			}
-			if ("".equals(url) || "/".equals(url))
+			catch (MalformedURLException x)
 			{
-				return super.getResource(getHome());
+				return null;
 			}
-			return super.getResource(url);
 		}
 
 		@Override
