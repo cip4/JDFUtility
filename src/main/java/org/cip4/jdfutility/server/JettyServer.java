@@ -1,8 +1,8 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2017 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,17 +18,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -54,23 +54,22 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 
 import javax.servlet.ServletException;
@@ -93,7 +92,7 @@ import org.eclipse.jetty.util.resource.Resource;
 
 /**
  * standalone jetty server wrapper
- * 
+ *
  * @author rainer prosi
  * @date Dec 9, 2010
  */
@@ -107,9 +106,9 @@ public abstract class JettyServer
 	protected static JettyServer theServer;
 
 	/**
-	 * @param context 
-	 * @param port 
-	 *  
+	 * @param context
+	 * @param port
+	 *
 	 */
 	public JettyServer(String context, int port)
 	{
@@ -131,7 +130,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * set the port 
+	 * set the port
 	 * @param port the port to set
 	 */
 	public void setPort(int port)
@@ -140,9 +139,9 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *  
-	 * 
-	 *  
+	 *
+	 *
+	 *
 	 */
 	public JettyServer()
 	{
@@ -153,11 +152,11 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * the doing routine to run a jetty server
-	 * 
+	 *
 	 * it is generally a bad idea to overwrite this routine - it is not final to allow an empty null server
-	 * 
+	 *
 	 * @throws Exception
 	 * @throws InterruptedException
 	 */
@@ -177,14 +176,14 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @return
 	 */
 	protected HandlerList createHandlerList()
 	{
 		HandlerList handlers = new HandlerList();
-		// the resource handler is always first 
+		// the resource handler is always first
 		ResourceHandler resourceHandler = createResourceHandler();
 		handlers.addHandler(resourceHandler);
 
@@ -199,9 +198,9 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * create the base handler collection that contains all handlers to be processed multiple times
-	 * @param handlers 
+	 * @param handlers
 	 * @return
 	 */
 	protected HandlerCollection createBaseCollection(HandlerList handlers)
@@ -218,7 +217,7 @@ public abstract class JettyServer
 	 */
 	protected void addMoreHandlers(HandlerList handlers)
 	{
-		// nop		
+		// nop
 	}
 
 	/**
@@ -264,9 +263,9 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
-	 * 
+	 *
 	 * @author rainer prosi
 	 * @date Dec 10, 2010
 	 */
@@ -282,7 +281,7 @@ public abstract class JettyServer
 		private final String strip;
 
 		@Override
-		public Resource getResource(String url) throws MalformedURLException
+		public Resource getResource(String url)
 		{
 			if (strip != null)
 			{
@@ -304,7 +303,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @author rainer prosi
 	 *
 	 */
@@ -322,7 +321,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected ResourceHandler createResourceHandler()
@@ -338,19 +337,19 @@ public abstract class JettyServer
 	protected abstract String getHome();
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract int getDefaultPort();
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract ServletContextHandler createServletHandler();
 
 	/**
-	 * 
+	 *
 	 * @see Server start()
 	 */
 	public void start()
@@ -378,7 +377,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see Server stop()
 	 */
 	public void stop()
@@ -403,7 +402,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see Server destroy()
 	 */
 	public void destroy()
@@ -422,7 +421,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see #JettyServer.isRunning()
 	 * @return
 	 */
@@ -432,7 +431,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see #JettyServer.isStarted()
 	 * @return
 	 */
@@ -442,7 +441,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see #JettyServer.isStarting()
 	 * @return
 	 */
@@ -452,7 +451,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see #JettyServer.isStopped()
 	 * @return
 	 */
@@ -462,7 +461,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see #JettyServer.isStopping()
 	 * @return
 	 */
@@ -480,7 +479,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public static void shutdown()
 	{
@@ -492,7 +491,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -511,7 +510,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * 
+	 *
 	 * @param server
 	 */
 	public static void setServer(JettyServer server)
