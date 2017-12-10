@@ -113,6 +113,7 @@ public class SchemaProcessor extends BaseElementWalker
 		m.putOne(XJDFConstants.Header, AttributeName.TIME);
 		m.putOne(XJDFConstants.Intent, AttributeName.NAME);
 		m.putOne(ElementName.JOBPHASE, AttributeName.JOBID);
+		m.putOne(ElementName.MODULE, AttributeName.MODULEID);
 		m.putOne(ElementName.PIPEPARAMS, AttributeName.OPERATION);
 		m.putOne(ElementName.PIPEPARAMS, AttributeName.PIPEID);
 		m.putOne(ElementName.QUEUESUBMISSIONPARAMS, AttributeName.URL);
