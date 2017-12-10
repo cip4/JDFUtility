@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2016 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2017 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -72,20 +72,34 @@ package org.cip4.jdfutility;
 import java.io.File;
 import java.net.URL;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.util.UrlUtil;
+import org.cip4.jdflib.util.logging.LogConfigurator;
+
+import junit.framework.TestCase;
 
 /**
  * Just a simple dummy test.
  */
 public abstract class JDFUtilityTestBase extends TestCase
 {
+	protected Log log;
+
+	public JDFUtilityTestBase()
+	{
+		super();
+		LogConfigurator.configureLog(null, null);
+		log = LogFactory.getLog(getClass());
+	}
+
 	static protected final String sm_dirTestData = getTestDataDir();
+	static protected final String sm_dirTestDataTemp = UrlUtil.getURLWithDirectory(getTestDataDir(), "Temp") + File.separator;
 
 	private static String getTestDataDir()
 	{
-		URL resource = JDFUtilityTestBase.class.getResource("/data");
+		final URL resource = JDFUtilityTestBase.class.getResource("/data");
 		if (resource != null)
 		{
 			String path = resource.getPath();
