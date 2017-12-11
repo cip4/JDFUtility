@@ -1,8 +1,8 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2017 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,17 +18,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -54,17 +54,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility.server;
 
@@ -91,7 +91,7 @@ public abstract class JettyService
 	private class StopExit extends Thread
 	{
 		/**
-		 * 
+		 *
 		 */
 		StopExit()
 		{
@@ -100,7 +100,7 @@ public abstract class JettyService
 		}
 
 		/**
-		 * 
+		 *
 		 * @see java.lang.Thread#run()
 		 */
 		@Override
@@ -121,13 +121,13 @@ public abstract class JettyService
 
 	/**
 	 * this gets the actual server instance
-	 * @param args 
+	 * @param args
 	 * @return
 	 */
 	public abstract JettyServer getServer(String[] args);
 
 	/**
-	 * 
+	 *
 	 */
 	public JettyService()
 	{
@@ -140,42 +140,42 @@ public abstract class JettyService
 	}
 
 	/**
-	 * 
+	 *
 	 * main ... this main obviously won't work but is an example main. see BambiService for a working implementation
 	 * @param args
-	 * 
+	 *
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		LogConfigurator.configureLog(".", "jetty.log");
 		theService = null;
-		theService.doMain(args);
+		//		theService.doMain(args);
 	}
 
 	/**
-	 * 
+	 *
 	 * start
 	 * @param args
 	 */
-	public static final void start(String[] args)
+	public static final void start(final String[] args)
 	{
 		theService.doStart(args);
 	}
 
 	/**
-	 * 
+	 *
 	 * main ...
 	 * @param args
 	 */
-	public static final void stop(String[] args)
+	public static final void stop(final String[] args)
 	{
 		theService.doStop(args);
 	}
 
 	/**
-	 * 
+	 *
 	 * @return true if we are in a jetty service environment
-	 *  
+	 *
 	 */
 	public static final boolean isJettyEnvironment()
 	{
@@ -183,29 +183,29 @@ public abstract class JettyService
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * @param args
 	 * @return
 	 */
-	public int doMain(String[] args)
+	public int doMain(final String[] args)
 	{
 		log.info("main() called, # args: " + args.length);
-		VString vArgs = new VString();
-		for (String arg : args)
+		final VString vArgs = new VString();
+		for (final String arg : args)
 		{
 			log.info("arg: " + arg);
 			vArgs.add(arg.toLowerCase());
 		}
 
-		String arg0 = args.length > 0 ? args[0] : "## no parameters ##";
+		final String arg0 = args.length > 0 ? args[0] : "## no parameters ##";
 		if (vArgs.contains("start") || args.length == 0)
 		{
 			return doStart(args);
 		}
 		else if (vArgs.contains("stop"))
 		{
-			int i = doStop(args);
+			final int i = doStop(args);
 			if (i == 0)
 				log.info("exiting normally after stop: " + i);
 			else
@@ -222,18 +222,18 @@ public abstract class JettyService
 
 	/**
 	 * start the actual server
-	 * 
+	 *
 	 * @param args
-	 * @return 
+	 * @return
 	 */
-	protected int doStart(String[] args)
+	protected int doStart(final String[] args)
 	{
 		if (JettyServer.getServer() != null)
 		{
 			log.error("server already started - ignoring start");
 			return 2;
 		}
-		JettyServer theServer = getLicensedServer(args);
+		final JettyServer theServer = getLicensedServer(args);
 		if (theServer == null)
 		{
 			log.error("server couldn't start");
@@ -250,7 +250,7 @@ public abstract class JettyService
 	}
 
 	/**
-	 * 
+	 *
 	 * @param args
 	 * @return
 	 */
@@ -270,12 +270,12 @@ public abstract class JettyService
 	}
 
 	/**
-	 * 
+	 *
 	 * overwrite this if you want a different unlicensed server implementation. null is also an option in case you want to fail miserably
-	 * @param args 
+	 * @param args
 	 * @return
 	 */
-	protected JettyServer getNullServer(String[] args)
+	protected JettyServer getNullServer(final String[] args)
 	{
 		return new VString(args).contains("-nonull") ? null : new NullServer();
 	}
@@ -283,20 +283,20 @@ public abstract class JettyService
 	/**
 	 * you can overwrite this for a license check and return a null server in case licensing fails
 	 * this implementation simply checks for the non-existence of an environment variable JettyNoStart
-	 * 
+	 *
 	 * @param args
 	 * @return
 	 */
-	protected boolean isLicensed(String[] args)
+	protected boolean isLicensed(final String[] args)
 	{
-		boolean isLicensed = System.getenv("JettyNoStart") == null;
+		final boolean isLicensed = System.getenv("JettyNoStart") == null;
 		log.info("checking license - isLicensed=" + isLicensed);
 		return isLicensed;
 	}
 
 	/**
 	 * wait for the server to stop - useful to keep the main thread alive
-	 *  
+	 *
 	 */
 	public void waitStopped()
 	{
@@ -310,11 +310,11 @@ public abstract class JettyService
 	/**
 	 * stop the actual server - note: calls exit so MUST be called last
 	 * @param args
-	 * @return 
+	 * @return
 	 */
-	protected int doStop(String[] args)
+	protected int doStop(final String[] args)
 	{
-		JettyServer server = JettyServer.getServer();
+		final JettyServer server = JettyServer.getServer();
 		if (server == null)
 		{
 			log.error("server already stopped - ignoring stop");

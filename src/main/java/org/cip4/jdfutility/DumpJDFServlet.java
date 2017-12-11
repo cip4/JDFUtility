@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2017 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility;
 
@@ -104,10 +104,10 @@ import org.cip4.jdflib.util.zip.ZipReader;
 import org.cip4.jdfutility.html.HTMLUtil;
 
 /**
- * 
+ *
  * @author rainer
- * 
- * 
+ *
+ *
  */
 public class DumpJDFServlet extends UtilityServlet
 {
@@ -118,7 +118,7 @@ public class DumpJDFServlet extends UtilityServlet
 		 * @param request
 		 * @param response
 		 */
-		public DumpCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
+		public DumpCall(final UtilityServlet utilityServlet, final HttpServletRequest request, final HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
 		}
@@ -129,20 +129,20 @@ public class DumpJDFServlet extends UtilityServlet
 		@Override
 		protected void processGet()
 		{
-			String error = updateProxy();
+			final String error = updateProxy();
 			final String dir = request.getPathInfo();
-			File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
-			ByteArrayIOStream bos = dumpToFile();
-			KElement body = getHTMLRoot().getCreateElement("body");
+			final File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
+			final ByteArrayIOStream bos = dumpToFile();
+			final KElement body = getHTMLRoot().getCreateElement("body");
 			HTMLUtil.appendHeader(body, 1, "Dump HTML");
 			HTMLUtil.appendLine(body, "Dump Directory: " + newDir);
-			String header = getRequestURL();
+			final String header = getRequestURL();
 			HTMLUtil.appendLine(body, header);
 			if (error != null)
 			{
 				HTMLUtil.appendHeader(body, 3, "Error updating Proxy: ");
 			}
-			String displayProxy = proxyURL == null ? "" : proxyURL;
+			final String displayProxy = proxyURL == null ? "" : proxyURL;
 
 			proxyForm(body, displayProxy);
 			printHistory(body);
@@ -153,14 +153,13 @@ public class DumpJDFServlet extends UtilityServlet
 			HTMLUtil.appendLine(body, "# Failed Forwards: " + numBadForward);
 
 			forward(bos, request);
-			System.gc();
 		}
 
-		private void printHistory(KElement body)
+		private void printHistory(final KElement body)
 		{
 			body.appendElement("h2").setText("History");
-			KElement table = HTMLUtil.appendTable(body, new VString("Time Method URL", null));
-			RequestStats[] stats = fifo.peekArray();
+			final KElement table = HTMLUtil.appendTable(body, new VString("Time Method URL", null));
+			final RequestStats[] stats = fifo.peekArray();
 			if (stats != null)
 			{
 				for (int i = stats.length - 1; i >= 0; i--)
@@ -170,10 +169,10 @@ public class DumpJDFServlet extends UtilityServlet
 			}
 		}
 
-		private void proxyForm(KElement body, String displayProxy)
+		private void proxyForm(final KElement body, final String displayProxy)
 		{
 			body.appendElement("h2").setText("proxy url");
-			KElement form = body.appendElement("form");
+			final KElement form = body.appendElement("form");
 			form.setAttribute("action", request.getContextPath());
 			KElement input = form.appendElement("input");
 			input.setAttribute("type", "text");
@@ -189,7 +188,7 @@ public class DumpJDFServlet extends UtilityServlet
 
 		protected String getRequestURL()
 		{
-			String params = StringUtil.getNonEmpty(request.getQueryString());
+			final String params = StringUtil.getNonEmpty(request.getQueryString());
 			String header = "Context Path: " + request.getRequestURL().toString();
 			if (params != null)
 				header += "?" + params;
@@ -237,22 +236,22 @@ public class DumpJDFServlet extends UtilityServlet
 		 */
 		private String updateProxy()
 		{
-			String newProxy = StringUtil.getNonEmpty(request.getParameter("proxy"));
+			final String newProxy = StringUtil.getNonEmpty(request.getParameter("proxy"));
 			String error = null;
 			if (newProxy != null)
 			{
 				try
 				{
-					URL url = new URL(newProxy);
+					final URL url = new URL(newProxy);
 					boolean same = true;
-					int port = request.getLocalPort();
-					int urlPort = url.getPort();
+					final int port = request.getLocalPort();
+					final int urlPort = url.getPort();
 					same = same && port == urlPort;
-					String server = request.getLocalName();
-					String urlServer = url.getHost();
+					final String server = request.getLocalName();
+					final String urlServer = url.getHost();
 					same = same && ContainerUtil.equals(server.toLowerCase(), urlServer.toLowerCase());
-					String path = StringUtil.token(request.getContextPath(), 0, "/");
-					String urlPath = StringUtil.token(url.getPath(), 0, "/");
+					final String path = StringUtil.token(request.getContextPath(), 0, "/");
+					final String urlPath = StringUtil.token(url.getPath(), 0, "/");
 					same = same && ContainerUtil.equals(path.toLowerCase(), urlPath.toLowerCase());
 
 					if (!same)
@@ -260,7 +259,7 @@ public class DumpJDFServlet extends UtilityServlet
 					else
 						error = "cannot create proxy for self - infinite loop<br/>";
 				}
-				catch (MalformedURLException x)
+				catch (final MalformedURLException x)
 				{
 					proxyURL = null;
 					error = x.toString() + "<br/>";
@@ -270,7 +269,7 @@ public class DumpJDFServlet extends UtilityServlet
 		}
 
 		/**
-		 * @return 
+		 * @return
 		 */
 		private ByteArrayIOStream dumpToFile()
 		{
@@ -292,13 +291,13 @@ public class DumpJDFServlet extends UtilityServlet
 			header += "\nRemote host: " + request.getRemoteHost() + ":" + request.getRemotePort();
 
 			@SuppressWarnings("unchecked")
-			Enumeration<String> set = request.getHeaderNames();
+			final Enumeration<String> set = request.getHeaderNames();
 			if (set != null)
 			{
 				header += "\nHTTP Header List: \n";
 				while (set.hasMoreElements())
 				{
-					String key = set.nextElement();
+					final String key = set.nextElement();
 					header += "  " + key + "=" + request.getHeader(key) + "\n";
 				}
 			}
@@ -329,11 +328,10 @@ public class DumpJDFServlet extends UtilityServlet
 			{
 				log.error("dump service - snafu: ", e);
 			}
-			System.gc();
 			return bos;
 		}
 
-		protected void dumpMime(final ByteArrayIOStream bos, String path) throws FileNotFoundException, IOException, MessagingException
+		protected void dumpMime(final ByteArrayIOStream bos, final String path) throws FileNotFoundException, IOException, MessagingException
 		{
 			final InputStream fis = bos.getInputStream();
 			final String dirName = UrlUtil.newExtension(path, "mime.dir");
@@ -343,13 +341,13 @@ public class DumpJDFServlet extends UtilityServlet
 			MimeUtil.writeToDir(mp, new File(dirName));
 		}
 
-		protected void dumpZip(final ByteArrayIOStream bos, String path) throws FileNotFoundException, IOException, MessagingException
+		protected void dumpZip(final ByteArrayIOStream bos, final String path) throws FileNotFoundException, IOException, MessagingException
 		{
 			final InputStream fis = bos.getInputStream();
 			final String dirName = UrlUtil.newExtension(path, "zip.dir");
 			log.info("dump zip: " + dirName);
 			//			FileUtil.streamToFile(fis, dirName + ".zip");
-			ZipReader zip = new ZipReader(fis);
+			final ZipReader zip = new ZipReader(fis);
 			zip.unPack(new File(dirName));
 		}
 
@@ -365,7 +363,7 @@ public class DumpJDFServlet extends UtilityServlet
 
 		/**
 		 * @param newDir
-		 * @return 
+		 * @return
 		 */
 		private DumpDir getCreateDump(final File newDir)
 		{
@@ -386,9 +384,9 @@ public class DumpJDFServlet extends UtilityServlet
 
 		/**
 		 * @param bos
-		 * @param req 
+		 * @param req
 		 */
-		private void forward(ByteArrayIOStream bos, HttpServletRequest req)
+		private void forward(final ByteArrayIOStream bos, final HttpServletRequest req)
 		{
 			if (bos == null || req == null || proxyURL == null)
 				return;
@@ -397,13 +395,13 @@ public class DumpJDFServlet extends UtilityServlet
 			{
 				final URL url = new URL(proxyURL);
 
-				HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
-				String method = req.getMethod();
+				final HttpURLConnection httpURLconnection = (HttpURLConnection) url.openConnection();
+				final String method = req.getMethod();
 				httpURLconnection.setRequestMethod(method);
 				httpURLconnection.setRequestProperty("Connection", "close");
 				if (!UrlUtil.GET.equalsIgnoreCase(method))
 				{
-					String contentType = req.getContentType();
+					final String contentType = req.getContentType();
 					httpURLconnection.setRequestProperty(UrlUtil.CONTENT_TYPE, contentType);
 					httpURLconnection.setDoOutput(true);
 					final OutputStream out = httpURLconnection.getOutputStream();
@@ -411,13 +409,13 @@ public class DumpJDFServlet extends UtilityServlet
 					out.flush();
 					out.close();
 				}
-				int rc = httpURLconnection.getResponseCode(); // close channel
+				final int rc = httpURLconnection.getResponseCode(); // close channel
 				if (rc == 200)
 					numForward++;
 				else
 					numBadForward++;
 			}
-			catch (Exception x)
+			catch (final Exception x)
 			{
 				// nop
 			}
@@ -426,7 +424,7 @@ public class DumpJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public DumpJDFServlet()
 	{
@@ -443,7 +441,7 @@ public class DumpJDFServlet extends UtilityServlet
 	protected int numForward;
 	protected String proxyURL;
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8902151736245089036L;
 
@@ -479,7 +477,7 @@ public class DumpJDFServlet extends UtilityServlet
 	 * @return
 	*/
 	@Override
-	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
+	protected ServletCall getServletCall(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		return new DumpCall(this, request, response);
 	}

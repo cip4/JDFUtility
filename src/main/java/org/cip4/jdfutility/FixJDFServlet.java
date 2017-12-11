@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2017 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility;
 
@@ -109,13 +109,13 @@ public class FixJDFServlet extends UtilityServlet
 		 * @param request
 		 * @param response
 		 */
-		public FixCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
+		public FixCall(final UtilityServlet utilityServlet, final HttpServletRequest request, final HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
 		}
 
 		/**
-		 * 
+		 *
 		 * @see org.cip4.jdfutility.ServletCall#processPost()
 		 * @throws ServletException
 		 * @throws IOException
@@ -134,28 +134,27 @@ public class FixJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -8902151736245089036L;
 
 	/**
 	 * Parses a multipart request.
-	 * @param request 
-	 * @param response 
-	 * @throws ServletException 
-	 * @throws IOException 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
 	 */
-	protected void processMultipartRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
-		List<FileItem> fileItems = new FileItemList(request, 20 * 1024 * 1024).getFileList(true, true);
+		final List<FileItem> fileItems = new FileItemList(request, 20 * 1024 * 1024).getFileList(true, true);
 		FileItem fileItem = null;
 		EnumVersion version = null;
 		int nFiles = 0;
 		String versionField = "";
 		for (int i = 0; i < fileItems.size(); i++)
 		{
-			Runtime.getRuntime().gc(); // clean up before loading
-			FileItem item = fileItems.get(i);
+			final FileItem item = fileItems.get(i);
 			if (item.isFormField())
 			{
 				log.info("Form name: " + item.getFieldName());
@@ -191,8 +190,8 @@ public class FixJDFServlet extends UtilityServlet
 			log.info("File type: " + fileItem.getContentType());
 		}
 
-		XMLDoc htmlDoc = new XMLDoc("html", null);
-		KElement html = htmlDoc.getRoot();
+		final XMLDoc htmlDoc = new XMLDoc("html", null);
+		final KElement html = htmlDoc.getRoot();
 		html.appendElement("LINK").setAttribute("HREF", "http://www.cip4.org/css/styles_pc.css");
 		html.getElement("LINK").setAttribute("TYPE", "text/css");
 		html.getElement("LINK").setAttribute("REL", "stylesheet");
@@ -209,11 +208,11 @@ public class FixJDFServlet extends UtilityServlet
 
 			if (fileItem != null)
 			{
-				InputStream ins = fileItem.getInputStream();
-				JDFDoc d = JDFDoc.parseStream(ins);
+				final InputStream ins = fileItem.getInputStream();
+				final JDFDoc d = JDFDoc.parseStream(ins);
 				if (d != null)
 				{
-					KElement k = d.getRoot();
+					final KElement k = d.getRoot();
 					if (k instanceof JDFElement)
 					{
 						log.info("Updating to " + versionField + " ... ");
@@ -223,7 +222,7 @@ public class FixJDFServlet extends UtilityServlet
 							version = null;
 						}
 
-						JDFNode theRoot = d.getJDFRoot();
+						final JDFNode theRoot = d.getJDFRoot();
 						if (theRoot != null) // it is a JDF
 						{
 							if (versionField.equals("Retain") && theRoot.hasAttribute(AttributeName.VERSION))
@@ -231,28 +230,28 @@ public class FixJDFServlet extends UtilityServlet
 								version = theRoot.getVersion(true);
 								versionField = version.getName();
 							}
-							JDFAuditPool ap = theRoot.getCreateAuditPool();
-							JDFModified modi = ap.addModified("FixJDF Web Service Build: " + JDFAudit.software(), null);
+							final JDFAuditPool ap = theRoot.getCreateAuditPool();
+							final JDFModified modi = ap.addModified("FixJDF Web Service Build: " + JDFAudit.software(), null);
 							modi.setDescriptiveName("update to version " + versionField);
 						}
 						else
 						// might be a JMF
 						{
-							JDFJMF theJMF = d.getJMFRoot();
+							final JDFJMF theJMF = d.getJMFRoot();
 							if (theJMF != null && versionField.equals("Retain") && theJMF.hasAttribute(AttributeName.VERSION))
 							{
 								version = theJMF.getVersion(true);
 								versionField = version.getName();
 							}
 						}
-						JDFElement e = (JDFElement) k;
+						final JDFElement e = (JDFElement) k;
 						success = e.fixVersion(version);
 						log.info(success ? "Fix was successful" : "Fix Failed");
 					}
 				}
 
-				File outFile = JDFServletUtil.getTmpFile("FixJDFTmp", fileItem, "jdf" + versionField, ".jdf");
-				String outFileName = outFile.getName();
+				final File outFile = JDFServletUtil.getTmpFile("FixJDFTmp", fileItem, "jdf" + versionField, ".jdf");
+				final String outFileName = outFile.getName();
 				if (d != null)
 				{
 					d.write2File(outFile.getAbsolutePath(), 2, true);
@@ -262,13 +261,13 @@ public class FixJDFServlet extends UtilityServlet
 				if (success)
 				{
 					html.appendText("DownLoad updated " + versionField + " version of " + fileItem.getName() + " here: ");
-					KElement dl = html.appendElement("a");
+					final KElement dl = html.appendElement("a");
 					dl.appendText(outFileName);
 					dl.setAttribute("href", "./FixJDFTmp/" + outFileName, null);
 				}
 				else
 				{
-					KElement e = html.getCreateXPathElement("H2/Font");
+					final KElement e = html.getCreateXPathElement("H2/Font");
 					e.setAttribute("color", "xff0000");
 					e.appendText("Update of " + fileItem.getName() + " to JDF " + versionField + " failed!!! ");
 				}
@@ -281,7 +280,7 @@ public class FixJDFServlet extends UtilityServlet
 				html.appendText("No file to update to JDF " + versionField + ". Update failed!!! ");
 			}
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
 			log.error("Could not read file", ioe);
 			throw new ServletException("Could not read file.", ioe);
@@ -289,7 +288,7 @@ public class FixJDFServlet extends UtilityServlet
 
 		response.setContentType("text/html;charset=utf-8");
 
-		PrintWriter out = response.getWriter();
+		final PrintWriter out = response.getWriter();
 		out.println(htmlDoc.write2String(0));
 
 	}
@@ -309,7 +308,7 @@ public class FixJDFServlet extends UtilityServlet
 	 * @return
 	*/
 	@Override
-	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
+	protected ServletCall getServletCall(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		return new FixCall(this, request, response);
 	}
