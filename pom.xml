@@ -34,6 +34,12 @@
 		<system>JIRA</system>
 		<url>https://jira.cip4.org/browse/JDFUTILITY</url>
 	</issueManagement>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 	<developers>
 		<developer>
 			<id>r.prosi</id>
