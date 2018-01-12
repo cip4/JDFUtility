@@ -6,7 +6,7 @@
     <artifactId>JDFUtility</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>JDFUtility</name>
+    <name>JDFToolbox</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -34,7 +34,7 @@
     </repositories>
     <issueManagement>
         <system>JIRA</system>
-        <url>https://jira.cip4.org/browse/JDFUTILITY</url>
+        <url>https://jira.cip4.org/browse/JDFTOOLBOX</url>
     </issueManagement>
     <developers>
         <developer>
@@ -54,6 +54,12 @@
     </developers>
     <build>
         <finalName>jdf</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -69,6 +75,15 @@
                             </includes>
                         </resource>
                     </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
         </plugins>
