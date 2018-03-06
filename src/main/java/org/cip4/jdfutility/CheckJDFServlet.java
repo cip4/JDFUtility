@@ -162,6 +162,7 @@ public class CheckJDFServlet extends UtilityServlet
 		boolean prettyFormat = false;
 
 		String language = "EN";
+		final String validationLevel = EnumValidationLevel.Complete.getName();
 		String devcapName = null;
 		File devcapFile = null;
 		for (final FileItem item : fileItems)
@@ -182,7 +183,7 @@ public class CheckJDFServlet extends UtilityServlet
 				{
 					prettyFormat = true;
 				}
-				else if (fieldName.equals("Language"))
+				else if ("Language".equals(fieldName))
 				{
 					language = item.getString();
 					if (language.equalsIgnoreCase("nederlands"))
@@ -195,6 +196,10 @@ public class CheckJDFServlet extends UtilityServlet
 					}
 					language = language.substring(0, 2).toUpperCase();
 					log.debug("Language: " + language);
+				}
+				else if ("ValidationLevel".equals(fieldName))
+				{
+					language = item.getString();
 				}
 			}
 			else if ("devcapFile".equals(fieldName))
@@ -233,6 +238,14 @@ public class CheckJDFServlet extends UtilityServlet
 			checker.bQuiet = true;
 			checker.setIgnorePrivate(bIgnorePrivate);
 			checker.level = EnumValidationLevel.Complete;
+			try
+			{
+				checker.level = EnumValidationLevel.getEnum(validationLevel);
+			}
+			catch (final Exception x)
+			{
+				// nop
+			}
 			if (prettyFormat)
 				checker.xslStyleSheet = "./checkjdf.xsl";
 
