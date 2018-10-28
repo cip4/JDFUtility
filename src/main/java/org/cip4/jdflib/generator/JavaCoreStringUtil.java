@@ -1,45 +1,27 @@
 /**
  *
- * Copyright (c) 2002-2009 Heidelberger Druckmaschinen AG, All Rights Reserved.
- * Author: Kai Mattern Dietrich Mucha 
- * Titel: JavaCoreStringUtil.java 
- * 
+ * Copyright (c) 2002-2009 Heidelberger Druckmaschinen AG, All Rights Reserved. Author: Kai Mattern Dietrich Mucha Titel: JavaCoreStringUtil.java
+ *
  * Write the auto files
- * 
- * Version: 2.0 
- * Description: The xml Schema is partitioned into many "complex type's"
- * these types have children named "attributes" and "elements" this file is for
- * describing all values a "element" can have. Counter 34
  *
- * History: 03-13-2002 Kai Mattern started file
- *          30-11-2005 Dietrich Mucha
+ * Version: 2.0 Description: The xml Schema is partitioned into many "complex type's" these types have children named "attributes" and "elements" this file is for describing all values a "element" can
+ * have. Counter 34
  *
- * TBD: getMinOccurs should return int isAttributeToAdd - Attribute
- * settingsPolicy is defined where ?? isAttributeToAdd - Attribute Locked is
- * defined where ?? isAttributeToAdd - CommentURL is a Attribute from ???? (its
- * used in JDFElement) isAttributeToAdd - DescriptiveName is a Attribute from
- * ??? (its used in JEFElement) isAttributeToAdd - xmlns is a Attribute from
- * ???? (its defined in KElement) getAllValidElements - COMPLETE TBD
- * getEnumValues - COMPLETE TBD getAllValidElements - add all values a element
- * can have
+ * History: 03-13-2002 Kai Mattern started file 30-11-2005 Dietrich Mucha
+ *
+ * TBD: getMinOccurs should return int isAttributeToAdd - Attribute settingsPolicy is defined where ?? isAttributeToAdd - Attribute Locked is defined where ?? isAttributeToAdd - CommentURL is a
+ * Attribute from ???? (its used in JDFElement) isAttributeToAdd - DescriptiveName is a Attribute from ??? (its used in JEFElement) isAttributeToAdd - xmlns is a Attribute from ???? (its defined in
+ * KElement) getAllValidElements - COMPLETE TBD getEnumValues - COMPLETE TBD getAllValidElements - add all values a element can have
  */
 
 /*
- * NOTE: This is a little sequence out of the 'Schema' to make comments of the
- * methods more clear
+ * NOTE: This is a little sequence out of the 'Schema' to make comments of the methods more clear
  *
- * <xs:complexType name="PhaseTimeAudit"> <xs:complexContent> <xs:extension
- * base="jdf:AuditElement"> <xs:sequence minOccurs="0" maxOccurs="unbounded">
- * <xs:group ref="jdf:GenericElements" minOccurs="0" /> <xs:element
- * name="Device" type="jdf:Device_r" minOccurs="0" /> <xs:element
- * name="DeviceRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element
- * name="Employee" type="jdf:Employee_re" minOccurs="0" /> <xs:element
- * name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element
- * name="ModulePhase" minOccurs="0"> <xs:complexType> <xs:sequence minOccurs="0"
- * maxOccurs="unbounded"> <xs:group ref="jdf:GenericElements" minOccurs="0" />
- * <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0" />
- * <xs:element name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" />
- * </xs:sequence> . . ...etc
+ * <xs:complexType name="PhaseTimeAudit"> <xs:complexContent> <xs:extension base="jdf:AuditElement"> <xs:sequence minOccurs="0" maxOccurs="unbounded"> <xs:group ref="jdf:GenericElements" minOccurs="0"
+ * /> <xs:element name="Device" type="jdf:Device_r" minOccurs="0" /> <xs:element name="DeviceRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element name="Employee" type="jdf:Employee_re"
+ * minOccurs="0" /> <xs:element name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element name="ModulePhase" minOccurs="0"> <xs:complexType> <xs:sequence minOccurs="0"
+ * maxOccurs="unbounded"> <xs:group ref="jdf:GenericElements" minOccurs="0" /> <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0" /> <xs:element name="EmployeeRef" type="jdf:ResourceRef"
+ * minOccurs="0" /> </xs:sequence> . . ...etc
  */
 /*
  * 36
@@ -81,17 +63,17 @@ public class JavaCoreStringUtil
 
 		private static int m_startValue = 0;
 
-		protected EnumVersion(String name)
+		protected EnumVersion(final String name)
 		{
 			super(name, m_startValue++);
 		}
 
-		public static EnumVersion getEnum(String enumName)
+		public static EnumVersion getEnum(final String enumName)
 		{
 			return (EnumVersion) getEnum(EnumVersion.class, enumName);
 		}
 
-		public static EnumVersion getEnum(int enumValue)
+		public static EnumVersion getEnum(final int enumValue)
 		{
 			return (EnumVersion) getEnum(EnumVersion.class, enumValue);
 		}
@@ -133,16 +115,16 @@ public class JavaCoreStringUtil
 		public static final EnumVersion _1_7 = new EnumVersion("1.7");
 	}
 
-	public static String getStrJavaCoreFile(SchemaComplexType schemaComplexType)
+	public static String getStrJavaCoreFile(final SchemaComplexType schemaComplexType)
 	{
-		Vector vAttributes = schemaComplexType.m_vSchemaAttributes;
-		Vector vElements = schemaComplexType.m_vSchemaElements;
+		final Vector vAttributes = schemaComplexType.m_vSchemaAttributes;
+		final Vector vElements = schemaComplexType.m_vSchemaElements;
 
-		String strComplexTypeName = schemaComplexType.m_SchemaComplexTypeName;
-		String strExtends = schemaComplexType.getStrExtendsName();
-		String strJDFAutoFileName = "JDFAuto" + strComplexTypeName;
+		final String strComplexTypeName = schemaComplexType.m_SchemaComplexTypeName;
+		final String strExtends = schemaComplexType.getStrExtendsName();
+		final String strJDFAutoFileName = "JDFAuto" + strComplexTypeName;
 
-		StringBuffer strbufResult = new StringBuffer(100000);
+		final StringBuffer strbufResult = new StringBuffer(100000);
 
 		// remove unwanted abstract ResourceLink elements
 		for (int i = vElements.size() - 1; i >= 0; i--)
@@ -184,9 +166,9 @@ public class JavaCoreStringUtil
 	 * @param strExtends
 	 * @param strbufResult
 	 */
-	private static void appendImportAndStartOfClass(String strJDFAutoFileName, String strExtends, StringBuffer strbufResult)
+	private static void appendImportAndStartOfClass(final String strJDFAutoFileName, final String strExtends, final StringBuffer strbufResult)
 	{
-		String strPackage = "org.cip4.jdflib.auto";
+		final String strPackage = "org.cip4.jdflib.auto";
 
 		strbufResult.append(GeneratorStringUtil.getStrAllCopyrightInformation()).append(strLineEnd);
 
@@ -240,10 +222,10 @@ public class JavaCoreStringUtil
 	 * @param vAttributes
 	 * @param strbufResult
 	 */
-	private static void appendAtrInfoTable(String complexTypeName, Vector vAttributes, StringBuffer strbufResult)
+	private static void appendAtrInfoTable(final String complexTypeName, final Vector vAttributes, final StringBuffer strbufResult)
 	{
 		// siz > 0 !!!
-		int siz = vAttributes.size();
+		final int siz = vAttributes.size();
 
 		strbufResult.append(strDepth1).append("private static AtrInfoTable[] atrInfoTable = new AtrInfoTable[").append(siz).append("];").append(strLineEnd);
 		strbufResult.append(strDepth1).append("static").append(strLineEnd);
@@ -251,15 +233,15 @@ public class JavaCoreStringUtil
 
 		for (int i = 0; i < siz; i++)
 		{
-			SchemaAttribute schemaAttribute = (SchemaAttribute) vAttributes.elementAt(i);
-			String attributeName = schemaAttribute.getStrAttributeName();
+			final SchemaAttribute schemaAttribute = (SchemaAttribute) vAttributes.elementAt(i);
+			final String attributeName = schemaAttribute.getStrAttributeName();
 
-			String usage = schemaAttribute.getStrUse(); // usage is either optional or required
-			String firstVersion = schemaAttribute.getFirstVersion();
-			String lastVersion = schemaAttribute.getLastVersion();
-			String versionInfo = GeneratorUtil.getVersionInfoAttributes(usage, firstVersion, lastVersion);
+			final String usage = schemaAttribute.getStrUse(); // usage is either optional or required
+			final String firstVersion = schemaAttribute.getFirstVersion();
+			final String lastVersion = schemaAttribute.getLastVersion();
+			final String versionInfo = GeneratorUtil.getVersionInfoAttributes(usage, firstVersion, lastVersion);
 
-			String enumAttributeType = GeneratorUtil.getAttributeExt(schemaAttribute, complexTypeName);
+			final String enumAttributeType = GeneratorUtil.getAttributeExt(schemaAttribute, complexTypeName);
 
 			String enumType = null;
 			if (useEnumAttribute(schemaAttribute.getIsEnum(), attributeName, complexTypeName, false))
@@ -317,7 +299,8 @@ public class JavaCoreStringUtil
 			String defaultValue = schemaAttribute.getStrDefault();
 			defaultValue = defaultValue.equals(JDFConstants.EMPTYSTRING) ? "null" : "\"" + defaultValue + "\"";
 
-			strbufResult.append(strDepth2).append("atrInfoTable[").append(i).append("] = new AtrInfoTable(AttributeName.").append(attributeName.toUpperCase()).append(", 0x").append(versionInfo).append(", AttributeInfo.EnumAttributeType.").append(enumAttributeType).append(", ").append(enumType).append(", ").append(defaultValue).append(");").append(strLineEnd);
+			strbufResult.append(strDepth2).append("atrInfoTable[").append(i).append("] = new AtrInfoTable(AttributeName.").append(attributeName.toUpperCase()).append(", 0x").append(versionInfo)
+					.append(", AttributeInfo.EnumAttributeType.").append(enumAttributeType).append(", ").append(enumType).append(", ").append(defaultValue).append(");").append(strLineEnd);
 		}
 
 		strbufResult.append(strDepth1).append("}").append(strLineEnd);
@@ -329,7 +312,7 @@ public class JavaCoreStringUtil
 		strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd).append(strLineEnd);
 	}
 
-	private static String getStatusName(String complexTypeName)
+	private static String getStatusName(final String complexTypeName)
 	{
 		String statusName = null;
 		if ("Queue".equals(complexTypeName))
@@ -356,7 +339,7 @@ public class JavaCoreStringUtil
 		return statusName;
 	}
 
-	private static String getTypeName(String complexTypeName)
+	private static String getTypeName(final String complexTypeName)
 	{
 		String typeName = null;
 		if ("Queue".equals(complexTypeName))
@@ -383,22 +366,22 @@ public class JavaCoreStringUtil
 	 * @param vElements
 	 * @param strbufResult
 	 */
-	private static void appendElemInfoTable(Vector vElements, StringBuffer strbufResult)
+	private static void appendElemInfoTable(final Vector vElements, final StringBuffer strbufResult)
 	{
 		// vElements.size() > 0 !!!
-		Vector elementsForVersion = new Vector(vElements);
+		final Vector elementsForVersion = new Vector(vElements);
 
 		for (int i = elementsForVersion.size() - 1; i >= 0; i--)
 		{
-			SchemaElement element = (SchemaElement) elementsForVersion.elementAt(i);
-			String strName = element.getStrElementName();
+			final SchemaElement element = (SchemaElement) elementsForVersion.elementAt(i);
+			final String strName = element.getStrElementName();
 			if ((strName.endsWith("Ref") && !strName.equals("TestRef")))
 			{
 				elementsForVersion.remove(i);
 			}
 		}
 
-		int siz2 = elementsForVersion.size();
+		final int siz2 = elementsForVersion.size();
 		if (siz2 > 0)
 		{
 			strbufResult.append(strDepth1).append("private static ElemInfoTable[] elemInfoTable = new ElemInfoTable[").append(siz2).append("];").append(strLineEnd);
@@ -407,12 +390,13 @@ public class JavaCoreStringUtil
 
 			for (int i = 0; i < siz2; i++)
 			{
-				SchemaElement element = (SchemaElement) elementsForVersion.elementAt(i);
-				String elemName = element.getStrElementName().toUpperCase();
+				final SchemaElement element = (SchemaElement) elementsForVersion.elementAt(i);
+				final String elemName = element.getStrElementName().toUpperCase();
 
-				String versionInfo = GeneratorUtil.getVersionInfoElements(element.getIsOptionalElement(), element.getFirstVersion(), element.getLastVersion(), element.getStrMaxOccurs());
+				final String versionInfo = GeneratorUtil.getVersionInfoElements(element.getIsOptionalElement(), element.getFirstVersion(), element.getLastVersion(), element.getStrMaxOccurs());
 
-				strbufResult.append(strDepth2).append("elemInfoTable[").append(i).append("] = new ElemInfoTable(ElementName.").append(elemName).append(", 0x").append(versionInfo).append(");").append(strLineEnd);
+				strbufResult.append(strDepth2).append("elemInfoTable[").append(i).append("] = new ElemInfoTable(ElementName.").append(elemName).append(", 0x").append(versionInfo).append(");")
+						.append(strLineEnd);
 			}
 
 			strbufResult.append(strDepth1).append("}").append(strLineEnd);
@@ -428,7 +412,7 @@ public class JavaCoreStringUtil
 	/**
 	 * @param strbufResult
 	 */
-	private static void appendConstructorsAndToString(String strJDFAutoFileName, StringBuffer strbufResult)
+	private static void appendConstructorsAndToString(final String strJDFAutoFileName, final StringBuffer strbufResult)
 	{
 		strbufResult.append(strLineEnd);
 		strbufResult.append(strDepth1).append("/**").append(strLineEnd);
@@ -483,11 +467,11 @@ public class JavaCoreStringUtil
 		strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd).append(strLineEnd);
 	}
 
-	private static void appendResourceSpecificMethods(String base, String extendsClass, StringBuffer strbufResult)
+	private static void appendResourceSpecificMethods(final String base, final String extendsClass, final StringBuffer strbufResult)
 	{
 		if ("JDFResource".equals(extendsClass))
 		{
-			String baseOf = getBaseOf(base);
+			final String baseOf = getBaseOf(base);
 
 			String resourceClass = baseOf;
 			if (JDFConstants.EMPTYSTRING.equals(baseOf))
@@ -520,7 +504,7 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static String getBaseOf(String base)
+	private static String getBaseOf(final String base)
 	{
 		String baseOf = "";
 		if (base.startsWith("jdf:Parameter"))
@@ -560,12 +544,12 @@ public class JavaCoreStringUtil
 	 * @param complexTypeName
 	 * @param strbufResult
 	 */
-	private static void appendEnumTypes(Vector vAttributes, String complexTypeName, StringBuffer strbufResult)
+	private static void appendEnumTypes(final Vector vAttributes, final String complexTypeName, final StringBuffer strbufResult)
 	{
 		for (int i = 0; i < vAttributes.size(); i++)
 		{
-			SchemaAttribute schemaAttribute = (SchemaAttribute) vAttributes.elementAt(i);
-			String attributeName = schemaAttribute.getStrAttributeName();
+			final SchemaAttribute schemaAttribute = (SchemaAttribute) vAttributes.elementAt(i);
+			final String attributeName = schemaAttribute.getStrAttributeName();
 
 			if (useEnumAttribute(schemaAttribute.getIsEnum(), attributeName, complexTypeName, true))
 			{
@@ -635,10 +619,10 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("        return iterator(").append(attributeTypeName).append(".class);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
 
-				Vector vEnumValues = schemaAttribute.getEnumValues();
+				final Vector vEnumValues = schemaAttribute.getEnumValues();
 				for (int j = 0; j < vEnumValues.size(); j++)
 				{
-					String enumValue = (String) vEnumValues.elementAt(j);
+					final String enumValue = (String) vEnumValues.elementAt(j);
 
 					strbufResult.append(strDepth3).append("/**  */").append(strLineEnd);
 					strbufResult.append(strDepth3).append("public static final ").append(attributeTypeName).append(" ");
@@ -677,7 +661,7 @@ public class JavaCoreStringUtil
 	 * @param attributeName
 	 * @return
 	 */
-	public static boolean useEnumAttribute(boolean isEnum, String attributeName, String complexTypeName, boolean appendList)
+	public static boolean useEnumAttribute(final boolean isEnum, final String attributeName, final String complexTypeName, final boolean appendList)
 	{
 		if (!isEnum)
 			return false;
@@ -723,7 +707,7 @@ public class JavaCoreStringUtil
 	 * @param vAttributes
 	 * @param strbufResult
 	 */
-	private static void appendAttributeGetterAndSetter(String complexTypeName, Vector vAttributes, StringBuffer strbufResult)
+	private static void appendAttributeGetterAndSetter(final String complexTypeName, final Vector vAttributes, final StringBuffer strbufResult)
 	{
 		SchemaAttribute schemaAttribute = null;
 		String attributeName;
@@ -750,7 +734,7 @@ public class JavaCoreStringUtil
 				}
 				else if ("MinStatus".equals(attributeName) || "MinLateStatus".equals(attributeName))
 				{
-					//					modifiedAttributeName = getStatusName(complexTypeName);
+					// modifiedAttributeName = getStatusName(complexTypeName);
 					modifiedAttributeTypeName = getTypeName(complexTypeName);
 				}
 				else if ("MaxVersion".equals(attributeName))
@@ -822,7 +806,8 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static void appendAttributeGetterAndSetterForEnum(StringBuffer strbufResult, String complexTypeName, SchemaAttribute schemaAttribute, String attributeName, String modifiedAttributeName, String modifiedAttributeTypeName, String returnType)
+	private static void appendAttributeGetterAndSetterForEnum(final StringBuffer strbufResult, final String complexTypeName, final SchemaAttribute schemaAttribute, final String attributeName,
+			final String modifiedAttributeName, final String modifiedAttributeTypeName, final String returnType)
 	{
 		// set
 		if (!"Status".equals(attributeName) || "Queue".equals(complexTypeName) || "QueueEntry".equals(complexTypeName) || "ResourceCmdParams".equals(complexTypeName)
@@ -874,7 +859,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(modifiedAttributeTypeName).append(" enumVar)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", enumVar==null ? null : enumVar.getName(), null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", enumVar==null ? null : enumVar.getName(), null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 
@@ -891,11 +877,13 @@ public class JavaCoreStringUtil
 				if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 				{
 					// System.out.println ("6");
-					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+							.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
 				}
 				else
 				{
-					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+							.append(", null, null));").append(strLineEnd);
 				}
 
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -936,11 +924,13 @@ public class JavaCoreStringUtil
 					if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 					{
 						// System.out.println ("35");
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+								.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
 					}
 					else
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+								.append(", null, null));").append(strLineEnd);
 					}
 
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -960,7 +950,8 @@ public class JavaCoreStringUtil
 						defaultValue = "getEnum(0)";
 					}
 
-					strbufResult.append(strDepth3).append("return getEnumerationsAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ").append(modifiedAttributeTypeName).append(".").append(defaultValue).append(", false);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getEnumerationsAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ")
+							.append(modifiedAttributeTypeName).append(".").append(defaultValue).append(", false);").append(strLineEnd);
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -974,11 +965,13 @@ public class JavaCoreStringUtil
 
 					if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase())
+								.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
 					}
 					else
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase())
+								.append(", null, null));").append(strLineEnd);
 					}
 
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -987,7 +980,7 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static void appendAttributeGetterAndSetterForNonEnum(StringBuffer strbufResult, SchemaAttribute schemaAttribute, String modifiedAttributeName, String returnType)
+	private static void appendAttributeGetterAndSetterForNonEnum(final StringBuffer strbufResult, final SchemaAttribute schemaAttribute, final String modifiedAttributeName, final String returnType)
 	{
 		String returnTypeLocal = returnType;
 
@@ -1010,7 +1003,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", new JDFDuration().getDurationISO(), null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", new JDFDuration().getDurationISO(), null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 
 				// set2
@@ -1020,7 +1014,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(returnTypeLocal).append(" value)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getDurationISO(), null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getDurationISO(), null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 
 				// get 5
@@ -1074,7 +1069,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(returnTypeLocal).append(" value)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getName(), null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getName(), null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 			else
@@ -1122,8 +1118,8 @@ public class JavaCoreStringUtil
 
 				if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 				{
-					strbufResult.append(strDepth3).append("return getIntAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, "
-							+ schemaAttribute.getStrDefault() + ");").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getIntAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+							.append(", null, " + schemaAttribute.getStrDefault() + ");").append(strLineEnd);
 				}
 				else
 				{
@@ -1193,7 +1189,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
 				strbufResult.append(strDepth3).append("String strAttrName = \"\";").append(strLineEnd);
 				strbufResult.append(strDepth3).append(returnTypeLocal).append(" nPlaceHolder = null;").append(strLineEnd);
-				strbufResult.append(strDepth3).append("strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth3).append("nPlaceHolder = ").append(returnTypeLocal).append(".getEnum(strAttrName);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return nPlaceHolder;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1209,7 +1206,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
 				strbufResult.append(strDepth3).append("String strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);").append(strLineEnd);
-				strbufResult.append(strDepth3).append(returnTypeLocal).append(" nPlaceHolder = ").append(returnTypeLocal).append(".create").append(returnTypeLocal.substring(3)).append("(strAttrName);").append(strLineEnd);
+				strbufResult.append(strDepth3).append(returnTypeLocal).append(" nPlaceHolder = ").append(returnTypeLocal).append(".create").append(returnTypeLocal.substring(3))
+						.append("(strAttrName);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return nPlaceHolder;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
@@ -1243,11 +1241,13 @@ public class JavaCoreStringUtil
 
 						if (schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 						{
-							strbufResult.append(strDepth3).append("String  s = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
+							strbufResult.append(strDepth3).append("String  s = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+									.append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
 						}
 						else
 						{
-							strbufResult.append(strDepth3).append("String  s = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, \"").append(schemaAttribute.getStrDefault()).append("\");").append(strLineEnd);
+							strbufResult.append(strDepth3).append("String  s = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, \"")
+									.append(schemaAttribute.getStrDefault()).append("\");").append(strLineEnd);
 						}
 
 						strbufResult.append(strDepth3).append("vStrAttrib.setAllStrings(s, \" \");").append(strLineEnd);
@@ -1265,7 +1265,8 @@ public class JavaCoreStringUtil
 							strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 							strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF()").append(strLineEnd);
 							strbufResult.append(strDepth2).append("{").append(strLineEnd);
-							strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
+							strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
+									.append(strLineEnd);
 							strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 						}
 						else
@@ -1280,11 +1281,13 @@ public class JavaCoreStringUtil
 
 							if (schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 							{
-								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
+								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
+										.append(strLineEnd);
 							}
 							else
 							{
-								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, \"").append(schemaAttribute.getStrDefault()).append("\");").append(strLineEnd);
+								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, \"")
+										.append(schemaAttribute.getStrDefault()).append("\");").append(strLineEnd);
 							}
 
 							strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1295,7 +1298,7 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static boolean isCreateGetterAndSetter(SchemaAttribute schemaAttribute)
+	private static boolean isCreateGetterAndSetter(final SchemaAttribute schemaAttribute)
 	{
 		// Attributes already defined in JDFElement, we need them here only for AtrInfoTable ...
 		return !("Version".equals(schemaAttribute.getStrAttributeName()));
@@ -1306,7 +1309,7 @@ public class JavaCoreStringUtil
 	 * @param vElements
 	 * @param strbufResult
 	 */
-	private static void appendElementGetterAndSetter(String strComplexTypeName, Vector vElements, StringBuffer strbufResult)
+	private static void appendElementGetterAndSetter(final String strComplexTypeName, final Vector vElements, final StringBuffer strbufResult)
 	{
 		String strElementName;
 		String strReturnType;
@@ -1328,7 +1331,7 @@ public class JavaCoreStringUtil
 
 			if (strElementName.endsWith("Ref") || ("ResourceInfo".equals(strComplexTypeName) && "Resource".equals(strElementName)))
 			{
-				// don't write the element setters and getters for Ref-elements  
+				// don't write the element setters and getters for Ref-elements
 				// and for ResourceInfo.Resource (Resource is abstract)
 			}
 			else
@@ -1341,10 +1344,10 @@ public class JavaCoreStringUtil
 					{
 						// special case for
 						// 1. deprecated element FileSpec.Disposition, as there exists
-						//    a not deprecated attribute FileSpec.Disposition with
-						//    method EnumDisposition getDisposition()
+						// a not deprecated attribute FileSpec.Disposition with
+						// method EnumDisposition getDisposition()
 						// 2. element FileSpec.Container, as there already exists
-						//    a different method org.apache.xerces.dom.NodeImpl.getContainer()
+						// a different method org.apache.xerces.dom.NodeImpl.getContainer()
 						// get
 						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
 						strbufResult.append(strDepth1).append(" * (28) const get element ").append(strElementName).append(strLineEnd);
@@ -1354,7 +1357,8 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 						strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("(int iSkip)").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);")
+								.append(strLineEnd);
 						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 						// get Collection
@@ -1378,54 +1382,6 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth2).append("return v;").append(strLineEnd);
 						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
-						//						// get Collection
-						//						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append(" * Get all ").append(strElementName).append(" from the current element").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append(" * ").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append(" * @return Collection<").append(strReturnType).append(">").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append("public Collection<").append(strReturnType).append("> getAll").append(strElementName).append("()").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						//						strbufResult.append(strDepth2).append("Vector<").append(strReturnType).append("> v = new Vector<").append(strReturnType).append(">();").append(strLineEnd).append(strLineEnd);
-						//						strbufResult.append(strDepth2).append(strReturnType).append(" kElem = (").append(strReturnType).append(") getFirstChildElement(ElementName.").append(strElementName.toUpperCase()).append(", null);").append(strLineEnd).append(strLineEnd);
-						//						strbufResult.append(strDepth2).append("while (kElem != null)").append(strLineEnd);
-						//						strbufResult.append(strDepth2).append("{").append(strLineEnd);
-						//						strbufResult.append(strDepth3).append("v.add(kElem);").append(strLineEnd).append(strLineEnd);
-						//						strbufResult.append(strDepth3).append("kElem = (").append(strReturnType).append(") kElem.getNextSiblingElement(ElementName.").append(strElementName.toUpperCase()).append(", null);").append(strLineEnd);
-						//						strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
-						//						strbufResult.append(strDepth2).append("return v;").append(strLineEnd);
-						//						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
-						//					    /**
-						//					     * (28) const get element Container
-						//					     * @param iSkip number of elements to skip
-						//					     * @return JDFContainer the element
-						//					     * default is getContainer(0)     */
-						//					    public JDFContainer getContainer(int iSkip)
-						//					    {
-						//					        return (JDFContainer) getElement(ElementName.CONTAINER, null, iSkip);
-						//					    }
-						//
-
-						//					    /**
-						//					     * Get all JDFContainer from the actual element 
-						//					     *
-						//					     * @return Collection<JDFContainer>
-						//					     */
-						//					    public Collection<JDFContainer> getAllContainer()
-						//						{
-						//							Vector<JDFContainer> v = new Vector<JDFContainer>();
-						//
-						//							JDFContainer kElem = (JDFContainer) getFirstChildElement(ElementName.CONTAINER, null);
-						//
-						//							while (kElem != null)
-						//							{
-						//								v.add(kElem);
-						//
-						//								kElem = (JDFContainer) kElem.getNextSiblingElement(ElementName.CONTAINER, null);
-						//							}
-						//
-						//							return v;
-						//						}
 					}
 					else
 					{
@@ -1435,7 +1391,8 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 						strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("()").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, 0);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, 0);")
+								.append(strLineEnd);
 						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 					}
 
@@ -1446,7 +1403,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" getCreate").append(strElementName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_KElement(ElementName.").append(strElementName.toUpperCase()).append(", null, 0);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.").append(strElementName.toUpperCase())
+							.append(", null, 0);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -1459,7 +1417,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" getCreate").append(strElementName).append("(int iSkip)").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(")getCreateElement_KElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.").append(strElementName.toUpperCase())
+							.append(", null, iSkip);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 					// get
@@ -1471,7 +1430,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("(int iSkip)").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 					// get Collection
@@ -1496,7 +1456,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("() throws JDFException").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElementN(ElementName.").append(strElementName.toUpperCase()).append(", 1, null);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElementN(ElementName.").append(strElementName.toUpperCase()).append(", 1, null);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -1508,14 +1469,15 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElement(ElementName.").append(strElementName.toUpperCase()).append(", null);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElement(ElementName.").append(strElementName.toUpperCase()).append(", null);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 
 				// Ref
 				for (int j = 0; j < vElements.size(); j++)
 				{
-					String strHelperName = ((SchemaElement) vElements.elementAt(j)).getStrElementName();
+					final String strHelperName = ((SchemaElement) vElements.elementAt(j)).getStrElementName();
 
 					if ((strElementName + "Ref").equals(strHelperName) && !strElementName.equals("MISDetails") // TODO remove when schema fixes MISDetails as element
 					)
@@ -1540,11 +1502,11 @@ public class JavaCoreStringUtil
 		strbufResult.append(GeneratorStringUtil.getStrCloseFile()).append("// end namespace JDF").append(strLineEnd);
 	}
 
-	public static boolean isKindOf(Object obj, String type) throws ClassNotFoundException
+	public static boolean isKindOf(final Object obj, final String type) throws ClassNotFoundException
 	{
 		// get the class def for obj and type
 		Class c = obj.getClass();
-		Class tClass = Class.forName(type);
+		final Class tClass = Class.forName(type);
 
 		// check against type and superclasses
 		while (c != null)

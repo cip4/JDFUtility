@@ -1,16 +1,11 @@
 /**
  *
- *  Copyright (c)   2002-2014 Heidelberger Druckmaschinen AG, All Rights Reserved.
- *  Author:         Kai Mattern
- *  Titel:          SchemaElement.java
- *  Version:        0.1
- *  Description:    The xml Schema is partitioned into many "complex type's" 
- *                  these types have children named "attributes" and "elements"
- *                  this file is for describing all values a "element" can have.
+ * Copyright (c) 2002-2014 Heidelberger Druckmaschinen AG, All Rights Reserved. Author: Kai Mattern Titel: SchemaElement.java Version: 0.1 Description: The xml Schema is partitioned into many "complex
+ * type's" these types have children named "attributes" and "elements" this file is for describing all values a "element" can have.
  *
- *  History:        03-13-2002  Kai Mattern started file
+ * History: 03-13-2002 Kai Mattern started file
  *
- *  TBD:            getMinOccurs should return  int
+ * TBD: getMinOccurs should return int
  *
  */
 
@@ -22,20 +17,20 @@ import java.util.Vector;
 import org.cip4.jdflib.core.KElement;
 import org.w3c.dom.Element;
 
-//======================================================================================================
-//     SchemaElement
-//=======================================================================================================
+// ======================================================================================================
+// SchemaElement
+// =======================================================================================================
 public class SchemaElement implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	public SchemaElement(KElement other)
+	public SchemaElement(final KElement other)
 	{
 		setm_schemaKElem(other);
 		this.init();
 	}
 
-	public SchemaElement(Element other)
+	public SchemaElement(final Element other)
 	{
 		setm_schemaKElem((KElement) other);
 		this.init();
@@ -44,14 +39,14 @@ public class SchemaElement implements Serializable
 
 	transient private KElement m_schemaKElem = null;
 
-	//private values of that might be set in an element
+	// private values of that might be set in an element
 	private String m_elementName = "";
 	private String m_minOccurs = "";
 	private String m_maxOccurs = "";
 	private String m_usageString = "";
 	private String m_returnType = "";
 	private String m_elementType = "";
-	private final Vector m_vProcessUsage = new Vector();
+	private final Vector<String> m_vProcessUsage = new Vector<>();
 	private String m_processUsageString = "Unknown,AnyInput,AnyOutput,Any,";
 
 	private boolean m_isOptionalElement = true; // if it's false, element is required
@@ -74,14 +69,13 @@ public class SchemaElement implements Serializable
 	}
 
 	/**
-	 *  Every element inside the schema has a unique Name.
-	 *  the Schema is reflected in a couple of vectors. One vector holds all elements from as given
-	 *  complex Type. To set the name of this specific element, use this method
+	 * Every element inside the schema has a unique Name. the Schema is reflected in a couple of vectors. One vector holds all elements from as given complex Type. To set the name of this specific
+	 * element, use this method
 	 *
-	 *  @param String ElementName - the name of the element
-	 *  @return void - nothing
+	 * @param String ElementName - the name of the element
+	 * @return void - nothing
 	 */
-	public void setStrElementName(String elementName)
+	public void setStrElementName(final String elementName)
 	{
 		if (elementName.startsWith("jdf:"))
 		{
@@ -104,13 +98,13 @@ public class SchemaElement implements Serializable
 	}
 
 	/**
-	 *  Every element is of a specific Type. To set the type, use this method
+	 * Every element is of a specific Type. To set the type, use this method
 	 *
-	 *  @param String ElementType - the Type of the element
+	 * @param String ElementType - the Type of the element
 	 *
-	 *  @return void - nothing
+	 * @return void - nothing
 	 */
-	public void setStrElementType(String elementType)
+	public void setStrElementType(final String elementType)
 	{
 		if (elementType.startsWith("jdf:"))
 		{
@@ -123,23 +117,22 @@ public class SchemaElement implements Serializable
 	}
 
 	/**
-	 *  The Schema and the Spec of the JDF regulates, when where who whether and in this case, how often a element
-	 *  can occur. Normaly its only important to know if the occurance of the element is unequally 0. This means the
-	 *  Element is required. Otherwise the element is optional. To set the minoccurance, use this method.
+	 * The Schema and the Spec of the JDF regulates, when where who whether and in this case, how often a element can occur. Normaly its only important to know if the occurance of the element is
+	 * unequally 0. This means the Element is required. Otherwise the element is optional. To set the minoccurance, use this method.
 	 *
-	 *  @param String minOccurs - the minimum occurance of the element
+	 * @param String minOccurs - the minimum occurance of the element
 	 *
-	 *  @return void - nothing
+	 * @return void - nothing
 	 */
-	public void setStrMinOccurs(String minOccurs)
+	public void setStrMinOccurs(final String minOccurs)
 	{
 		m_minOccurs = minOccurs;
 	}
 
 	/**
-	 *  To get the element name, call this method.
+	 * To get the element name, call this method.
 	 *
-	 *  @return String - Name of the element or an empty string
+	 * @return String - Name of the element or an empty string
 	 */
 	public String getStrElementName()
 	{
@@ -157,14 +150,13 @@ public class SchemaElement implements Serializable
 	}
 
 	/**
-	 *  To get the minoccurance of an element, call this method
-	 *  NOTE: deprecated (this method will soon return int).
+	 * To get the minoccurance of an element, call this method NOTE: deprecated (this method will soon return int).
 	 *
 	 * @return String - the minoccurance of the element
 	 */
 	public String getStrMinOccurs()
 	{
-		//        return Integer.parseInt(m_strMinOccurs, 10); //intvalue of String representativ;
+		// return Integer.parseInt(m_strMinOccurs, 10); //intvalue of String representativ;
 		return m_minOccurs;
 	}
 
@@ -178,12 +170,12 @@ public class SchemaElement implements Serializable
 		return m_usageString;
 	}
 
-	public void setStrUsageString(String nStrUsageString)
+	public void setStrUsageString(final String nStrUsageString)
 	{
 		m_usageString = nStrUsageString;
 	}
 
-	public void setStrReturnType(String nStrReturnType)
+	public void setStrReturnType(final String nStrReturnType)
 	{
 		m_returnType = nStrReturnType;
 	}
@@ -206,7 +198,7 @@ public class SchemaElement implements Serializable
 		}
 	}
 
-	public void setIsEnumerationSpan(boolean isTrue)
+	public void setIsEnumerationSpan(final boolean isTrue)
 	{
 		m_isEnumerationSpan = isTrue;
 	}
@@ -216,7 +208,7 @@ public class SchemaElement implements Serializable
 		return m_isEnumerationSpan;
 	}
 
-	public void setStrMaxOccurs(String maxOccurs)
+	public void setStrMaxOccurs(final String maxOccurs)
 	{
 		m_maxOccurs = maxOccurs;
 	}
@@ -226,12 +218,12 @@ public class SchemaElement implements Serializable
 		return m_maxOccurs;
 	}
 
-	public void appendProcessUsageToVector(String usage)
+	public void appendProcessUsageToVector(final String usage)
 	{
 		this.m_vProcessUsage.add(usage);
 	}
 
-	public void appendProcessUsageToString(String usage)
+	public void appendProcessUsageToString(final String usage)
 	{
 		m_processUsageString += usage;
 	}
@@ -251,7 +243,7 @@ public class SchemaElement implements Serializable
 		return this.m_vProcessUsage;
 	}
 
-	protected void setm_schemaKElem(KElement schemaKElem)
+	protected void setm_schemaKElem(final KElement schemaKElem)
 	{
 		this.m_schemaKElem = schemaKElem;
 
@@ -262,9 +254,9 @@ public class SchemaElement implements Serializable
 		return m_schemaKElem;
 	}
 
-	public void setFirstVersion(String strFirst)
+	public void setFirstVersion(final String strFirst)
 	{
-		//        if (!JDFConstants.EMPTYSTRING.equals(strFirst))
+		// if (!JDFConstants.EMPTYSTRING.equals(strFirst))
 		m_firstVersion = strFirst;
 	}
 
@@ -273,9 +265,9 @@ public class SchemaElement implements Serializable
 		return m_firstVersion;
 	}
 
-	public void setLastVersion(String strLast)
+	public void setLastVersion(final String strLast)
 	{
-		//        if (!JDFConstants.EMPTYSTRING.equals(strLast))
+		// if (!JDFConstants.EMPTYSTRING.equals(strLast))
 		m_lastVersion = strLast;
 	}
 

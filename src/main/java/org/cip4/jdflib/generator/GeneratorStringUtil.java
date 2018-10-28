@@ -1,58 +1,33 @@
 /**
  *
- *  Copyright (c)   2002 Heidelberger Druckmaschinen AG, All Rights Reserved.
- *  Author:         Kai Mattern
- *  Titel:          StringUtil.java
- *  Version:        0.1
- *  Description:    The xml Schema is partitioned into many "complex type's" 
- *                  these types have children named "attributes" and "elements"
- *                  this file is for describing all values a "element" can have.
+ * Copyright (c) 2002 Heidelberger Druckmaschinen AG, All Rights Reserved. Author: Kai Mattern Titel: StringUtil.java Version: 0.1 Description: The xml Schema is partitioned into many "complex type's"
+ * these types have children named "attributes" and "elements" this file is for describing all values a "element" can have.
  *
- *  History:        03-13-2002  Kai Mattern started file
+ * History: 03-13-2002 Kai Mattern started file
  *
- *  TBD:            getMinOccurs should return  int
- *                  isAttributeToAdd - Attribute SettingsPolicy is defined where ??
- *                  isAttributeToAdd - Attribute Locked is defined where ??
- *                  isAttributeToAdd - CommentURL is a Attribute from ???? (its used in JDFElement)
- *                  isAttributeToAdd - DescriptiveName is a Attribute from ??? (its used in JEFElement)
- *                  isAttributeToAdd - xmlns is a Attribute from ???? (its defined in KElement)
- *                  getAllValidElements - COMPLETE TBD
- *                  GetEnumValues - COMPLETE TBD
- *                  getAllValidElements - add all values a element can have
+ * TBD: getMinOccurs should return int isAttributeToAdd - Attribute SettingsPolicy is defined where ?? isAttributeToAdd - Attribute Locked is defined where ?? isAttributeToAdd - CommentURL is a
+ * Attribute from ???? (its used in JDFElement) isAttributeToAdd - DescriptiveName is a Attribute from ??? (its used in JEFElement) isAttributeToAdd - xmlns is a Attribute from ???? (its defined in
+ * KElement) getAllValidElements - COMPLETE TBD GetEnumValues - COMPLETE TBD getAllValidElements - add all values a element can have
  */
 
 /*
-*   NOTE: This is a little sequence out of the 'Schema' to make comments of the methods more clear
-*
-*   <xs:complexType name="PhaseTimeAudit">
-*       <xs:complexContent>
-*           <xs:extension base="jdf:AuditElement">
-*               <xs:sequence minOccurs="0" maxOccurs="unbounded">
-*                   <xs:group ref="jdf:GenericElements" minOccurs="0" />
-*                   <xs:element name="Device" type="jdf:Device_r" minOccurs="0" />
-*                   <xs:element name="DeviceRef" type="jdf:ResourceRef" minOccurs="0" />
-*                   <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0" />
-*                   <xs:element name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" />
-*                   <xs:element name="ModulePhase" minOccurs="0">
-*                       <xs:complexType>
-*                           <xs:sequence minOccurs="0" maxOccurs="unbounded">
-*                               <xs:group ref="jdf:GenericElements" minOccurs="0" />
-*                               <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0" />
-*                               <xs:element name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" />
-*                           </xs:sequence>
-*                           .
-*                           .
-*                           ...etc
-*/
+ * NOTE: This is a little sequence out of the 'Schema' to make comments of the methods more clear
+ *
+ * <xs:complexType name="PhaseTimeAudit"> <xs:complexContent> <xs:extension base="jdf:AuditElement"> <xs:sequence minOccurs="0" maxOccurs="unbounded"> <xs:group ref="jdf:GenericElements" minOccurs="0"
+ * /> <xs:element name="Device" type="jdf:Device_r" minOccurs="0" /> <xs:element name="DeviceRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element name="Employee" type="jdf:Employee_re"
+ * minOccurs="0" /> <xs:element name="EmployeeRef" type="jdf:ResourceRef" minOccurs="0" /> <xs:element name="ModulePhase" minOccurs="0"> <xs:complexType> <xs:sequence minOccurs="0"
+ * maxOccurs="unbounded"> <xs:group ref="jdf:GenericElements" minOccurs="0" /> <xs:element name="Employee" type="jdf:Employee_re" minOccurs="0" /> <xs:element name="EmployeeRef" type="jdf:ResourceRef"
+ * minOccurs="0" /> </xs:sequence> . . ...etc
+ */
 
-//package
+// package
 package org.cip4.jdflib.generator;
 
-//imports
+// imports
 
-//======================================================================================================
-//     StringUtil
-//======================================================================================================
+// ======================================================================================================
+// StringUtil
+// ======================================================================================================
 
 public class GeneratorStringUtil
 {
@@ -64,13 +39,13 @@ public class GeneratorStringUtil
 	public static String getStrAllCopyrightInformation()
 	{
 
-		StringBuffer strCopyrightInfo = new StringBuffer(1000);
+		final StringBuffer strCopyrightInfo = new StringBuffer(1000);
 
 		strCopyrightInfo.append("/*").append(strLineEnd);
 		strCopyrightInfo.append(" * The CIP4 Software License, Version 1.0").append(strLineEnd);
 		strCopyrightInfo.append(" *").append(strLineEnd);
 		strCopyrightInfo.append(" *").append(strLineEnd);
-		strCopyrightInfo.append(" * Copyright (c) 2001-2014 The International Cooperation for the Integration of").append(strLineEnd);
+		strCopyrightInfo.append(" * Copyright (c) 2001-2018 The International Cooperation for the Integration of").append(strLineEnd);
 		strCopyrightInfo.append(" * Processes in  Prepress, Press and Postpress (CIP4).  All rights").append(strLineEnd);
 		strCopyrightInfo.append(" * reserved.").append(strLineEnd);
 		strCopyrightInfo.append(" *").append(strLineEnd);
