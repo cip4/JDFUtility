@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<!-- (C) 2001-2018 CIP4 -->
+<!-- (C) 2001-2019 CIP4 -->
 <xsl:stylesheet exclude-result-prefixes="tbl" version="1.0"
 	xmlns="http://www.w3.org/1999/xhtml" xmlns:tbl="urn:TheLanguageTable"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -549,9 +549,9 @@
 		</xsl:variable>
 		<!-- XHTML -->
 		<html>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700%7CRoboto:300,300i,400,400i,500,500i,700,700i">
-<link rel="stylesheet" href="https://www.cip4.org/assets/css/3bc02fd052de.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hyperform/0.9.5/hyperform.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700%7CRoboto:300,300i,400,400i,500,500i,700,700i"/>
+<link rel="stylesheet" href="https://www.cip4.org/assets/css/3bc02fd052de.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hyperform/0.9.5/hyperform.min.css"/>
 			<head>
 				<title>
 					<xsl:call-template name="localize">
