@@ -99,7 +99,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>9.2.4.v20141103</version>
+            <version>9.4.24.v20191120</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
