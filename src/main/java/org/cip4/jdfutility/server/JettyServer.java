@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2017 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,6 +68,7 @@
  */
 package org.cip4.jdfutility.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -77,12 +78,18 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StringUtil;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -90,6 +97,7 @@ import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 /**
  * standalone jetty server wrapper
@@ -101,6 +109,8 @@ public abstract class JettyServer
 {
 
 	protected int thePort;
+	protected int sslPort;
+	protected SslContextFactory sslFactory;
 	protected String context;
 	protected Server server;
 	protected final Log log;
@@ -111,13 +121,14 @@ public abstract class JettyServer
 	 * @param port
 	 *
 	 */
-	public JettyServer(String context, int port)
+	public JettyServer(String context, final int port)
 	{
 		super();
 		log = LogFactory.getLog(getClass());
 		setPort(port);
 		context = setContext(context);
 		log.info("creating JettyServer at context: " + context + " port: " + port);
+		sslPort = -1;
 	}
 
 	protected String setContext(String context)
@@ -134,9 +145,59 @@ public abstract class JettyServer
 	 * set the port
 	 * @param port the port to set
 	 */
-	public void setPort(int port)
+	public void setPort(final int port)
 	{
 		thePort = port;
+	}
+
+	/**
+	 *
+	 * @param port the ssl port
+	 * @param keystorePath
+	 * @return may be used for additional setup
+	 */
+	public SslContextFactory setSSLPort(final int port, String keystorePath)
+	{
+		sslPort = port;
+		if (port <= 0)
+		{
+			sslFactory = null;
+		}
+		else
+		{
+			sslFactory = new SslContextFactory();
+
+			if (keystorePath == null)
+			{
+				keystorePath = getDefaultKeyStore();
+				sslFactory.setKeyStorePassword("changeit");
+			}
+			sslFactory.setKeyStorePath(keystorePath);
+		}
+		return sslFactory;
+	}
+
+	/**
+	*
+	 * @return
+	*/
+	public String getDefaultKeyStore()
+	{
+
+		final File loc = SystemUtils.getJavaHome();
+		if (loc != null)
+		{
+			final File f = new File(loc, "lib/security/cacerts");
+			if (f.canRead())
+			{
+				return f.getAbsolutePath();
+			}
+			else
+			{
+				log.warn("Cannot read " + f.getAbsolutePath());
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -169,11 +230,30 @@ public abstract class JettyServer
 		}
 		log.info("creating new server at port: " + thePort + context);
 		server = new Server(thePort);
-		HandlerList handlers = createHandlerList();
-		HandlerCollection handlerbase = createBaseCollection(handlers);
+		updateSSL();
+		final HandlerList handlers = createHandlerList();
+		final HandlerCollection handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
 		server.start();
 		log.info("completed starting new server at port: " + thePort + context);
+	}
+
+	/**
+	 *
+	 */
+	protected void updateSSL()
+	{
+		if (sslPort > 0)
+		{
+			final HttpConfiguration https = new HttpConfiguration();
+			https.addCustomizer(new SecureRequestCustomizer());
+			final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslFactory, "http/1.1");
+			final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(https);
+			final ServerConnector sslConnector = new ServerConnector(server, sslConnectionFactory, httpConnectionFactory);
+			sslConnector.setPort(sslPort);
+			server.addConnector(sslConnector);
+		}
+
 	}
 
 	/**
@@ -183,14 +263,14 @@ public abstract class JettyServer
 	 */
 	protected HandlerList createHandlerList()
 	{
-		HandlerList handlers = new HandlerList();
+		final HandlerList handlers = new HandlerList();
 		// the resource handler is always first
-		ResourceHandler resourceHandler = createResourceHandler();
+		final ResourceHandler resourceHandler = createResourceHandler();
 		handlers.addHandler(resourceHandler);
 
 		addMoreHandlers(handlers);
 
-		ServletContextHandler context = createServletHandler();
+		final ServletContextHandler context = createServletHandler();
 		context.getContextPath();
 
 		handlers.addHandler(context);
@@ -204,9 +284,9 @@ public abstract class JettyServer
 	 * @param handlers
 	 * @return
 	 */
-	protected HandlerCollection createBaseCollection(HandlerList handlers)
+	protected HandlerCollection createBaseCollection(final HandlerList handlers)
 	{
-		HandlerCollection handlerbase = new HandlerCollection();
+		final HandlerCollection handlerbase = new HandlerCollection();
 		handlerbase.addHandler(handlers);
 		addHttpLogger(handlerbase);
 		return handlerbase;
@@ -216,7 +296,7 @@ public abstract class JettyServer
 	 * hook to add more handlers if required
 	 * @param handlers
 	 */
-	protected void addMoreHandlers(HandlerList handlers)
+	protected void addMoreHandlers(final HandlerList handlers)
 	{
 		// nop
 	}
@@ -225,12 +305,12 @@ public abstract class JettyServer
 	 * hook to add http loggers or other post handling handlers, if required
 	 * @param handlerbase
 	 */
-	protected void addHttpLogger(HandlerCollection handlerbase)
+	protected void addHttpLogger(final HandlerCollection handlerbase)
 	{
-		RequestLog requestLog = createRequestLog();
+		final RequestLog requestLog = createRequestLog();
 		if (requestLog != null)
 		{
-			RequestLogHandler requestLogHandler = new RequestLogHandler();
+			final RequestLogHandler requestLogHandler = new RequestLogHandler();
 			requestLogHandler.setRequestLog(requestLog);
 			handlerbase.addHandler(requestLogHandler);
 			log.info("adding http log handler");
@@ -256,7 +336,7 @@ public abstract class JettyServer
 		{
 			return "http://" + InetAddress.getLocalHost().getHostName() + ":" + thePort + context;
 		}
-		catch (UnknownHostException e)
+		catch (final UnknownHostException e)
 		{
 			log.fatal("the network looks real bad...", e);
 			return null;
@@ -273,7 +353,7 @@ public abstract class JettyServer
 	public class MyResourceHandler extends ResourceHandler
 	{
 
-		public MyResourceHandler(String strip)
+		public MyResourceHandler(final String strip)
 		{
 			super();
 			this.strip = StringUtil.getNonEmpty(strip);
@@ -302,7 +382,7 @@ public abstract class JettyServer
 				}
 				return super.getResource(url);
 			}
-			catch (MalformedURLException x)
+			catch (final MalformedURLException x)
 			{
 				return null;
 			}
@@ -326,7 +406,7 @@ public abstract class JettyServer
 		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 		 */
 		@Override
-		public void handle(String pathInContext, Request arg1, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+		public void handle(final String pathInContext, final Request arg1, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
 		{
 			response.sendRedirect(getHome());
 			arg1.setHandled(true);
@@ -339,7 +419,7 @@ public abstract class JettyServer
 	 */
 	protected ResourceHandler createResourceHandler()
 	{
-		ResourceHandler resourceHandler = new MyResourceHandler(context);
+		final ResourceHandler resourceHandler = new MyResourceHandler(context);
 		resourceHandler.setResourceBase(".");
 		return resourceHandler;
 	}
@@ -371,9 +451,14 @@ public abstract class JettyServer
 		{
 			try
 			{
+				if (sslPort > 0)
+				{
+					theServer.setSSLPort(sslPort, null);
+				}
+
 				runServer();
 			}
-			catch (Throwable e1)
+			catch (final Throwable e1)
 			{
 				log.error("Snafu creating server at Port: " + thePort + context, e1);
 			}
@@ -382,7 +467,7 @@ public abstract class JettyServer
 		{
 			server.start();
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
 			log.error("Snafu starting server: ", e);
 		}
@@ -402,7 +487,7 @@ public abstract class JettyServer
 			{
 				server.stop();
 			}
-			catch (Throwable e)
+			catch (final Throwable e)
 			{
 				log.error("Snafu stopping server: ", e);
 			}
@@ -510,7 +595,7 @@ public abstract class JettyServer
 	@Override
 	public String toString()
 	{
-		return getServerType() + " [context=" + context + ":" + thePort + "]";
+		return getServerType() + " [context=" + context + ":" + thePort + "ssl=" + sslPort + "]";
 	}
 
 	/**
@@ -526,7 +611,7 @@ public abstract class JettyServer
 	 *
 	 * @param server
 	 */
-	public static void setServer(JettyServer server)
+	public static void setServer(final JettyServer server)
 	{
 		theServer = server;
 	}
