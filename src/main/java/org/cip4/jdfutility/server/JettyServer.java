@@ -245,6 +245,7 @@ public abstract class JettyServer
 	{
 		if (sslPort > 0)
 		{
+			log.info("Updating ssl port to: " + sslPort);
 			final HttpConfiguration https = new HttpConfiguration();
 			https.addCustomizer(new SecureRequestCustomizer());
 			final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslFactory, "http/1.1");
