@@ -91,10 +91,8 @@ public class FixJDFServlet extends UtilityServlet
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
-			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if (isMultipart)
+			if (ServletFileUpload.isMultipartContent(request))
 			{
-				log.debug("Processing multipart request...");
 				processMultipartRequest(request, response);
 			}
 		}
@@ -104,11 +102,11 @@ public class FixJDFServlet extends UtilityServlet
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -8902151736245089036L;
+	private static final long serialVersionUID = -8902151736245087036L;
 
 	/**
 	 * Parses a multipart request.
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 * @throws ServletException

@@ -97,10 +97,9 @@ public class CheckJDFServlet extends UtilityServlet
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
-			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			if (isMultipart)
+			final boolean mp = ServletFileUpload.isMultipartContent(request);
+			if (mp)
 			{
-				log.debug("Processing multipart request");
 				processMultipartRequest(request, response);
 			}
 		}
@@ -114,15 +113,15 @@ public class CheckJDFServlet extends UtilityServlet
 	/**
 	 * Parses a multipart request.
 	 *
-	 * @param request
-	 * @param response
+	 * @param req
+	 * @param resp
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
+	protected void processMultipartRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List<FileItem> fileItems = new FileItemList(request, 43l * 1024l * 1024l).getFileList(true, true);
+		final List<FileItem> fileItems = new FileItemList(req, 43l * 1024l * 1024l).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items
@@ -272,9 +271,9 @@ public class CheckJDFServlet extends UtilityServlet
 		{
 			throw new ServletException("Could not read file.", ioe);
 		}
-		response.setContentType("text/xml;charset=utf-8");
+		resp.setContentType("text/xml;charset=utf-8");
 
-		final PrintWriter out = response.getWriter();
+		final PrintWriter out = resp.getWriter();
 		out.println(xmlString);
 		out.flush();
 		out.close();
