@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -120,7 +120,7 @@ public class CheckJDFServlet extends UtilityServlet
 	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List<FileItem> fileItems = new FileItemList(request, 42 * 1024 * 1024).getFileList(true, true);
+		final List<FileItem> fileItems = new FileItemList(request, 42l * 1024l * 1024l).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items
