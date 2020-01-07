@@ -339,10 +339,9 @@ public abstract class JettyServer
 		public Resource getResource(String url)
 		{
 
-			if (strip != null)
+			if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
 			{
-				if (url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
-					url = url.substring(strip.length());
+				url = url.substring(strip.length());
 			}
 			if ("".equals(url) || "/".equals(url))
 			{

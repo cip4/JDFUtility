@@ -63,6 +63,8 @@ import org.cip4.jdflib.validate.JDFValidator;
  */
 public class CheckJDFServlet extends UtilityServlet
 {
+	private static final String CHECK_JDF_TMP = "CheckJDFTmp";
+
 	public CheckJDFServlet()
 	{
 		super();
@@ -98,7 +100,7 @@ public class CheckJDFServlet extends UtilityServlet
 			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 			if (isMultipart)
 			{
-				log.debug("Processing multipart request...");
+				log.debug("Processing multipart request");
 				processMultipartRequest(request, response);
 			}
 		}
@@ -107,7 +109,7 @@ public class CheckJDFServlet extends UtilityServlet
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -3663640051616511411L;
+	private static final long serialVersionUID = -366364005161651141L;
 
 	/**
 	 * Parses a multipart request.
@@ -120,7 +122,7 @@ public class CheckJDFServlet extends UtilityServlet
 	protected void processMultipartRequest(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List<FileItem> fileItems = new FileItemList(request, 42l * 1024l * 1024l).getFileList(true, true);
+		final List<FileItem> fileItems = new FileItemList(request, 43l * 1024l * 1024l).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items
@@ -176,7 +178,7 @@ public class CheckJDFServlet extends UtilityServlet
 				log.info("devcapFile: " + devcapName);
 				if (devcapFile != null && devcapFile.length() > 0)
 				{
-					devcapFile = createTmpFile(item, "CheckJDFTmp", "devcap");
+					devcapFile = createTmpFile(item, CHECK_JDF_TMP, "devcap");
 				}
 				else
 				{
@@ -235,7 +237,7 @@ public class CheckJDFServlet extends UtilityServlet
 				final String lower = fileItemName.toLowerCase();
 				if (lower.endsWith(".zip"))
 				{
-					final File zipFile = createTmpFile(fileItem, "CheckJDFTmp", "zip");
+					final File zipFile = createTmpFile(fileItem, CHECK_JDF_TMP, "zip");
 					d = checker.processZipFile(zipFile);
 				}
 				else if (lower.endsWith(".mjm") || lower.endsWith(".mjd") || lower.endsWith(".mim"))
@@ -258,7 +260,7 @@ public class CheckJDFServlet extends UtilityServlet
 
 				xmlString = d.write2String(2);
 				fileItem.delete();
-				JDFServletUtil.cleanup("CheckJDFTmp");
+				JDFServletUtil.cleanup(CHECK_JDF_TMP);
 			}
 			else
 			{
