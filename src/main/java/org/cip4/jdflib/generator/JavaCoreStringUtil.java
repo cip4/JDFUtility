@@ -1370,7 +1370,7 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append("public Collection<").append(strReturnType).append("> getAll").append(strElementName).append("()").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
 						strbufResult.append(strDepth2).append("final VElement vc = getChildElementVector(ElementName.").append(strElementName.toUpperCase()).append(", null);").append(strLineEnd);
-						strbufResult.append(strDepth2).append("if (vc == null || vc.size() == 0)").append(strLineEnd);
+						strbufResult.append(strDepth2).append("if (vc == null || vc.isEmpty())").append(strLineEnd);
 						strbufResult.append(strDepth2).append("{").append(strLineEnd);
 						strbufResult.append(strDepth3).append("return null;").append(strLineEnd);
 						strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1442,7 +1442,7 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public Collection<").append(strReturnType).append("> getAll").append(strElementName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return getChildrenByClass(").append(strReturnType).append(".class, false, 0);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return getChildArrayByClass(").append(strReturnType).append(".class, false, 0);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 
@@ -1452,9 +1452,9 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append("/**").append(strLineEnd);
 					strbufResult.append(strDepth1).append(" * (29) append element ").append(strElementName).append(strLineEnd);
 					strbufResult.append(strDepth1).append(" * @return ").append(strReturnType).append(" the element").append(strLineEnd);
-					strbufResult.append(strDepth1).append(" * @throws JDFException if the element already exists").append(strLineEnd);
+					strbufResult.append(strDepth1).append(" * @ if the element already exists").append(strLineEnd);
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("() throws JDFException").append(strLineEnd);
+					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("() ").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
 					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElementN(ElementName.").append(strElementName.toUpperCase()).append(", 1, null);")
 							.append(strLineEnd);
