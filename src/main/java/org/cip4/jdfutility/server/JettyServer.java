@@ -190,7 +190,7 @@ public abstract class JettyServer
 	 * @throws Exception
 	 * @throws InterruptedException
 	 */
-	public void runServer() throws Exception, InterruptedException
+	public void runServer() throws Exception
 	{
 		if (server != null)
 		{
@@ -550,6 +550,14 @@ public abstract class JettyServer
 		if (theServer != null)
 		{
 			theServer.stop();
+			try
+			{
+				theServer.join();
+			}
+			catch (final InterruptedException e)
+			{
+				// nop
+			}
 			theServer = null;
 		}
 	}
@@ -581,6 +589,27 @@ public abstract class JettyServer
 	public static void setServer(final JettyServer server)
 	{
 		theServer = server;
+	}
+
+	/**
+	 * @return
+	 * @see org.eclipse.jetty.util.component.AbstractLifeCycle#isFailed()
+	 */
+	public boolean isFailed()
+	{
+		return server == null || server.isFailed();
+	}
+
+	/**
+	 * @throws InterruptedException
+	 * @see org.eclipse.jetty.server.Server#join()
+	 */
+	public void join() throws InterruptedException
+	{
+		if (server != null)
+		{
+			server.join();
+		}
 	}
 
 }
