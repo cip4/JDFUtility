@@ -407,7 +407,7 @@ public abstract class JettyServer
 	 *
 	 * @see Server start()
 	 */
-	public void start()
+	public boolean start()
 	{
 		if (server == null)
 		{
@@ -415,7 +415,7 @@ public abstract class JettyServer
 			{
 				if (sslPort > 0)
 				{
-					theServer.setSSLPort(sslPort, null);
+					setSSLPort(sslPort, null);
 				}
 
 				runServer();
@@ -423,6 +423,7 @@ public abstract class JettyServer
 			catch (final Throwable e1)
 			{
 				log.error("Snafu creating server at Port: " + thePort + context, e1);
+				return false;
 			}
 		}
 		try
@@ -432,8 +433,10 @@ public abstract class JettyServer
 		catch (final Throwable e)
 		{
 			log.error("Snafu starting server: ", e);
+			return false;
 		}
 		log.info("finished starting server");
+		return true;
 	}
 
 	/**
