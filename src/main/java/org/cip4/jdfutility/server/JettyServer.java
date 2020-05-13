@@ -239,10 +239,10 @@ public abstract class JettyServer
 
 		addMoreHandlers(handlers);
 
-		final ServletContextHandler context = createServletHandler();
-		context.getContextPath();
+		final ServletContextHandler contextHandler = createServletHandler();
+		contextHandler.getContextPath();
 
-		handlers.addHandler(context);
+		handlers.addHandler(contextHandler);
 		handlers.addHandler(new RedirectHandler());
 		return handlers;
 	}
@@ -407,7 +407,16 @@ public abstract class JettyServer
 	 *
 	 * @see Server start()
 	 */
-	public boolean start()
+	public void start()
+	{
+		tryStart();
+	}
+
+	/**
+	 *
+	 * @see Server start()
+	 */
+	public boolean tryStart()
 	{
 		if (server == null)
 		{
