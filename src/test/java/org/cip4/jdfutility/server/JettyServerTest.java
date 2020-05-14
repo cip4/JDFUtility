@@ -69,7 +69,7 @@ public class JettyServerTest
 	public void testIsRunning() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
-		assertTrue(ns.tryStart());
+		ns.start();
 		assertTrue(ns.isRunning());
 		ns.stop();
 		assertFalse(ns.isStarted());

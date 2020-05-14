@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2002-2009 Heidelberger Druckmaschinen AG, All Rights Reserved. Author: Kai Mattern Dietrich Mucha Titel: JavaCoreStringUtil.java
+ * Copyright (c) 2002-2020 Heidelberger Druckmaschinen AG, All Rights Reserved. Author: Kai Mattern Dietrich Mucha Titel: JavaCoreStringUtil.java
  *
  * Write the auto files
  *
@@ -457,14 +457,6 @@ public class JavaCoreStringUtil
 		strbufResult.append(strDepth1).append("    super(myOwnerDocument, myNamespaceURI, qualifiedName, myLocalName);").append(strLineEnd);
 		strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd).append(strLineEnd);
 
-		strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-		strbufResult.append(strDepth1).append(" * @return  the string representation").append(strLineEnd);
-		strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-		strbufResult.append(strDepth1).append("@Override").append(strLineEnd);
-		strbufResult.append(strDepth1).append("public String toString()").append(strLineEnd);
-		strbufResult.append(strDepth1).append("{").append(strLineEnd);
-		strbufResult.append(strDepth1).append("    return \" ").append(strJDFAutoFileName).append("[  --> \" + super.toString() + \" ]\";").append(strLineEnd);
-		strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd).append(strLineEnd);
 	}
 
 	private static void appendResourceSpecificMethods(final String base, final String extendsClass, final StringBuffer strbufResult)
@@ -1499,7 +1491,7 @@ public class JavaCoreStringUtil
 			}
 		}
 
-		strbufResult.append(GeneratorStringUtil.getStrCloseFile()).append("// end namespace JDF").append(strLineEnd);
+		strbufResult.append(GeneratorStringUtil.getStrCloseFile()).append(strLineEnd);
 	}
 
 	public static boolean isKindOf(final Object obj, final String type) throws ClassNotFoundException

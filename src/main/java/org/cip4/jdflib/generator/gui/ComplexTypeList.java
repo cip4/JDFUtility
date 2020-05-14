@@ -1,8 +1,7 @@
 /*
  * Created on Jul 12, 2004
  *
- * To change the template for this generated file go to
- * Window - Preferences - Java - Code Generation - Code and Comments
+ * To change the template for this generated file go to Window - Preferences - Java - Code Generation - Code and Comments
  */
 package org.cip4.jdflib.generator.gui;
 
@@ -37,9 +36,10 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  * @author matternk
- * 
- * To change the template for this generated type comment go to Window - Preferences - Java - Code Generation - Code and Comments
+ *
+ *         To change the template for this generated type comment go to Window - Preferences - Java - Code Generation - Code and Comments
  */
+@SuppressWarnings("unchecked")
 public class ComplexTypeList extends JPanel implements ListSelectionListener, MouseListener, ActionListener
 {
 	private static final long serialVersionUID = 1L;
@@ -144,6 +144,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		return listModel;
 	}
 
+	@Override
 	public void mouseClicked(final MouseEvent e)
 	{
 		final int i = e.getClickCount();
@@ -173,12 +174,14 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		}
 	}
 
+	@Override
 	public void valueChanged(final ListSelectionEvent e)
 	{
 		e.hashCode(); // just to remomve the e is never used warning
 		myList.ensureIndexIsVisible(myList.getSelectedIndex());
 	}
 
+	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		if (e.getSource() == popup_load)
@@ -286,8 +289,9 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 				{
 					if (!strLineOfFile.startsWith("JDFAuto") || !strLineOfFile.endsWith(".java"))
 					{
-						JOptionPane.showMessageDialog(this, strLineOfFile + lineSep + "is a malformed filename." + lineSep + "Filenames must start with \"JDFAuto\" and end with \".java\"" + lineSep
-								+ lineSep + " Cant read file", "Malformed Filename in User-filelist", JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(this,
+								strLineOfFile + lineSep + "is a malformed filename." + lineSep + "Filenames must start with \"JDFAuto\" and end with \".java\"" + lineSep + lineSep + " Cant read file",
+								"Malformed Filename in User-filelist", JOptionPane.ERROR_MESSAGE);
 
 						// TODO resolve this foobar
 						loadedListModel.removeAllElements();
@@ -345,24 +349,28 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		}
 	}
 
+	@Override
 	public void mousePressed(final MouseEvent e)
 	{
 		e.getID(); // to remove the e is never used warning
 		// do nothing
 	}
 
+	@Override
 	public void mouseReleased(final MouseEvent e)
 	{
 		e.getID(); // to remove the e is never used warning
 		// do nothing
 	}
 
+	@Override
 	public void mouseEntered(final MouseEvent e)
 	{
 		e.getID(); // to remove the e is never used warning
 		// do nothing
 	}
 
+	@Override
 	public void mouseExited(final MouseEvent e)
 	{
 		e.getID(); // to remove the e is never used warning
@@ -435,6 +443,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoCasingInParams.java");
 		defaultlistModel.addElement("JDFAutoCCITTFaxParams.java");
 		defaultlistModel.addElement("JDFAutoChangedAttribute.java");
+		defaultlistModel.addElement("JDFAutoCertification.java");
 		defaultlistModel.addElement("JDFAutoChangedPath.java");
 		defaultlistModel.addElement("JDFAutoChannelBinding.java");
 		defaultlistModel.addElement("JDFAutoChannelBindingParams.java");
@@ -574,6 +583,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoFormatConversionParams.java");
 		defaultlistModel.addElement("JDFAutoGangCmdFilter.java");
 		defaultlistModel.addElement("JDFAutoGangInfo.java");
+		defaultlistModel.addElement("JDFAutoGangSource.java");
 		defaultlistModel.addElement("JDFAutoGangQuFilter.java");
 		defaultlistModel.addElement("JDFAutoGatheringParams.java");
 		defaultlistModel.addElement("JDFAutoGeneralID.java");
