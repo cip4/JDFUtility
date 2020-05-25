@@ -48,50 +48,29 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.cip4.jdflib.generator.Generator;
+import org.cip4.jdflib.util.StringUtil;
 
 /**
  * @author matternk
  *
-    Structure of the Autofile Generator
-        The schema files contain snippets of form xs:complexType and others.
-        The autofile generator only uses these xs:complexType snippets 
-        and transfers them into data of type SchemaComplexType.
-    
-
-        Click on field "Schema Path:"
-
-            ListButtonPanel.mouseClicked(MouseEvent e)
-                >>> set schema files
-                ListButtonPanel.loadFiles(Object[] files, boolean b)
-                    ListButtonPanel.LoadThread.run
-                        DocumentJDFImpl doc = parseSchemaFromFilesToDoc();    (5 sec)
-                            "Parsing " + schemaFilePath, "Working..."
-                            result stored to ArrayList m_docs and to DocumentJDFImpl doc
-                            "Done"
-    
-                        if (bCollect)
-                        {
-                            parseSchemaFromDocToSchemaComplexType(doc);       (5 min.)
-                                schemaDoc.setSchemaDoc(doc);
-                                v is vector of SchemaComplexType
-                                v = parseSchema(schemaDoc);
-                                    "Collecting informations", "Working..."
-                                        doc.getSchemaInfo("Core", true)
-                                            GeneratorUtil.unifyComplexTypNames(...)
-                                            removeDuplicates(Vector m_vMyCompleteSchema)
-                                    "Done"
-                                v = removeElementsNotInComplexTypeList(v);
-                                setVCore(v);  // set m_vCore (vector of SchemaComplexType of all xs:complexType)
-                        }
-
-
-        Selection of files and click on button "Generate"
-
-            ListButtonPanel.gemerate().new Thread().run()
-                copy all complex types which correspond to the selection from m_vCore into m_vToGenerate
-                generate all files
-                    javaCoreDoc.toCoreJava(m_vBuffer, true);
-                        getStrJavaCoreFile(SchemaComplexType nSchemaComplexType)
+ *         Structure of the Autofile Generator The schema files contain snippets of form xs:complexType and others. The autofile generator only uses these xs:complexType snippets and transfers them
+ *         into data of type SchemaComplexType.
+ *
+ *
+ *         Click on field "Schema Path:"
+ *
+ *         ListButtonPanel.mouseClicked(MouseEvent e) >>> set schema files ListButtonPanel.loadFiles(Object[] files, boolean b) ListButtonPanel.LoadThread.run DocumentJDFImpl doc =
+ *         parseSchemaFromFilesToDoc(); (5 sec) "Parsing " + schemaFilePath, "Working..." result stored to ArrayList m_docs and to DocumentJDFImpl doc "Done"
+ *
+ *         if (bCollect) { parseSchemaFromDocToSchemaComplexType(doc); (5 min.) schemaDoc.setSchemaDoc(doc); v is vector of SchemaComplexType v = parseSchema(schemaDoc); "Collecting informations",
+ *         "Working..." doc.getSchemaInfo("Core", true) GeneratorUtil.unifyComplexTypNames(...) removeDuplicates(Vector m_vMyCompleteSchema) "Done" v = removeElementsNotInComplexTypeList(v);
+ *         setVCore(v); // set m_vCore (vector of SchemaComplexType of all xs:complexType) }
+ *
+ *
+ *         Selection of files and click on button "Generate"
+ *
+ *         ListButtonPanel.gemerate().new Thread().run() copy all complex types which correspond to the selection from m_vCore into m_vToGenerate generate all files javaCoreDoc.toCoreJava(m_vBuffer,
+ *         true); getStrJavaCoreFile(SchemaComplexType nSchemaComplexType)
  *
  */
 
@@ -142,21 +121,21 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	private final ArrayList externalJars = new ArrayList();
 	private final ArrayList externalXSDs = new ArrayList();
 
-	public GeneratorUI(String strName)
+	public GeneratorUI(final String strName)
 	{
 		super(strName);
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
-			public void windowClosing(WindowEvent event)
+			public void windowClosing(final WindowEvent event)
 			{
-				event.getID(); //remove event never use warning
+				event.getID(); // remove event never use warning
 				saveProperties();
 				System.exit(0);
 			}
 		});
 		JFrame.setDefaultLookAndFeelDecorated(true);
-		//setIconImage(null)
+		// setIconImage(null)
 		init();
 	}
 
@@ -220,12 +199,12 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		return complexTypeList;
 	}
 
-	public void addExternalJar(File f)
+	public void addExternalJar(final File f)
 	{
 		externalJars.add(f);
 	}
 
-	public void removeExternalJar(int i)
+	public void removeExternalJar(final int i)
 	{
 		if (i < externalJars.size())
 		{
@@ -278,13 +257,13 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		return menuItem_unserializeData;
 	}
 
-	public static void main(String args[])
+	public static void main(final String args[])
 	{
-		GeneratorUI gen = new GeneratorUI("Generator");
+		final GeneratorUI gen = new GeneratorUI("Generator");
 		gen.getJarFiles(true, new ArrayList());
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		int genHeight = gen.getPreferredSize().height;
-		int genWidth = gen.getPreferredSize().width;
+		final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		final int genHeight = gen.getPreferredSize().height;
+		final int genWidth = gen.getPreferredSize().width;
 		gen.setBounds((d.width / 2) - genWidth / 2, (d.height / 2) - genHeight / 2, genWidth, genHeight);
 		gen.pack();
 		gen.setVisible(true);
@@ -294,11 +273,11 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	private void addInstalledLookandFeels()
 	{
 		buttonGroup = new ButtonGroup();
-		UIManager.LookAndFeelInfo[] laf = UIManager.getInstalledLookAndFeels();
+		final UIManager.LookAndFeelInfo[] laf = UIManager.getInstalledLookAndFeels();
 		boolean lafSelected = false;
 		for (int i = 0; i < laf.length; i++)
 		{
-			JRadioButtonMenuItem mnuItem = new JRadioButtonMenuItem(laf[i].getName());
+			final JRadioButtonMenuItem mnuItem = new JRadioButtonMenuItem(laf[i].getName());
 			mnuItem.setActionCommand(laf[i].getClassName());
 			if (!lafSelected && laf[i].getClassName().equals(UIManager.getLookAndFeel().getClass().getName()))
 			{
@@ -308,7 +287,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			mnuItem.addActionListener(new ActionListener()
 			{
 				@Override
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
 					try
 					{
@@ -316,17 +295,17 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 						SwingUtilities.updateComponentTreeUI(GeneratorUI.this);
 						pack();
 					}
-					catch (ClassNotFoundException cnfe)
-					{/*do nothing*/
+					catch (final ClassNotFoundException cnfe)
+					{/* do nothing */
 					}
-					catch (InstantiationException ine)
-					{/*do nothing*/
+					catch (final InstantiationException ine)
+					{/* do nothing */
 					}
-					catch (IllegalAccessException ile)
-					{/*do nothing*/
+					catch (final IllegalAccessException ile)
+					{/* do nothing */
 					}
-					catch (UnsupportedLookAndFeelException ulafe)
-					{/*do nothing*/
+					catch (final UnsupportedLookAndFeelException ulafe)
+					{/* do nothing */
 					}
 
 				}
@@ -337,7 +316,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		if (e.getSource() == menuItem_unserializeData)
 		{
@@ -346,7 +325,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 
 		if (e.getSource() == menuItem_addExternalJar)
 		{
-			AddJarDialog jar = new AddJarDialog(this);
+			final AddJarDialog jar = new AddJarDialog(this);
 			jar.pack();
 			jar.setLocationRelativeTo(this);
 			jar.setVisible(true);
@@ -354,7 +333,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 
 		if (e.getSource() == menuItem_addExternalXML)
 		{
-			AddXSDDialog jar = new AddXSDDialog(this);
+			final AddXSDDialog jar = new AddXSDDialog(this);
 			jar.pack();
 			jar.setLocationRelativeTo(this);
 			jar.setVisible(true);
@@ -371,25 +350,25 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 					try
 					{
 						getStatusPanel().getDefaultTableModel().insertRow(0, new Object[] { "Serializing " + m_serializedSchemaFileName, "Working..." });
-						Vector v = getComplexTypeList().getListButtonPanel().getVCore();
-						String fileName = m_defaultSerialLocation + fileSep + m_serializedSchemaFileName;
-						ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
+						final Vector v = getComplexTypeList().getListButtonPanel().getVCore();
+						final String fileName = m_defaultSerialLocation + fileSep + m_serializedSchemaFileName;
+						final ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(fileName)));
 						objOut.writeObject(v);
 						objOut.close();
 						try
 						{
 							getStatusPanel().getDefaultTableModel().setValueAt("Done", 0, 1);
 						}
-						catch (ArrayIndexOutOfBoundsException aioobe)
-						{/*do nothing*/
+						catch (final ArrayIndexOutOfBoundsException aioobe)
+						{/* do nothing */
 						}
 						menuItem_unserializeData.setEnabled(true);
 					}
-					catch (FileNotFoundException fnfe)
+					catch (final FileNotFoundException fnfe)
 					{
 						fnfe.printStackTrace();
 					}
-					catch (IOException ioe)
+					catch (final IOException ioe)
 					{
 						ioe.printStackTrace();
 					}
@@ -410,7 +389,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			{
 				strVer = m_serializedSchemaFileName.substring(6, 8);
 			}
-			DefaultsDialog dd = new DefaultsDialog(this, paths, strVer);
+			final DefaultsDialog dd = new DefaultsDialog(this, paths, strVer);
 			dd.setLocationRelativeTo(this);
 			dd.pack();
 			dd.setResizable(false);
@@ -427,7 +406,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			buff = buff.substring(8, buff.length());
 			setTitle("Generator - Version " + buff);
 			m_serializedSchemaFileName = "schema" + buff + ".ser";
-			File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
+			final File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
 			if (f.canRead())
 			{
 				menuItem_unserializeData.setEnabled(true);
@@ -448,9 +427,9 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
-		int iClick = e.getClickCount();
+		final int iClick = e.getClickCount();
 
 		if (iClick % 2 == 0)
 		{
@@ -502,28 +481,28 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			{
 				getStatusPanel().getDefaultTableModel().insertRow(0, new Object[] { "Deserializing " + m_serializedSchemaFileName, "Working..." });
 				setPriority(1);
-				File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
+				final File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
 				if (f.canRead())
 				{
 					try
 					{
-						FileInputStream fis = new FileInputStream(f);
-						ObjectInputStream ois = new ObjectInputStream(fis);
-						Vector v = (Vector) ois.readObject();
+						final FileInputStream fis = new FileInputStream(f);
+						final ObjectInputStream ois = new ObjectInputStream(fis);
+						final Vector v = (Vector) ois.readObject();
 						ois.close();
 						complexTypeList.getListButtonPanel().setVCore(v);
 						getStatusPanel().getDefaultTableModel().setValueAt("Done", 0, 1);
 					}
-					catch (IOException ioe)
+					catch (final IOException ioe)
 					{
 						ioe.printStackTrace();
 					}
-					catch (ClassNotFoundException cnfe)
+					catch (final ClassNotFoundException cnfe)
 					{
 						cnfe.printStackTrace();
 					}
-					catch (ArrayIndexOutOfBoundsException e)
-					{/*do nothing*/
+					catch (final ArrayIndexOutOfBoundsException e)
+					{/* do nothing */
 					}
 				}
 				else
@@ -540,7 +519,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		InputStream propsFile = null;
 		try
 		{
-			Properties tempProp = new Properties(defaultProps);
+			final Properties tempProp = new Properties(defaultProps);
 			propsFile = new FileInputStream("generatorUI.props");
 			tempProp.load(propsFile);
 
@@ -562,7 +541,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 				i++;
 				if (strLib != null)
 				{
-					File f = new File(strLib);
+					final File f = new File(strLib);
 					if (f.isFile() && f.canRead())
 					{
 						externalJars.add(f);
@@ -578,7 +557,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 				i++;
 				if (strXSD != null)
 				{
-					File f = new File(strXSD);
+					final File f = new File(strXSD);
 					if (f.isFile() && f.canRead())
 					{
 						externalXSDs.add(f);
@@ -586,15 +565,15 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 				}
 			}
 		}
-		catch (FileNotFoundException ioe)
+		catch (final FileNotFoundException ioe)
 		{
 			m_defaultSchemaLocation = "../schema/Version_1_5";
-			File schema = new File(m_defaultSchemaLocation);
+			final File schema = new File(m_defaultSchemaLocation);
 			try
 			{
 				m_defaultSchemaLocation = schema.getCanonicalPath();
 			}
-			catch (IOException e)
+			catch (final IOException e)
 			{
 				m_defaultSchemaLocation = "../schema";
 			}
@@ -603,8 +582,8 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			Generator.m_strJdfCoreJava = m_defaultOutputLocation + fileSep + "Java" + fileSep + "auto";
 			Generator.m_strJdfCoreCpp = m_defaultOutputLocation + fileSep + "Cpp" + fileSep + "auto";
 		}
-		catch (IOException e)
-		{/*do nothing*/
+		catch (final IOException e)
+		{/* do nothing */
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -616,7 +595,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 				{
 					propsFile.close();
 				}
-				catch (IOException e)
+				catch (final IOException e)
 				{
 					e.printStackTrace();
 				}
@@ -625,11 +604,11 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 
 		if (m_serializedSchemaFileName.length() >= 10)
 		{
-			String buff = m_serializedSchemaFileName.substring(6, 8);
+			final String buff = m_serializedSchemaFileName.substring(6, 8);
 			setTitle("Generator - Version " + buff);
 		}
 
-		File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
+		final File f = new File(m_defaultSerialLocation + fileSep + m_serializedSchemaFileName);
 		if (f.canRead() && f.isFile())
 		{
 			menuItem_unserializeData.setEnabled(true);
@@ -643,7 +622,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		getComplexTypeList().getListButtonPanel().getOutputField().setToolTipText(m_defaultOutputLocation);
 		getComplexTypeList().getListButtonPanel().getOutputField().setCaretPosition(0);
 
-		File fileList = new File(m_defaultFileListPath);
+		final File fileList = new File(m_defaultFileListPath);
 		if (fileList.canRead() && fileList.isFile())
 		{
 			getComplexTypeList().loadFileList(fileList);
@@ -654,7 +633,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	{
 		try
 		{
-			Properties props = new Properties();
+			final Properties props = new Properties();
 			props.setProperty("SchemaPath", m_defaultSchemaLocation);
 			props.setProperty("OutputPath", m_defaultOutputLocation);
 			props.setProperty("SerializePath", m_defaultSerialLocation);
@@ -677,8 +656,8 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 				stream = new FileOutputStream("generatorUI.props");
 				props.store(stream, "Properties File for the Generator GUI");
 			}
-			catch (FileNotFoundException e)
-			{/*do nothing*/
+			catch (final FileNotFoundException e)
+			{/* do nothing */
 			}
 			finally
 			{
@@ -686,38 +665,38 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 					stream.close();
 			}
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
-		e.getID(); //remove e never used warning;
+		e.getID(); // remove e never used warning;
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
-		e.getID(); //remove e never used warning;}
+		e.getID(); // remove e never used warning;}
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
-		e.getID(); //remove e never used warning;}
+		e.getID(); // remove e never used warning;}
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
-		e.getID(); //remove e never used warning;
+		e.getID(); // remove e never used warning;
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e)
+	public void itemStateChanged(final ItemEvent e)
 	{
 		if (e.getSource() == menuItem_OrganizeImports)
 		{
@@ -733,13 +712,13 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 	}
 
 	/**
-	 * 
+	 *
 	 * @param internalScan true if the source was internal
 	 * @param jarFiles array of File
 	 */
-	public void getJarFiles(boolean internalScan, ArrayList jarFiles)
+	public void getJarFiles(final boolean internalScan, final ArrayList jarFiles)
 	{
-		ArrayList jarFileList = jarFiles;
+		final ArrayList jarFileList = jarFiles;
 
 		if (internalScan)
 		{
@@ -748,23 +727,23 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 			jarFileList.addAll(externalJars);
 		}
 
-		//we got all jars, now its time to open the tree
+		// we got all jars, now its time to open the tree
 		for (int i = 0; i < jarFileList.size(); i++)
 		{
 			try
 			{
-				//namesOfAllClasses
-				File f = (File) jarFileList.get(i);
-				ZipFile zippi = new ZipFile(f);
-				Enumeration enu = zippi.entries();
+				// namesOfAllClasses
+				final File f = (File) jarFileList.get(i);
+				final ZipFile zippi = new ZipFile(f);
+				final Enumeration enu = zippi.entries();
 				while (enu.hasMoreElements())
 				{
 					String strClassName = ((ZipEntry) enu.nextElement()).toString();
 					if (strClassName.endsWith(".class"))
 					{
 						strClassName = strClassName.substring(0, strClassName.length() - 6);
-						//TODO whats up with this damn file separator?
-						String toReplace = fileSep;
+						// TODO whats up with this damn file separator?
+						final String toReplace = fileSep;
 						if (toReplace.equals("\\") && strClassName.indexOf("\\") != -1)
 						{
 							strClassName = strClassName.replaceAll("\\\\", ".");
@@ -778,8 +757,8 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 							strClassName = strClassName.replaceAll(toReplace, ".");
 						}
 
-						int iLast = strClassName.lastIndexOf(".");
-						String key = strClassName.substring(iLast + 1, strClassName.length());
+						final int iLast = strClassName.lastIndexOf(".");
+						final String key = strClassName.substring(iLast + 1, strClassName.length());
 						if (strClassName.indexOf("$") == -1)
 						{
 							jarClasses.put(key, strClassName);
@@ -791,7 +770,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 					}
 				}
 			}
-			catch (IOException ioe)
+			catch (final IOException ioe)
 			{
 				ioe.printStackTrace();
 			}
@@ -801,17 +780,20 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 
 	private ArrayList getClassPathJars()
 	{
-		ArrayList jarFileList = new ArrayList();
-		//also add all jars in the system property "sun.boot.class.path"
-		String strSunBootClashPath = System.getProperty("sun.boot.class.path");
-		StringTokenizer sto = new StringTokenizer(strSunBootClashPath, ";");
-		while (sto.hasMoreTokens())
+		final ArrayList jarFileList = new ArrayList();
+		// also add all jars in the system property "sun.boot.class.path"
+		final String strSunBootClashPath = System.getProperty("sun.boot.class.path");
+		if (!StringUtil.isEmpty(strSunBootClashPath))
 		{
-			String strJarListToken = sto.nextToken();
-			File f = new File(strJarListToken);
-			if (f.isFile() && f.canRead() && f.getName().endsWith(".jar"))
+			final StringTokenizer sto = new StringTokenizer(strSunBootClashPath, ";");
+			while (sto.hasMoreTokens())
 			{
-				jarFileList.add(f);
+				final String strJarListToken = sto.nextToken();
+				final File f = new File(strJarListToken);
+				if (f.isFile() && f.canRead() && f.getName().endsWith(".jar"))
+				{
+					jarFileList.add(f);
+				}
 			}
 		}
 		return jarFileList;
@@ -819,32 +801,34 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 
 	private ArrayList getExtJars()
 	{
-		ArrayList libList = new ArrayList();
-		ArrayList jarFileList = new ArrayList();
-		//scan dir external dirs for jars
-		String strLibPath = System.getProperty("java.ext.dirs");
-		if (strLibPath.indexOf(";") != -1)
+		final ArrayList libList = new ArrayList();
+		final ArrayList jarFileList = new ArrayList();
+		// scan dir external dirs for jars
+		final String strLibPath = System.getProperty("java.ext.dirs");
+		if (!StringUtil.isEmpty(strLibPath))
 		{
-			StringTokenizer st = new StringTokenizer(strLibPath, ";");
-			while (st.hasMoreTokens())
+			if (strLibPath.indexOf(";") != -1)
 			{
-				libList.add(st.nextToken());
+				final StringTokenizer st = new StringTokenizer(strLibPath, ";");
+				while (st.hasMoreTokens())
+				{
+					libList.add(st.nextToken());
+				}
+			}
+			else
+			{
+				libList.add(strLibPath);
 			}
 		}
-		else
-		{
-			libList.add(strLibPath);
-		}
-
 		for (int i = 0; i < libList.size(); i++)
 		{
-			File f = new File((String) libList.get(i));
+			final File f = new File((String) libList.get(i));
 			if (f.isDirectory() && f.canRead())
 			{
-				String[] strFileList = f.list();
+				final String[] strFileList = f.list();
 				for (int j = 0; j < strFileList.length; j++)
 				{
-					File xfile = new File(f.getAbsolutePath() + fileSep + strFileList[j]);
+					final File xfile = new File(f.getAbsolutePath() + fileSep + strFileList[j]);
 					if (xfile.getName().endsWith(".jar") && xfile.isFile() && xfile.canRead())
 					{
 						jarFileList.add(xfile);
@@ -855,7 +839,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		return jarFileList;
 	}
 
-	public void addExternalXSD(File f)
+	public void addExternalXSD(final File f)
 	{
 		externalXSDs.add(f);
 	}
@@ -865,7 +849,7 @@ public class GeneratorUI extends JFrame implements ActionListener, MouseListener
 		return externalXSDs;
 	}
 
-	public void removeExternalXSDs(int iIndex)
+	public void removeExternalXSDs(final int iIndex)
 	{
 		externalXSDs.remove(iIndex);
 	}

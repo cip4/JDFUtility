@@ -461,6 +461,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoColorCorrectionOp.java");
 		defaultlistModel.addElement("JDFAutoColorCorrectionParams.java");
 		defaultlistModel.addElement("JDFAutoColorIntent.java");
+		defaultlistModel.addElement("JDFAutoColorMeasurement.java");
 		defaultlistModel.addElement("JDFAutoColorMeasurementConditions.java");
 		defaultlistModel.addElement("JDFAutoColorPool.java");
 		defaultlistModel.addElement("JDFAutoColorSpaceConversionOp.java");
@@ -477,7 +478,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoContainer.java");
 		defaultlistModel.addElement("JDFAutoContentData.java");
 		defaultlistModel.addElement("JDFAutoContentList.java");
-		defaultlistModel.addElement("JDFAutoContentMetaData.java");
+		defaultlistModel.addElement("JDFAutoContentMetadata.java");
 		defaultlistModel.addElement("JDFAutoContentObject.java");
 		defaultlistModel.addElement("JDFAutoControllerFilter.java");
 		defaultlistModel.addElement("JDFAutoConvertingConfig.java");
@@ -691,7 +692,8 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoNameEvaluation.java");
 		defaultlistModel.addElement("JDFAutonot.java");
 		defaultlistModel.addElement("JDFAutoNewComment.java");
-		defaultlistModel.addElement("JDFAutoNewJDFCmdParams.java");
+		defaultlistModel.addElement("JDFAutoNewComment.java");
+		defaultlistModel.addElement("JDFAutoNetworkHeader.java");
 		defaultlistModel.addElement("JDFAutoNewJDFQuParams.java");
 		defaultlistModel.addElement("JDFAutoNodeInfo.java");
 		defaultlistModel.addElement("JDFAutoNodeInfoCmdParams.java");
@@ -726,6 +728,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoPalletizingParams.java");
 		defaultlistModel.addElement("JDFAutoPart.java");
 		defaultlistModel.addElement("JDFAutoPartStatus.java");
+		defaultlistModel.addElement("JDFAutoPatch.java");
 		defaultlistModel.addElement("JDFAutoPayment.java");
 		defaultlistModel.addElement("JDFAutoPDFInterpretingParams.java");
 		defaultlistModel.addElement("JDFAutoPDFPathEvaluation.java");
@@ -755,6 +758,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoPreflightInstance.java");
 		defaultlistModel.addElement("JDFAutoPreflightInstanceDetail.java");
 		defaultlistModel.addElement("JDFAutoPreflightInventory.java");
+		defaultlistModel.addElement("JDFAutoPreflightItem.java");
 		defaultlistModel.addElement("JDFAutoPreflightParams.java");
 		defaultlistModel.addElement("JDFAutoPreflightProfile.java");
 		defaultlistModel.addElement("JDFAutoPreflightResultsPool.java");
@@ -804,6 +808,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoRegisterMark.java");
 		defaultlistModel.addElement("JDFAutoRegisterRibbon.java");
 		defaultlistModel.addElement("JDFAutoRegistration.java");
+		defaultlistModel.addElement("JDFAutoRegistrationQuality.java");
 		defaultlistModel.addElement("JDFAutoRemoved.java");
 		defaultlistModel.addElement("JDFAutoRemoveLink.java");
 		defaultlistModel.addElement("JDFAutoRenderingParams.java");
@@ -835,6 +840,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 		defaultlistModel.addElement("JDFAutoSeparationControlParams.java");
 		defaultlistModel.addElement("JDFAutoSeparationList.java");
 		defaultlistModel.addElement("JDFAutoSeparationSpec.java");
+		defaultlistModel.addElement("JDFAutoSeparationTint.java");
 		defaultlistModel.addElement("JDFAutoset.java");
 		defaultlistModel.addElement("JDFAutoShapeCut.java");
 		defaultlistModel.addElement("JDFAutoShapeCuttingIntent.java");

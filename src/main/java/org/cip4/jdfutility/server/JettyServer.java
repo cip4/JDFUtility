@@ -196,14 +196,14 @@ public abstract class JettyServer
 		{
 			log.error("server already existing - whazzup");
 		}
-		log.info("creating new server at port: " + thePort + context);
+		log.info("creating new server: " + toString());
 		server = new Server(thePort);
 		updateSSL();
 		final HandlerList handlers = createHandlerList();
 		final HandlerCollection handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
 		server.start();
-		log.info("completed starting new server at port: " + thePort + context);
+		log.info("completed starting new server: " + toString());
 	}
 
 	/**
@@ -444,7 +444,7 @@ public abstract class JettyServer
 			log.error("Snafu starting server: ", e);
 			return false;
 		}
-		log.info("finished starting server");
+		log.info("finished starting server " + toString());
 		return true;
 	}
 
@@ -456,20 +456,20 @@ public abstract class JettyServer
 	{
 		if (server != null)
 		{
-			log.info("Stopping server");
+			log.info("Stopping server " + toString());
 			try
 			{
 				server.stop();
 			}
 			catch (final Throwable e)
 			{
-				log.error("Snafu stopping server: ", e);
+				log.error("Snafu stopping server: " + toString(), e);
 			}
-			log.info("Stopped server");
+			log.info("Stopped server " + thePort);
 		}
 		else
 		{
-			log.warn("Stopping null server");
+			log.warn("Not Stopping null server");
 		}
 	}
 

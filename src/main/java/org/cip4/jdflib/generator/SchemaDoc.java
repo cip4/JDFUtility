@@ -32,9 +32,9 @@ import org.cip4.jdflib.datatypes.JDFAttributeMap;
 //=======================================================================================================
 public class SchemaDoc extends XMLDoc
 {
-	//class globals
+	// class globals
 
-	public SchemaDoc(DocumentJDFImpl doc)
+	public SchemaDoc(final DocumentJDFImpl doc)
 	{
 		super(doc);
 	}
@@ -42,22 +42,20 @@ public class SchemaDoc extends XMLDoc
 	/**
 	 * This is the main entrance method after the Generator has parsed the xml file.
 	 *
-	 * @param   String strType  -   "Message" for Message-Type
-	 *                               "Core" for Core-Type
-	 *                               "Node" for Node-Type
-	 * @param   isJava              true if the code to be generated is Java. False for C++
-	 *  
+	 * @param String strType - "Message" for Message-Type "Core" for Core-Type "Node" for Node-Type
+	 * @param isJava true if the code to be generated is Java. False for C++
+	 * 
 	 * @return int - zero always
 	 */
-	public Vector getSchemaInfo(String strType, boolean isJava)
+	public Vector getSchemaInfo(final String strType, final boolean isJava)
 	{
 		Vector vComplexTypes = new Vector();
 
-		KElement r = getRoot();
+		final KElement r = getRoot();
 		// Get all complex Types out of the schema
-		VElement vAllComplexTypes = r.getChildrenByTagName("xs:complexType", "", new JDFAttributeMap(), false, true, 0);
-		VElement vAllSimpleTypes = r.getChildrenByTagName("xs:simpleType", "", new JDFAttributeMap(), false, true, 0);
-		VElement vAllElements = r.getChildElementVector("xs:element", "", new JDFAttributeMap(), true, 0, false);
+		final VElement vAllComplexTypes = r.getChildrenByTagName("xs:complexType", "", new JDFAttributeMap(), false, true, 0);
+		final VElement vAllSimpleTypes = r.getChildrenByTagName("xs:simpleType", "", new JDFAttributeMap(), false, true, 0);
+		final VElement vAllElements = r.getChildElementVector("xs:element", "", new JDFAttributeMap(), true, 0, false);
 
 		SchemaComplexType complexType = null;
 
@@ -68,10 +66,10 @@ public class SchemaDoc extends XMLDoc
 			if (((vAllComplexTypeSize - i) % 50) == 0)
 				System.out.println(vAllComplexTypeSize - i);
 
-			// Wrap the KElement "Assembly_AssemblySection_AssemblySection_lr" 
+			// Wrap the KElement "Assembly_AssemblySection_AssemblySection_lr"
 			// into the SchemaComplexType "Assembly" (leads to duplicates)
-			KElement schemaElement = vAllComplexTypes.elementAt(i);
-			// System.out.println (schemaElement.getAttribute_KElement("name","",""));
+			final KElement schemaElement = vAllComplexTypes.elementAt(i);
+			System.out.println(schemaElement.getAttribute_KElement("name", "", ""));
 			complexType = new SchemaComplexType(schemaElement); // sct.strSchemaComplexTypeName
 
 			complexType = fillComplexType(schemaElement, complexType, vAllComplexTypes, vAllSimpleTypes, vAllElements, vComplexTypes, strType, isJava);
@@ -95,11 +93,12 @@ public class SchemaDoc extends XMLDoc
 	 * @param schemaElement
 	 * @return
 	 */
-	private SchemaComplexType fillComplexType(KElement schemaElement, SchemaComplexType complexType, VElement vAllComplexTypes, VElement vAllSimpleTypes, VElement vAllElements, Vector vComplexTypes, String strType, boolean isJava)
+	private SchemaComplexType fillComplexType(final KElement schemaElement, final SchemaComplexType complexType, final VElement vAllComplexTypes, final VElement vAllSimpleTypes,
+			final VElement vAllElements, final Vector vComplexTypes, final String strType, final boolean isJava)
 	{
 		// sct.strSchemaComplexTypeName
 
-		// First all names of the complextypes need to be shortened. Some end on '__' '_r' '_re' etc. 
+		// First all names of the complextypes need to be shortened. Some end on '__' '_r' '_re' etc.
 		// these "extensions" are not needed here. Cut them away.
 		SchemaComplexType complexTypeLocal = GeneratorUtil.unifyComplexTypNames(complexType, strType);
 
@@ -125,9 +124,9 @@ public class SchemaDoc extends XMLDoc
 			complexTypeLocal.hasMessage = true;
 		}
 
-		String[] parents = GeneratorUtil.fillParents(complexTypeLocal);
-		VElement vAppInfoElements = new VElement();
-		String motherOf = complexTypeLocal.getStrMotherOfComplexType();
+		final String[] parents = GeneratorUtil.fillParents(complexTypeLocal);
+		final VElement vAppInfoElements = new VElement();
+		final String motherOf = complexTypeLocal.getStrMotherOfComplexType();
 
 		if (!JDFConstants.EMPTYSTRING.equals(motherOf))
 		{
@@ -148,9 +147,9 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	private Vector removeDuplicates(Vector vMyCompleteSchema)
+	private Vector removeDuplicates(final Vector vMyCompleteSchema)
 	{
 		Vector vMyCompleteSchemaLocal = vMyCompleteSchema;
 
@@ -159,7 +158,7 @@ public class SchemaDoc extends XMLDoc
 
 		// At this point you have a Vector of all ComplexTyps of the Schema.
 		// But quit a few of em are double or triple. Those will now be ripped out.
-		Vector nJustALittleHelper = new Vector();
+		final Vector nJustALittleHelper = new Vector();
 
 		while (vMyCompleteSchemaLocal.size() != 0)
 		{
@@ -176,8 +175,8 @@ public class SchemaDoc extends XMLDoc
 				// NEUER TYP
 				nNewSchemaComplexType = (SchemaComplexType) nJustALittleHelper.elementAt(nJustALittleHelper.size() - 1);
 				// Die Namen der beiden Element. Wichtig zur Feststellung von Gleichheit
-				String str_A_SchemaName = nOldSchemaComplexType.m_SchemaComplexTypeName;
-				String str_B_SchemaName = nNewSchemaComplexType.m_SchemaComplexTypeName;
+				final String str_A_SchemaName = nOldSchemaComplexType.m_SchemaComplexTypeName;
+				final String str_B_SchemaName = nNewSchemaComplexType.m_SchemaComplexTypeName;
 
 				// TBD L�se den IF ausdruck auf, das kann ja kein .... lesen
 				// im Klartext...wenn der Name des Elements am platz 'i' genauso ist wie der letze hinzugef�gte zum
@@ -218,7 +217,7 @@ public class SchemaDoc extends XMLDoc
 		// for further information check the architecture of the Node-Schema
 		for (int i = 0; i < nJustALittleHelper.size(); i++)
 		{
-			SchemaComplexType nSchemaComplexType = (SchemaComplexType) nJustALittleHelper.elementAt(i);
+			final SchemaComplexType nSchemaComplexType = (SchemaComplexType) nJustALittleHelper.elementAt(i);
 			if (nSchemaComplexType.m_SchemaComplexTypeName.endsWith("_"))
 			{
 				nJustALittleHelper.removeElementAt(i);
@@ -234,7 +233,7 @@ public class SchemaDoc extends XMLDoc
 		// e.g. names, extends, return values etc..
 		for (int i = 0; i < vMyCompleteSchemaLocal.size(); i++)
 		{
-			SchemaComplexType nSchemaComplexType = (SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i);
+			final SchemaComplexType nSchemaComplexType = (SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i);
 			nSchemaComplexType.setStrSchemaComplexType(); // test
 			nSchemaComplexType.m_ExtendOff = GeneratorUtil.getStrExtendsOff(nSchemaComplexType.m_kElem);
 		}
@@ -242,7 +241,7 @@ public class SchemaDoc extends XMLDoc
 		// last but not least, filter out those you dont want
 		for (int i = 0; i < vMyCompleteSchemaLocal.size(); i++)
 		{
-			String strComplexTypeName = ((SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i)).m_SchemaComplexTypeName;
+			final String strComplexTypeName = ((SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i)).m_SchemaComplexTypeName;
 			if (!GeneratorUtil.isComplexTypeToGenerate(strComplexTypeName))
 			{
 				vMyCompleteSchemaLocal.removeElementAt(i);
@@ -252,12 +251,12 @@ public class SchemaDoc extends XMLDoc
 
 		for (int i = 0; i < vMyCompleteSchemaLocal.size(); i++)
 		{
-			KElement nPlaceHolder = ((SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i)).m_kElem.getElement("xs:complexContent", "", 0);
+			final KElement nPlaceHolder = ((SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i)).m_kElem.getElement("xs:complexContent", "", 0);
 
 			if (nPlaceHolder != null)
 			{
-				SchemaComplexType test = new SchemaComplexType(nPlaceHolder);
-				KElement nKElement = test.m_kElem.getElement("xs:extension", "", 0);
+				final SchemaComplexType test = new SchemaComplexType(nPlaceHolder);
+				final KElement nKElement = test.m_kElem.getElement("xs:extension", "", 0);
 				if (nKElement != null)
 				{
 					String base = nKElement.getAttribute("base", "", "");
@@ -266,7 +265,7 @@ public class SchemaDoc extends XMLDoc
 						base = "jdf:Parameter";
 					}
 
-					SchemaComplexType sct = (SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i);
+					final SchemaComplexType sct = (SchemaComplexType) vMyCompleteSchemaLocal.elementAt(i);
 					sct.setBase(base);
 				}
 			}
@@ -276,13 +275,12 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	  *  If you just want to generate a few of the complextypes and not the whole schema, you can call this method
-	  *  The Vector input parameter need to fulfill a view demands. Every Element in this Vector needs to be from the
-	  *  'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
-
-	  *  @param Vector nSchemaFragment - the SchemaFragment to generate
-	  */
-	public static void toCoreJava(Vector nSchemaFragment, boolean bGenerateAll)
+	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every Element in this Vector
+	 * needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
+	 * 
+	 * @param Vector nSchemaFragment - the SchemaFragment to generate
+	 */
+	public static void toCoreJava(final Vector nSchemaFragment, final boolean bGenerateAll)
 	{
 		String strJavaFile = JDFConstants.EMPTYSTRING;
 		SchemaComplexType nSchemaComplexType = null;
@@ -301,14 +299,13 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	 *  If you just want to generate a few of the complextypes and not the whole schema, you can call this method
-	 *  The Vector input parameter need to fulfill a view demands. Every Element in this Vector needs to be from the
-	 *  'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
-
-	 *  @param Vector nSchemaFragment - the SchemaFragment to generate
-	 *  @return void - nothing
+	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every Element in this Vector
+	 * needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
+	 * 
+	 * @param Vector nSchemaFragment - the SchemaFragment to generate
+	 * @return void - nothing
 	 */
-	public static void toCoreCpp(Vector nSchemaFragment, boolean bGenerateAll)
+	public static void toCoreCpp(final Vector nSchemaFragment, final boolean bGenerateAll)
 	{
 		String strCppFile = JDFConstants.EMPTYSTRING;
 		String strHeaderFile = JDFConstants.EMPTYSTRING;
@@ -326,7 +323,7 @@ public class SchemaDoc extends XMLDoc
 		}
 	}
 
-	private static void writeToFile(String strURLGood, String strURLBad, String strFileName, String strFileContent, boolean bGenerateAll)
+	private static void writeToFile(final String strURLGood, final String strURLBad, final String strFileName, final String strFileContent, final boolean bGenerateAll)
 	{
 		if (bGenerateAll || isFileToGenerate(strFileName))
 		{
@@ -339,21 +336,20 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	  * after all information was been collected the autofile will be written to hard drive. This method
-	  * will write a file to the hard drive and overwrite any exisiting file.
-	  *
-	  * @param   
-	  *  
-	  * @return 
-	  */
-	public static boolean write2file(String strPath, String fName, boolean overwriteFile, String content)
+	 * after all information was been collected the autofile will be written to hard drive. This method will write a file to the hard drive and overwrite any exisiting file.
+	 *
+	 * @param
+	 * 
+	 * @return
+	 */
+	public static boolean write2file(final String strPath, final String fName, final boolean overwriteFile, final String content)
 	{
 		String strPathLocal = strPath;
 
 		FileOutputStream fos = null;
 		try
 		{// global path for library
-			File path = new File(strPathLocal);
+			final File path = new File(strPathLocal);
 			if (!path.exists())
 			{
 				path.mkdirs();
@@ -367,18 +363,18 @@ public class SchemaDoc extends XMLDoc
 			{
 				strPathLocal += "/";
 			}
-			File file = new File(strPathLocal + fName);
+			final File file = new File(strPathLocal + fName);
 			if (file.exists())
 			{
-				//System.err.println(warning +"["+file+"] exists.");
+				// System.err.println(warning +"["+file+"] exists.");
 				if (overwriteFile)
 				{
 					file.delete();
-					//System.err.println(warning +"\t and will be overwritten.");
+					// System.err.println(warning +"\t and will be overwritten.");
 				}
 				else
 				{
-					//System.err.println("");
+					// System.err.println("");
 					return false;
 				}
 			}
@@ -392,11 +388,11 @@ public class SchemaDoc extends XMLDoc
 				}
 			}
 		}
-		catch (FileNotFoundException e)
+		catch (final FileNotFoundException e)
 		{
 			return false;
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			return false;
 		}
@@ -409,7 +405,7 @@ public class SchemaDoc extends XMLDoc
 				{
 					fos.close();
 				}
-				catch (IOException e1)
+				catch (final IOException e1)
 				{
 					e1.printStackTrace();
 				}
@@ -418,10 +414,10 @@ public class SchemaDoc extends XMLDoc
 		return true;
 	}
 
-	private static boolean isFileToGenerate(String strFileName)
+	private static boolean isFileToGenerate(final String strFileName)
 	{
 		return strFileName == strFileName;
-		//        return isJavaFile(strFileName) || isCppFile(strFileName) || isHFile(strFileName);
+		// return isJavaFile(strFileName) || isCppFile(strFileName) || isHFile(strFileName);
 	}
 
 } // class SchemaDoc

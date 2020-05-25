@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.cip4.jdflib.core.AttributeInfo;
+import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -1063,7 +1064,7 @@ public class GeneratorUtil
 	public static boolean isEnumAttribute(final VElement nSimpleType, final SchemaAttribute nSchemaAttribute, final String sType)
 	{
 		final String strName = nSchemaAttribute.getStrAttributeName();
-		if ("PresentationDirection".equals(strName)) // its a enum in the schema but its a pattern
+		if ("PresentationDirection".equals(strName) || AttributeName.COUNTRYCODE.equals(strName)) // its a enum in the schema but its a pattern
 		{
 			return false;
 		}
@@ -1564,6 +1565,10 @@ public class GeneratorUtil
 		{
 			strReturnType = isJava ? "String" : "KString"; // pre 1.3, keep it simple
 		}
+		else if (AttributeName.COUNTRYCODE.equals(strName))
+		{
+			strReturnType = isJava ? "String" : "KString"; // pre 1.3, keep it simple
+		}
 		else if (strTypeLocal.startsWith("ePresentationDirection"))
 		{
 			strReturnType = isJava ? "String" : "KString"; // pre 1.3, keep it simple
@@ -1724,7 +1729,7 @@ public class GeneratorUtil
 		{
 			bGenerateIt = false;
 		}
-		if (strComplexTypeName.startsWith("Registration") && !strComplexTypeName.equals("Registration"))
+		if (strComplexTypeName.startsWith("Registration") && !strComplexTypeName.equals("Registration") && !strComplexTypeName.equals("RegistrationQuality"))
 		{
 			bGenerateIt = false;
 		}
