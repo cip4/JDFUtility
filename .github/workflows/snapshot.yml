@@ -18,7 +18,7 @@ jobs:
       - name: Check out sources...
         uses: actions/checkout@v2
 
-      - name: Maven Deploy
+      - name: Maven Build WAR
         env:
           SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
