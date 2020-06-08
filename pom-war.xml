@@ -53,7 +53,7 @@
         </developer>
     </developers>
     <build>
-        <finalName>jdf</finalName>
+        <finalName>JDFToolbox</finalName>
         <resources>
             <resource>
                 <directory>src/main/webapp</directory>
