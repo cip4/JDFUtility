@@ -5,7 +5,7 @@
 	<groupId>org.cip4.tools.jdfutility</groupId>
 	<artifactId>JDFUtility</artifactId>
 	<packaging>jar</packaging>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.x-SNAPSHOT</version>
 	<name>JDFUtility</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -13,9 +13,9 @@
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
 	</properties>
 	<scm>
-		<url>https://bitbucket.cip4.org/scm/tool/jdfutility.git</url>
-		<developerConnection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfutility.git</developerConnection>
-		<connection>scm:git:https://bitbucket.cip4.org/scm/tool/jdfutility.git</connection>
+		<url>https://github.com/cip4/JDFUtility</url>
+		<developerConnection>scm:git:https://github.com/cip4/JDFUtility.git</developerConnection>
+		<connection>scm:git:https://github.com/cip4/JDFUtility.git</connection>
 	</scm>
 	<repositories>
 		<repository>
@@ -40,22 +40,6 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	<developers>
-		<developer>
-			<id>r.prosi</id>
-			<name>Dr. Rainer Prosi</name>
-			<organization>Heidelberger Druckmaschinen AG</organization>
-			<organizationUrl>http://www.heidelberg.com</organizationUrl>
-			<email>rainer.prosi@heidelberg.com</email>
-		</developer>
-		<developer>
-			<id>s.meissner</id>
-			<name>Stefan Meissner</name>
-			<organization>flyeralarm GmbH</organization>
-			<organizationUrl>http://www.flyeralarm.com</organizationUrl>
-			<email>s.meissner@flyeralarm.de</email>
-		</developer>
-	</developers>
 	<build>
 		<resources>
 			<resource>
@@ -69,8 +53,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
         <plugin>
