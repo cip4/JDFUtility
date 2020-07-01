@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cip4.tools.jdfutility</groupId>
-    <artifactId>JDFUtility</artifactId>
+    <artifactId>JDFToolbox</artifactId>
     <packaging>war</packaging>
     <version>1.x-SNAPSHOT</version>
     <name>JDFToolbox</name>
