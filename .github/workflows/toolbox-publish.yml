@@ -9,7 +9,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   RUN_REGION: europe-west1
-  SERVICE_NAME: jdftoolbox
+  SERVICE_NAME: toolbox
 
 jobs:
   gcloud-publish:
