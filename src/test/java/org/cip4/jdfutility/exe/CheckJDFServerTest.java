@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -60,7 +60,7 @@ public class CheckJDFServerTest extends JDFUtilityTestBase
 	@Test
 	public void testPingSchema() throws Exception
 	{
-		final UrlPart p = UrlUtil.writeToURL("https://cdn.cip4.org/schema/jdfschema_1_1/JDF.xsd", null, UrlUtil.GET, null, null);
+		final UrlPart p = UrlUtil.writeToURL("http://schema.cip4.org/jdfschema_1_6/JDF.xsd", null, UrlUtil.GET, null, null);
 		assertNotNull(p);
 		assertNotNull(p.getXMLDoc());
 	}
