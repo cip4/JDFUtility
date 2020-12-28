@@ -38,6 +38,8 @@
  */
 package org.cip4.jdfutility;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
@@ -64,7 +67,9 @@ import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
+import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  *
@@ -112,8 +117,21 @@ public class FixJDFServlet extends UtilityServlet
 			if (request.getParameter("File") != null)
 			{
 				final File f = new File(FIX_JDF_TMP + "/" + request.getParameter("File"));
-				//			StreamUtil.
-				//			response.getOutputStream()
+				if (f.exists())
+				{
+					final BufferedOutputStream o = new BufferedOutputStream(response.getOutputStream());
+					final BufferedInputStream i = FileUtil.getBufferedInputStream(f);
+					response.setContentType(UrlUtil.getMimeTypeFromURL(f.getName()));
+					IOUtils.copyLarge(i, o);
+					i.close();
+					o.flush();
+					o.close();
+					doc = null;
+				}
+				else
+				{
+					response.sendError(404, "no such file: " + f.getAbsolutePath());
+				}
 			}
 			else
 			{
