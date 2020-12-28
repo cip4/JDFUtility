@@ -74,7 +74,9 @@ import org.cip4.jdflib.util.StringUtil;
  */
 public class FixJDFServlet extends UtilityServlet
 {
-	protected class FixCall extends ServletCall
+	private static final String FIX_JDF_TMP = "FixJDFTmp";
+
+	class FixCall extends ServletCall
 	{
 		/**
 		 * @param utilityServlet
@@ -98,6 +100,24 @@ public class FixJDFServlet extends UtilityServlet
 			if (ServletFileUpload.isMultipartContent(request))
 			{
 				processMultipartRequest(request, response);
+			}
+		}
+
+		/**
+		 * @see org.cip4.jdfutility.ServletCall#processGet()
+		 */
+		@Override
+		protected void processGet() throws IOException, ServletException
+		{
+			if (request.getParameter("File") != null)
+			{
+				final File f = new File(FIX_JDF_TMP + "/" + request.getParameter("File"));
+				//			StreamUtil.
+				//			response.getOutputStream()
+			}
+			else
+			{
+				super.processGet();
 			}
 		}
 
@@ -159,7 +179,7 @@ public class FixJDFServlet extends UtilityServlet
 
 		final XMLDoc htmlDoc = new XMLDoc("html", null);
 		final KElement html = htmlDoc.getRoot();
-		html.appendElement("LINK").setAttribute("HREF", "http://www.cip4.org/css/styles_pc.css");
+		html.appendElement("LINK").setAttribute("HREF", "style.css");
 		html.getElement("LINK").setAttribute("TYPE", "text/css");
 		html.getElement("LINK").setAttribute("REL", "stylesheet");
 
@@ -175,7 +195,7 @@ public class FixJDFServlet extends UtilityServlet
 				final InputStream ins = fileItem.getInputStream();
 				final JDFDoc d0 = JDFDoc.parseStream(ins);
 				final JDFDoc d = updateSingle(version, d0);
-				final File outFile = JDFServletUtil.getTmpFile("FixJDFTmp", fileItem, "jdf" + versionField, ".jdf");
+				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, ".jdf." + versionField, ".jdf");
 				final String outFileName = outFile.getName();
 				if (d != null)
 				{
@@ -183,7 +203,7 @@ public class FixJDFServlet extends UtilityServlet
 					html.appendText("DownLoad updated " + versionField + " version of " + fileItem.getName() + " here: ");
 					final KElement dl = html.appendElement("a");
 					dl.appendText(outFileName);
-					dl.setAttribute("href", "./FixJDFTmp/" + outFileName, null);
+					dl.setAttribute("href", ".?File=" + outFileName, null);
 				}
 				else
 				{
@@ -191,7 +211,7 @@ public class FixJDFServlet extends UtilityServlet
 					e.setAttribute("color", "xff0000");
 					e.appendText("Update of " + fileItem.getName() + " to JDF " + versionField + " failed!!! ");
 				}
-				JDFServletUtil.cleanup("FixJDFTmp");
+				JDFServletUtil.cleanup(FIX_JDF_TMP);
 
 				fileItem.delete();
 			}
