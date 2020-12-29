@@ -116,7 +116,8 @@ public class FixJDFServlet extends UtilityServlet
 		{
 			if (request.getParameter("File") != null)
 			{
-				final File f = new File(FIX_JDF_TMP + "/" + request.getParameter("File"));
+				final File dir = new File(JDFServletUtil.baseDir, FIX_JDF_TMP);
+				final File f = new File(dir, request.getParameter("File"));
 				if (f.exists())
 				{
 					final BufferedOutputStream o = new BufferedOutputStream(response.getOutputStream());
@@ -214,7 +215,7 @@ public class FixJDFServlet extends UtilityServlet
 				final JDFDoc d0 = JDFDoc.parseStream(ins);
 				final JDFDoc d = updateSingle(version, d0);
 				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, "jdf." + versionField, ".jdf");
-				final String outFileName = outFile.getPath();
+				final String outFileName = outFile.getName();
 				if (d != null)
 				{
 					d.write2File(outFile.getAbsolutePath(), 2, true);
@@ -294,7 +295,7 @@ public class FixJDFServlet extends UtilityServlet
 					// might be a JMF
 					{
 						final JDFJMF theJMF = d.getJMFRoot();
-						if (theJMF != null && version.equals("Retain") && theJMF.hasAttribute(AttributeName.VERSION))
+						if (theJMF != null && version == null && theJMF.hasAttribute(AttributeName.VERSION))
 						{
 							version = theJMF.getVersion(true);
 						}
