@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2020The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -38,6 +38,8 @@
  */
 package org.cip4.jdfutility;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
 import org.cip4.jdflib.core.JDFDoc;
@@ -57,10 +60,16 @@ import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.XMLDoc;
+import org.cip4.jdflib.extensions.XJDF20;
+import org.cip4.jdflib.extensions.XJDFHelper;
+import org.cip4.jdflib.extensions.xjdfwalker.XJDFToJDFConverter;
 import org.cip4.jdflib.jmf.JDFJMF;
 import org.cip4.jdflib.node.JDFNode;
 import org.cip4.jdflib.pool.JDFAuditPool;
 import org.cip4.jdflib.resource.JDFModified;
+import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
 
 /**
  *
@@ -70,7 +79,9 @@ import org.cip4.jdflib.resource.JDFModified;
  */
 public class FixJDFServlet extends UtilityServlet
 {
-	protected class FixCall extends ServletCall
+	private static final String FIX_JDF_TMP = "FixJDFTmp";
+
+	class FixCall extends ServletCall
 	{
 		/**
 		 * @param utilityServlet
@@ -97,6 +108,39 @@ public class FixJDFServlet extends UtilityServlet
 			}
 		}
 
+		/**
+		 * @see org.cip4.jdfutility.ServletCall#processGet()
+		 */
+		@Override
+		protected void processGet() throws IOException, ServletException
+		{
+			final String servletPath = request.getServletPath();
+			if (servletPath.contains(FIX_JDF_TMP))
+			{
+				final File dir = new File(JDFServletUtil.baseDir, FIX_JDF_TMP);
+				final File f = new File(dir, StringUtil.token(servletPath, -1, "/"));
+				if (f.exists())
+				{
+					final BufferedOutputStream o = new BufferedOutputStream(response.getOutputStream());
+					final BufferedInputStream i = FileUtil.getBufferedInputStream(f);
+					response.setContentType(UrlUtil.getMimeTypeFromURL(f.getName()));
+					IOUtils.copyLarge(i, o);
+					i.close();
+					o.flush();
+					o.close();
+					doc = null;
+				}
+				else
+				{
+					response.sendError(404, "no such file: " + f.getAbsolutePath());
+				}
+			}
+			else
+			{
+				super.processGet();
+			}
+		}
+
 	}
 
 	/**
@@ -119,23 +163,19 @@ public class FixJDFServlet extends UtilityServlet
 		EnumVersion version = null;
 		int nFiles = 0;
 		String versionField = "";
-		for (int i = 0; i < fileItems.size(); i++)
+		for (final FileItem item : fileItems)
 		{
-			final FileItem item = fileItems.get(i);
 			if (item.isFormField())
 			{
 				log.info("Form name: " + item.getFieldName());
 				if (item.getFieldName().equals("Version"))
 				{
 					versionField = item.getString();
-					if (versionField.startsWith("1."))
-					{
-						version = EnumVersion.getEnum(versionField);
-						versionField = version.getName();
-					}
+					version = EnumVersion.getEnum(versionField);
+					versionField = version.getName();
 				}
 			}
-			else if (item.getSize() < 20 || item.getName().length() == 0)
+			else if (item.getSize() < 20 || StringUtil.isEmpty(item.getName()))
 			{
 				log.warn("Bad File name: " + item.getName());
 			}
@@ -159,7 +199,7 @@ public class FixJDFServlet extends UtilityServlet
 
 		final XMLDoc htmlDoc = new XMLDoc("html", null);
 		final KElement html = htmlDoc.getRoot();
-		html.appendElement("LINK").setAttribute("HREF", "http://www.cip4.org/css/styles_pc.css");
+		html.appendElement("LINK").setAttribute("HREF", "style.css");
 		html.getElement("LINK").setAttribute("TYPE", "text/css");
 		html.getElement("LINK").setAttribute("REL", "stylesheet");
 
@@ -170,67 +210,22 @@ public class FixJDFServlet extends UtilityServlet
 		// Extracts XMP packet
 		try
 		{
-			log.debug("try");
-			boolean success = false;
-
 			if (fileItem != null)
 			{
 				final InputStream ins = fileItem.getInputStream();
-				final JDFDoc d = JDFDoc.parseStream(ins);
-				if (d != null)
-				{
-					final KElement k = d.getRoot();
-					if (k instanceof JDFElement)
-					{
-						log.info("Updating to " + versionField + " ... ");
+				final JDFDoc d0 = JDFDoc.parseStream(ins);
+				final JDFDoc d = updateSingle(version, d0);
 
-						if (versionField.equals("General"))
-						{
-							version = null;
-						}
-
-						final JDFNode theRoot = d.getJDFRoot();
-						if (theRoot != null) // it is a JDF
-						{
-							if (versionField.equals("Retain") && theRoot.hasAttribute(AttributeName.VERSION))
-							{
-								version = theRoot.getVersion(true);
-								versionField = version.getName();
-							}
-							final JDFAuditPool ap = theRoot.getCreateAuditPool();
-							final JDFModified modi = ap.addModified("FixJDF Web Service Build: " + JDFAudit.software(), null);
-							modi.setDescriptiveName("update to version " + versionField);
-						}
-						else
-						// might be a JMF
-						{
-							final JDFJMF theJMF = d.getJMFRoot();
-							if (theJMF != null && versionField.equals("Retain") && theJMF.hasAttribute(AttributeName.VERSION))
-							{
-								version = theJMF.getVersion(true);
-								versionField = version.getName();
-							}
-						}
-						final JDFElement e = (JDFElement) k;
-						success = e.fixVersion(version);
-						log.info(success ? "Fix was successful" : "Fix Failed");
-					}
-				}
-
-				final File outFile = JDFServletUtil.getTmpFile("FixJDFTmp", fileItem, "jdf" + versionField, ".jdf");
+				final String extension = getExtension(d);
+				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, extension + "_" + versionField, "." + extension);
 				final String outFileName = outFile.getName();
 				if (d != null)
 				{
 					d.write2File(outFile.getAbsolutePath(), 2, true);
-				}
-
-				// very basic html output
-				if (success)
-				{
 					html.appendText("DownLoad updated " + versionField + " version of " + fileItem.getName() + " here: ");
 					final KElement dl = html.appendElement("a");
 					dl.appendText(outFileName);
-					dl.setAttribute("href", "./FixJDFTmp/" + outFileName, null);
+					dl.setAttribute("href", "FixJDFServlet/" + FIX_JDF_TMP + "/" + outFileName, null);
 				}
 				else
 				{
@@ -238,7 +233,7 @@ public class FixJDFServlet extends UtilityServlet
 					e.setAttribute("color", "xff0000");
 					e.appendText("Update of " + fileItem.getName() + " to JDF " + versionField + " failed!!! ");
 				}
-				JDFServletUtil.cleanup("FixJDFTmp");
+				JDFServletUtil.cleanup(FIX_JDF_TMP);
 
 				fileItem.delete();
 			}
@@ -258,6 +253,70 @@ public class FixJDFServlet extends UtilityServlet
 		final PrintWriter out = response.getWriter();
 		out.println(htmlDoc.write2String(0));
 
+	}
+
+	private String getExtension(final JDFDoc d)
+	{
+		final KElement e = d == null ? null : d.getRoot();
+		if (e == null)
+			return null;
+		return e.getLocalName().toLowerCase();
+	}
+
+	JDFDoc updateSingle(EnumVersion version, final JDFDoc d0)
+	{
+		final KElement k = d0 == null ? null : d0.getRoot();
+
+		final JDFDoc d;
+		if (!XJDFHelper.isXJDF(k) && !XJDFHelper.isXJMF(k) && version != null && version.isXJDF())
+		{
+			final XJDF20 jdfToXJDFConverter = new XJDF20();
+			final KElement converted = jdfToXJDFConverter.convert(k);
+			d = new JDFDoc(converted.getOwnerDocument());
+		}
+		else
+		{
+			if ((XJDFHelper.isXJDF(k) || XJDFHelper.isXJMF(k)) && version != null && !version.isXJDF())
+			{
+				final XJDFToJDFConverter xjdfToJDFConverter = new XJDFToJDFConverter(null);
+				d = xjdfToJDFConverter.convert(k);
+			}
+			else
+			{
+				d = d0;
+			}
+			if (d != null)
+			{
+				if (k instanceof JDFElement)
+				{
+					log.info("Updating to " + version + " ... ");
+
+					final JDFNode theRoot = d.getJDFRoot();
+					if (theRoot != null) // it is a JDF
+					{
+						if (version == null && theRoot.hasAttribute(AttributeName.VERSION))
+						{
+							version = theRoot.getVersion(true);
+						}
+						final JDFAuditPool ap = theRoot.getCreateAuditPool();
+						final JDFModified modi = ap.addModified("FixJDF Web Service Build: " + JDFAudit.software(), null);
+						modi.setDescriptiveName("update to version " + version);
+					}
+					else
+					// might be a JMF
+					{
+						final JDFJMF theJMF = d.getJMFRoot();
+						if (theJMF != null && version == null && theJMF.hasAttribute(AttributeName.VERSION))
+						{
+							version = theJMF.getVersion(true);
+						}
+					}
+					final JDFElement e = (JDFElement) k;
+					e.fixVersion(version);
+				}
+			}
+		}
+		return d;
 	}
 
 	/**

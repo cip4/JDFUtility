@@ -36,6 +36,8 @@
  */
 package org.cip4.jdfutility.exe;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;

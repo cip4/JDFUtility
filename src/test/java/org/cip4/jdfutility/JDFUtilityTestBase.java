@@ -78,12 +78,10 @@ import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 
-import junit.framework.TestCase;
-
 /**
  * Just a simple dummy test.
  */
-public abstract class JDFUtilityTestBase extends TestCase
+public abstract class JDFUtilityTestBase
 {
 	protected Log log;
 

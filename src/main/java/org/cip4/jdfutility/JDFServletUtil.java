@@ -31,9 +31,9 @@
  *
  * This software consists of voluntary contributions made by many individuals on behalf of the The International Cooperation for the Integration of Processes in Prepress, Press and Postpress and was
  * originally based on software copyright (c) 1999-2001, Heidelberger Druckmaschinen AG copyright (c) 1999-2001, Agfa-Gevaert N.V.
- * 
+ *
  * For more information on The International Cooperation for the Integration of Processes in Prepress, Press and Postpress , please see <http://www.cip4.org/>.
- * 
+ *
  *
  */
 package org.cip4.jdfutility;
@@ -85,7 +85,7 @@ public class JDFServletUtil extends Object
 		}
 
 		// we are in bin, which is a sibling directory of JDFUtilitys
-		final File tmpDir = new File(bCatalina ? baseDir + dirName : dirName);
+		final File tmpDir = bCatalina ? new File(baseDir, dirName) : new File(dirName);
 
 		if (!tmpDir.isDirectory())
 		{
@@ -148,7 +148,7 @@ public class JDFServletUtil extends Object
 
 	/**
 	 * cleanup previous junk that is older than an hour
-	 * 
+	 *
 	 * @param dirNam the directory to clean
 	 */
 	public static void cleanup(final String dirNam)
@@ -161,9 +161,8 @@ public class JDFServletUtil extends Object
 		final File[] tmpFiles = tmpDir.listFiles();
 		if (tmpFiles != null)
 		{
-			for (int n = 0; n < tmpFiles.length; n++)
+			for (final File oldFile : tmpFiles)
 			{
-				final File oldFile = tmpFiles[n];
 				if (modNow - 3600000 > oldFile.lastModified())
 				{ // 3600 seconds timeout
 					oldFile.delete();

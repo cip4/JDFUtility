@@ -578,7 +578,7 @@ public abstract class JettyServer
 	@Override
 	public String toString()
 	{
-		return getServerType() + " [context=" + context + ":" + thePort + "ssl=" + sslPort + "]";
+		return getServerType() + " [context=" + context + ":" + thePort + " ssl=" + sslPort + "]";
 	}
 
 	/**

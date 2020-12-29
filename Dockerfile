@@ -1,19 +1,43 @@
-# compile and test war
-FROM maven:3-openjdk-8 as war-builder
-
+ARG VERSION=dev
 ARG BUILD_NUMBER=n.a.
+ARG GIT_REV=n.a.
+
+# compile and test bambi
+FROM amazoncorretto:8-alpine-jdk as java-builder
+
+ARG VERSION
+ARG BUILD_NUMBER
+ARG GIT_REV
 
 COPY [".git", "/work/.git"]
 COPY ["src", "/work/src"]
-COPY ["pom-war.xml", "/work/"]
+COPY ["gradle", "/work/gradle"]
+COPY ["build.gradle", "settings.gradle", "gradle.properties", "gradlew", "/work/"]
+
+RUN apk add --no-cache dos2unix
 
 WORKDIR /work
 
-RUN mvn -f pom-war.xml clean install -Dmaven.test.skip=true -Dbuild=$BUILD_NUMBER
+RUN dos2unix gradlew
+RUN ./gradlew -i build -PprojectVersion=${VERSION} -PbuildNumber=${BUILD_NUMBER} --no-daemon
 
 # create final image
-FROM tomcat:8-jdk8-slim
+FROM amazoncorretto:8-alpine-jre
 
-RUN rm -rf /usr/local/tomcat/webapps/*
+ARG VERSION
+ARG BUILD_NUMBER
+ARG GIT_REV
 
-COPY --from=war-builder ["/work/target/JDFToolbox.war", "/usr/local/tomcat/webapps/ROOT.war"]
+ENV VERSION=${VERSION}
+ENV BUILD_NUMBER=${BUILD_NUMBER}
+ENV GIT_REV=${GIT_REV}
+
+RUN addgroup -S cip4 && adduser -S cip4 -G cip4
+
+COPY --chown=cip4:cip4 --from=java-builder ["/work/build/libs/*-${VERSION}.jar", "/app/jdfutility.jar"]
+
+USER cip4
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-cp","/app/jdfutility.jar", "org.cip4.jdfutility.exe.CheckJDFServer"]
