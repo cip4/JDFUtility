@@ -564,7 +564,7 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("    private static final long serialVersionUID = 1L;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    private static int m_startValue = 0;").append(strLineEnd).append(strLineEnd);
 
-				strbufResult.append(strDepth2).append("    private ").append(attributeTypeName).append("(String name)").append(strLineEnd);
+				strbufResult.append(strDepth2).append("    protected ").append(attributeTypeName).append("(String name)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
 				strbufResult.append(strDepth2).append("        super(name, m_startValue++);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
