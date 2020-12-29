@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2020 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,8 +68,8 @@
  */
 package org.cip4.jdfutility.exe;
 
-import org.apache.log4j.BasicConfigurator;
 import org.cip4.jdflib.util.MyArgs;
+import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.CheckJDFServlet;
 import org.cip4.jdfutility.FixJDFServlet;
 import org.cip4.jdfutility.server.JettyServer;
@@ -91,8 +91,8 @@ public final class CheckJDFServer extends JettyServer
 	public CheckJDFServer()
 	{
 		super();
-		BasicConfigurator.configure();
-		log.info("starting HTTPDump at context: " + context + " port: " + getPort());
+		LogConfigurator.configureLog(null, null);
+		log.info("starting CheckJDFServer at context: " + context + " port: " + getPort());
 	}
 
 	/**
