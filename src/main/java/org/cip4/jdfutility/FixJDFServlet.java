@@ -114,10 +114,11 @@ public class FixJDFServlet extends UtilityServlet
 		@Override
 		protected void processGet() throws IOException, ServletException
 		{
-			if (request.getParameter("File") != null)
+			final String servletPath = request.getServletPath();
+			if (servletPath.contains(FIX_JDF_TMP))
 			{
 				final File dir = new File(JDFServletUtil.baseDir, FIX_JDF_TMP);
-				final File f = new File(dir, request.getParameter("File"));
+				final File f = new File(dir, StringUtil.token(servletPath, -1, "/"));
 				if (f.exists())
 				{
 					final BufferedOutputStream o = new BufferedOutputStream(response.getOutputStream());
@@ -214,7 +215,9 @@ public class FixJDFServlet extends UtilityServlet
 				final InputStream ins = fileItem.getInputStream();
 				final JDFDoc d0 = JDFDoc.parseStream(ins);
 				final JDFDoc d = updateSingle(version, d0);
-				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, "jdf." + versionField, ".jdf");
+
+				final String extension = getExtension(d);
+				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, extension + "_" + versionField, "." + extension);
 				final String outFileName = outFile.getName();
 				if (d != null)
 				{
@@ -222,7 +225,7 @@ public class FixJDFServlet extends UtilityServlet
 					html.appendText("DownLoad updated " + versionField + " version of " + fileItem.getName() + " here: ");
 					final KElement dl = html.appendElement("a");
 					dl.appendText(outFileName);
-					dl.setAttribute("href", "FixJDFServlet?File=" + outFileName, null);
+					dl.setAttribute("href", "FixJDFServlet/" + FIX_JDF_TMP + "/" + outFileName, null);
 				}
 				else
 				{
@@ -250,6 +253,14 @@ public class FixJDFServlet extends UtilityServlet
 		final PrintWriter out = response.getWriter();
 		out.println(htmlDoc.write2String(0));
 
+	}
+
+	private String getExtension(final JDFDoc d)
+	{
+		final KElement e = d == null ? null : d.getRoot();
+		if (e == null)
+			return null;
+		return e.getLocalName().toLowerCase();
 	}
 
 	JDFDoc updateSingle(EnumVersion version, final JDFDoc d0)
