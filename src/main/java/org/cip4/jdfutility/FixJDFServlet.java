@@ -213,15 +213,15 @@ public class FixJDFServlet extends UtilityServlet
 				final InputStream ins = fileItem.getInputStream();
 				final JDFDoc d0 = JDFDoc.parseStream(ins);
 				final JDFDoc d = updateSingle(version, d0);
-				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, ".jdf." + versionField, ".jdf");
-				final String outFileName = outFile.getName();
+				final File outFile = JDFServletUtil.getTmpFile(FIX_JDF_TMP, fileItem, "jdf." + versionField, ".jdf");
+				final String outFileName = outFile.getPath();
 				if (d != null)
 				{
 					d.write2File(outFile.getAbsolutePath(), 2, true);
 					html.appendText("DownLoad updated " + versionField + " version of " + fileItem.getName() + " here: ");
 					final KElement dl = html.appendElement("a");
 					dl.appendText(outFileName);
-					dl.setAttribute("href", ".?File=" + outFileName, null);
+					dl.setAttribute("href", "FixJDFServlet?File=" + outFileName, null);
 				}
 				else
 				{
