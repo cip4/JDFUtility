@@ -36,9 +36,9 @@ RUN addgroup -S cip4 && adduser -S cip4 -G cip4
 
 COPY --chown=cip4:cip4 --from=java-builder ["/work/build/libs/*-${VERSION}.jar", "/app/jdfutility.jar"]
 
-RUN cd /app
-
 USER cip4
+
+RUN cd /home/cip4
 
 EXPOSE 8080
 
