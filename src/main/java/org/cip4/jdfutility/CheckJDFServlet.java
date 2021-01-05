@@ -339,7 +339,7 @@ public class CheckJDFServlet extends UtilityServlet
 			{
 				final XJDF20 jdfToXJDFConverter = new XJDF20();
 				final KElement converted = jdfToXJDFConverter.convert(k);
-				d = new JDFDoc(converted.getOwnerDocument());
+				d = converted == null ? null : new JDFDoc(converted.getOwnerDocument());
 			}
 			else
 			{

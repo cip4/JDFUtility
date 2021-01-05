@@ -71,7 +71,7 @@ public class JDFServletUtil extends Object
 	/**
 	 * the servlet base directory
 	 */
-	final static public String baseDir = System.getProperty("catalina.base") == null ? WEBAPPS_JDF_UTILITY : System.getProperty("catalina.base") + WEBAPPS_JDF_UTILITY;
+	final static public String baseDir = new File(cwd, WEBAPPS_JDF_UTILITY).getPath();
 
 	/**
 	 * @param dirName
