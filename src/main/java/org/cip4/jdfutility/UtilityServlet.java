@@ -3,8 +3,8 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2010 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,17 +20,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -56,17 +56,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility;
 
@@ -92,18 +92,19 @@ import org.cip4.jdflib.util.StringUtil;
 
 /**
  * base servlet class
-  * @author Rainer Prosi, Heidelberger Druckmaschinen *
+ * 
+ * @author Rainer Prosi, Heidelberger Druckmaschinen *
  */
 public abstract class UtilityServlet extends HttpServlet
 {
 	protected class RequestStats
 	{
 		/**
-		 * 
+		 *
 		 * @param method
 		 * @param url
 		 */
-		public RequestStats(String method, String url)
+		public RequestStats(final String method, final String url)
 		{
 			super();
 			this.method = method;
@@ -112,10 +113,10 @@ public abstract class UtilityServlet extends HttpServlet
 		}
 
 		/**
-		 * 
+		 *
 		 * @param request the request
 		 */
-		public RequestStats(HttpServletRequest request)
+		public RequestStats(final HttpServletRequest request)
 		{
 			super();
 			this.method = request.getMethod();
@@ -127,9 +128,9 @@ public abstract class UtilityServlet extends HttpServlet
 		private final long timeStamp;
 		private final String method;
 
-		private String getRequestURL(HttpServletRequest request)
+		private String getRequestURL(final HttpServletRequest request)
 		{
-			String params = StringUtil.getNonEmpty(request.getQueryString());
+			final String params = StringUtil.getNonEmpty(request.getQueryString());
 			String url = request.getRequestURL().toString();
 			if (params != null)
 				url += "?" + params;
@@ -153,11 +154,12 @@ public abstract class UtilityServlet extends HttpServlet
 
 		/**
 		 * get the row of values for this (time method url)
+		 * 
 		 * @return the row
 		 */
 		public VString getRow()
 		{
-			VString v = new VString();
+			final VString v = new VString();
 			v.add(new JDFDate(getTimeStamp()).getTimeISO());
 			v.add(getMethod());
 			v.add(getUrl());
@@ -166,7 +168,7 @@ public abstract class UtilityServlet extends HttpServlet
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public UtilityServlet()
 	{
@@ -179,13 +181,13 @@ public abstract class UtilityServlet extends HttpServlet
 		tCPUTotal = 0;
 		tMax = 0;
 		tCPUMax = 0;
-		fifo = new FastFiFo<UtilityServlet.RequestStats>(50);
+		fifo = new FastFiFo<>(50);
 
 		setCssURL("http://www.cip4.org/css/styles_pc.css");
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6858617993170970143L;
 	protected long numGet;
@@ -202,26 +204,28 @@ public abstract class UtilityServlet extends HttpServlet
 
 	/**
 	 * Handles the HTTP <code>GET</code> method.
+	 * 
 	 * @param request servlet request
 	 * @param response servlet response
 	 */
 	@Override
 	final protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
 	{
-		ServletCall si = prepareGet(request, response);
+		final ServletCall si = prepareGet(request, response);
 		si.processGet();
 		si.finalizeGet();
 	}
 
 	/**
 	 * Handles the HTTP <code>POST</code> method.
+	 * 
 	 * @param request servlet request
 	 * @param response servlet response
 	 */
 	@Override
 	final protected void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
-		ServletCall si = preparePost(request, response);
+		final ServletCall si = preparePost(request, response);
 		si.processPost();
 		si.finalizePost();
 	}
@@ -229,12 +233,12 @@ public abstract class UtilityServlet extends HttpServlet
 	/**
 	 * @param request
 	 * @param response
-	 * @return 
+	 * @return
 	 */
-	protected ServletCall preparePost(HttpServletRequest request, HttpServletResponse response)
+	protected ServletCall preparePost(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		numPost++;
-		ServletCall servletInfo = getServletCall(request, response);
+		final ServletCall servletInfo = getServletCall(request, response);
 		log.info("Processing Post request# " + numPost + " / " + (numGet + numPost) + " for " + getServletInfo() + " request id=" + servletInfo.id);
 		return servletInfo;
 	}
@@ -249,12 +253,12 @@ public abstract class UtilityServlet extends HttpServlet
 	/**
 	 * @param request
 	 * @param response
-	 * @return 
+	 * @return
 	 */
-	protected ServletCall prepareGet(HttpServletRequest request, HttpServletResponse response)
+	protected ServletCall prepareGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		numGet++;
-		ServletCall servletInfo = getServletCall(request, response);
+		final ServletCall servletInfo = getServletCall(request, response);
 		log.info("Processing Get request# " + numGet + " / " + (numGet + numPost) + " for " + getServletInfo() + " request id=" + servletInfo.id);
 		servletInfo.setupGet(request, response);
 
@@ -276,19 +280,19 @@ public abstract class UtilityServlet extends HttpServlet
 	/**
 	 * @param cssURL the cssURL to set
 	 */
-	public void setCssURL(String cssURL)
+	public void setCssURL(final String cssURL)
 	{
 		this.cssURL = cssURL;
 	}
 
 	/**
-	 * @param request 
+	 * @param request
 	 * @return the cssURL
 	 */
-	public String getCssURL(HttpServletRequest request)
+	public String getCssURL(final HttpServletRequest request)
 	{
-		String url = request.getRequestURL().toString();
-		int nTokens = StringUtil.tokenize(url, "/", false).size();
+		final String url = request.getRequestURL().toString();
+		final int nTokens = StringUtil.tokenize(url, "/", false).size();
 		String prefix = "";
 		for (int i = 4; i < nTokens; i++)
 			prefix += "../";
@@ -299,17 +303,24 @@ public abstract class UtilityServlet extends HttpServlet
 	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 * @throws ServletException
 	 * @throws IOException
-	*/
+	 */
 	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{
 		fifo.push(new RequestStats(request));
-		int contentLength = request.getContentLength();
+		final int contentLength = request.getContentLength();
 		if (contentLength > 0)
 			requestLen += contentLength;
 		super.service(request, response);
 	}
 
-	// //////////////////////////////////////////////////////////////////
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName() + " [numGet=" + numGet + ", numPost=" + numPost + "]";
+	}
 
 }

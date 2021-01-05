@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<!-- (C) 2001-2019 CIP4 -->
+<!-- (C) 2001-2021 CIP4 -->
 <xsl:stylesheet exclude-result-prefixes="tbl" version="1.0"
-	xmlns="http://www.w3.org/1999/xhtml" xmlns:tbl="urn:TheLanguageTable"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+		xmlns="http://www.w3.org/1999/xhtml" xmlns:tbl="urn:TheLanguageTable"
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 	<xsl:output doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
-		indent="yes" method="xml" omit-xml-declaration="no" />
+			doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+			indent="yes" method="xml" omit-xml-declaration="no" />
 
 	<xsl:strip-space elements="*" />
 
@@ -506,7 +506,7 @@
 		<xsl:variable name="loc1" select="$table/tbl:loc[@key=$string]" />
 		<!-- find the appropriate localizations for the English string -->
 		<xsl:variable name="loc"
-			select="$table/tbl:loc[tbl:str/@lang='EN' and tbl:str=$string]" />
+				select="$table/tbl:loc[tbl:str/@lang='EN' and tbl:str=$string]" />
 		<!-- get the localized string -->
 		<xsl:value-of select="$loc/tbl:str[@lang=$lang]" />
 		<xsl:value-of select="$loc1/tbl:str[@lang=$lang]" />
@@ -519,19 +519,19 @@
 		<xsl:variable name="schemaErrors">
 			<xsl:choose>
 				<xsl:when
-					test="TestFile/SchemaValidationOutput[@ValidationResult='NotPerformed']">
+						test="TestFile/SchemaValidationOutput[@ValidationResult='NotPerformed']">
 					-
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of
-						select="count(TestFile/SchemaValidationOutput/Error) + count(TestFile/SchemaValidationOutput/FatalError)" />
+							select="count(TestFile/SchemaValidationOutput/Error) + count(TestFile/SchemaValidationOutput/FatalError)" />
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="schemaWarnings">
 			<xsl:choose>
 				<xsl:when
-					test="TestFile/SchemaValidationOutput[@ValidationResult='NotPerformed']">
+						test="TestFile/SchemaValidationOutput[@ValidationResult='NotPerformed']">
 					-
 				</xsl:when>
 				<xsl:otherwise>
@@ -541,17 +541,17 @@
 		</xsl:variable>
 		<xsl:variable name="checkjdfErrors">
 			<xsl:value-of
-				select="count(//TestFile/CheckJDFOutput//*[@IsValid='false' and not(*)]) - count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])" />
+					select="count(//TestFile/CheckJDFOutput//*[@IsValid='false' and not(*)]) - count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])" />
 		</xsl:variable>
 		<xsl:variable name="checkjdfWarnings">
 			<xsl:value-of
-				select="count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])" />
+					select="count(//TestFile/CheckJDFOutput//Warning[@IsValid='false' and not(*)])" />
 		</xsl:variable>
 		<!-- XHTML -->
 		<html>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700%7CRoboto:300,300i,400,400i,500,500i,700,700i"/>
-<link rel="stylesheet" href="https://www.cip4.org/assets/css/3bc02fd052de.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hyperform/0.9.5/hyperform.min.css"/>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,400i,700%7CRoboto:300,300i,400,400i,500,500i,700,700i"/>
+			<link rel="stylesheet" href="https://www.cip4.org/assets/css/3bc02fd052de.css"/>
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hyperform/0.9.5/hyperform.min.css"/>
 			<head>
 				<title>
 					<xsl:call-template name="localize">
@@ -698,12 +698,12 @@
 	</xsl:template>
 
 	<xsl:template
-		match="SchemaValidationOutput[@ValidationResult='NotPerformed']">
+			match="SchemaValidationOutput[@ValidationResult='NotPerformed']">
 		<div class="schema">
 			<h3>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'SchemaValidationNotPerformed'" />
+							select="'SchemaValidationNotPerformed'" />
 				</xsl:call-template>
 			</h3>
 		</div>
@@ -768,12 +768,6 @@
 
 	<!-- =============================================== -->
 
-	<!-- =============================================== -->
-
-	<!-- =============================================== -->
-
-	<!-- =============================================== -->
-
 	<xsl:template match="CheckJDFOutput[@IsValid='false']">
 		<div class="checkjdf">
 			<h3 class="invalid">
@@ -792,7 +786,7 @@
 			<h3 class="valid">
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'CheckJDFValidationSuccessful'" />
+							select="'CheckJDFValidationSuccessful'" />
 				</xsl:call-template>
 			</h3>
 		</div>
@@ -1480,7 +1474,7 @@
 			<font color="#000000">
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'Warning: Inconsistent Separations: '" />
+							select="'Warning: Inconsistent Separations: '" />
 				</xsl:call-template>
 			</font>
 		</h3>
@@ -1496,7 +1490,7 @@
 			<h4>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'Separation not defined in ColorPool: '" />
+							select="'Separation not defined in ColorPool: '" />
 				</xsl:call-template>
 				<xsl:value-of select="@Separation" />
 			</h4>
@@ -1507,12 +1501,12 @@
 	<!-- =============================================== -->
 
 	<xsl:template
-		match="SeparationPool/Warning[@ErrorType='UnreferencedSeparation']">
+			match="SeparationPool/Warning[@ErrorType='UnreferencedSeparation']">
 		<li>
 			<h4>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'Separation defined in ColorPool but never referenced: '" />
+							select="'Separation defined in ColorPool but never referenced: '" />
 				</xsl:call-template>
 				<xsl:value-of select="@Separation" />
 			</h4>
@@ -1731,7 +1725,7 @@
 			<h5>
 				<xsl:call-template name="localize">
 					<xsl:with-param name="string"
-						select="'Element written as Attribute: '" />
+							select="'Element written as Attribute: '" />
 				</xsl:call-template>
 				<span class="jdf">
 					<xsl:value-of select="@NodeName" />
@@ -1884,7 +1878,7 @@
 		<h4 style="color: #ff3333">
 			<xsl:call-template name="localize">
 				<xsl:with-param name="string"
-					select="'Unmatched element: TODO fix xslt for this'" />
+						select="'Unmatched element: TODO fix xslt for this'" />
 			</xsl:call-template>
 		</h4>
 		<div>

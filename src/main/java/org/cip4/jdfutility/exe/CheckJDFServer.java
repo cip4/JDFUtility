@@ -71,14 +71,13 @@ package org.cip4.jdfutility.exe;
 import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.CheckJDFServlet;
-import org.cip4.jdfutility.FixJDFServlet;
 import org.cip4.jdfutility.server.JettyServer;
-import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * standalone app for bambi using an embedded jetty server
+ * 
  * @author rainer prosi
  * @date Dec 9, 2010
  */
@@ -156,21 +155,6 @@ public final class CheckJDFServer extends JettyServer
 	protected int getDefaultPort()
 	{
 		return 8080;
-	}
-
-	/**
-	 * @see org.cip4.jdfutility.server.JettyServer#addMoreHandlers(org.eclipse.jetty.server.handler.HandlerList)
-	 */
-	@Override
-	protected void addMoreHandlers(final HandlerList handlers)
-	{
-		final FixJDFServlet fixServlet = new FixJDFServlet();
-		final ServletContextHandler h = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		h.setContextPath("/FixJDFServlet");
-		final ServletHolder fixHolder = new ServletHolder(fixServlet);
-		h.addServlet(fixHolder, "/*");
-		handlers.addHandler(h);
-		super.addMoreHandlers(handlers);
 	}
 
 }
