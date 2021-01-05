@@ -90,6 +90,27 @@ public class CheckJDFServlet extends UtilityServlet
 	public CheckJDFServlet()
 	{
 		super();
+		extractResources();
+	}
+
+	void extractResources()
+	{
+		extractResource("/index.html");
+		extractResource("/index.js");
+		extractResource("/index.css");
+		extractResource("/checkjdf.xsl");
+	}
+
+	void extractResource(final String res)
+	{
+		final Class<? extends CheckJDFServlet> myClass = getClass();
+		final InputStream listStream = myClass.getResourceAsStream(res);
+		final File out = new File(JDFServletUtil.cwd, res);
+		if (!out.exists())
+		{
+			FileUtil.streamToFile(listStream, out);
+			log.info("copying resource to " + out.getAbsolutePath());
+		}
 	}
 
 	/**

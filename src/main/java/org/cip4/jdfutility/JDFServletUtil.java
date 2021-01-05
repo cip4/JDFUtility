@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2020 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -46,6 +46,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -57,6 +59,8 @@ import org.cip4.jdflib.util.UrlUtil;
 public class JDFServletUtil extends Object
 {
 
+	private static final String WEBAPPS_JDF_UTILITY = "/webapps/JDFUtility/";
+	private static Log log = LogFactory.getLog(JDFServletUtil.class);
 	static long lastCleanup = 0;
 
 	static int fileCounter = 1000;
@@ -67,7 +71,7 @@ public class JDFServletUtil extends Object
 	/**
 	 * the servlet base directory
 	 */
-	final static public String baseDir = System.getProperty("catalina.base") + "/webapps/JDFUtility/";
+	final static public String baseDir = System.getProperty("catalina.base") == null ? WEBAPPS_JDF_UTILITY : System.getProperty("catalina.base") + WEBAPPS_JDF_UTILITY;
 
 	/**
 	 * @param dirName
@@ -77,7 +81,7 @@ public class JDFServletUtil extends Object
 	 * @param bCatalina
 	 * @return
 	 */
-	public static File getTmpFile(final String dirName, String tmpName, final String prefix, final String extension, final boolean bCatalina)
+	public static File getTmpFile(final String dirName, String tmpName, final String prefix, final String extension)
 	{
 		if (tmpName == null)
 		{
@@ -85,7 +89,7 @@ public class JDFServletUtil extends Object
 		}
 
 		// we are in bin, which is a sibling directory of JDFUtilitys
-		final File tmpDir = bCatalina ? new File(baseDir, dirName) : new File(dirName);
+		final File tmpDir = new File(baseDir, dirName);
 
 		if (!tmpDir.isDirectory())
 		{
@@ -130,7 +134,7 @@ public class JDFServletUtil extends Object
 			return null;
 		}
 		final String tmpName = fileItem.getName();
-		return getTmpFile(dirName, tmpName, prefix, extension, true);
+		return getTmpFile(dirName, tmpName, prefix, extension);
 	}
 
 	/**
@@ -166,7 +170,7 @@ public class JDFServletUtil extends Object
 				if (modNow - 3600000 > oldFile.lastModified())
 				{ // 3600 seconds timeout
 					oldFile.delete();
-					System.out.println("deleting " + oldFile.getName() + " " + String.valueOf(oldFile.lastModified()) + " " + String.valueOf(modNow));
+					log.info("deleting " + oldFile.getName() + " " + String.valueOf(oldFile.lastModified()) + " " + String.valueOf(modNow));
 				}
 			}
 		}
