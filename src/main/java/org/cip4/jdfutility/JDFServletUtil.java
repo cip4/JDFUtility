@@ -115,6 +115,7 @@ public class JDFServletUtil extends Object
 		}
 		catch (final IOException e)
 		{
+			log.error("cannot create " + tmpName, e);
 			return null;
 		}
 		return outFile;
