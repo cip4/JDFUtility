@@ -81,11 +81,15 @@ public class JDFServletUtil extends Object
 	 * @param bCatalina
 	 * @return
 	 */
-	public static File getTmpFile(final String dirName, String tmpName, final String prefix, final String extension)
+	public static File getTmpFile(final String dirName, String tmpName, final String prefix, String extension)
 	{
 		if (tmpName == null)
 		{
 			tmpName = "File" + fileCounter++;
+		}
+		if (!StringUtil.isEmpty(extension) && '.' != extension.charAt(0))
+		{
+			extension = "." + extension;
 		}
 
 		// we are in bin, which is a sibling directory of JDFUtilitys
