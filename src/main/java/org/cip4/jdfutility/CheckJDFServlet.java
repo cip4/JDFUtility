@@ -484,33 +484,7 @@ public class CheckJDFServlet extends UtilityServlet
 		try
 		{
 
-			final JDFValidator checker = new JDFValidator();
-
-			checker.setPrint(false);
-			checker.bQuiet = true;
-			checker.setIgnorePrivate(bIgnorePrivate);
-			checker.level = EnumValidationLevel.Complete;
-			try
-			{
-				checker.level = EnumValidationLevel.getEnum(validationLevel);
-			}
-			catch (final Exception x)
-			{
-				// nop
-			}
-			if (prettyFormat)
-				checker.xslStyleSheet = "./checkjdf.xsl";
-
-			if (devcapFile != null && devcapFile.canRead())
-			{
-				checker.devCapFile = devcapFile.getAbsolutePath();
-				log.info("Devcap file: " + devcapFile.getAbsolutePath());
-			}
-
-			if (bUseSchema) // using schema
-			{
-				checker.setJDFSchemaLocation("https:http://schema.cip4.org/jdfschema_1_7/JDF.xsd");
-			}
+			final JDFValidator checker = getChecker(bUseSchema, bIgnorePrivate, prettyFormat, validationLevel, devcapFile);
 
 			if (fileItem != null)
 			{
@@ -560,6 +534,38 @@ public class CheckJDFServlet extends UtilityServlet
 		out.println(xmlString);
 		out.flush();
 		out.close();
+	}
+
+	private JDFValidator getChecker(boolean bUseSchema, boolean bIgnorePrivate, boolean prettyFormat, final String validationLevel, File devcapFile)
+	{
+		final JDFValidator checker = new JDFValidator();
+
+		checker.setPrint(false);
+		checker.bQuiet = true;
+		checker.setIgnorePrivate(bIgnorePrivate);
+		checker.level = EnumValidationLevel.Complete;
+		try
+		{
+			checker.level = EnumValidationLevel.getEnum(validationLevel);
+		}
+		catch (final Exception x)
+		{
+			// nop
+		}
+		if (prettyFormat)
+			checker.xslStyleSheet = "./checkjdf.xsl";
+
+		if (devcapFile != null && devcapFile.canRead())
+		{
+			checker.devCapFile = devcapFile.getAbsolutePath();
+			log.info("Devcap file: " + devcapFile.getAbsolutePath());
+		}
+
+		if (bUseSchema) // using schema
+		{
+			checker.setJDFSchemaLocation("http://schema.cip4.org/jdfschema_1_7/JDF.xsd");
+		}
+		return checker;
 	}
 
 	// //////////////////////////////////////////////////////////////////
