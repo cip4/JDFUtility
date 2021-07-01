@@ -37,68 +37,40 @@
 package org.cip4.jdfutility.server;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.junit.Test;
 
-public class JettyServerTest extends JDFUtilityTestBase
+public class JettyServiceTest extends JDFUtilityTestBase
 {
 
-	@Test
-	public void testStart()
+	class TestService extends JettyService
 	{
-		final HTTPDump ns = new HTTPDump();
-		assertTrue(ns.tryStart());
-		ns.stop();
+
+		@Override
+		public JettyServer getServer(final String[] args)
+		{
+			return new HTTPDump();
+		}
 	}
 
 	@Test
 	public void testStartStop()
 	{
-		final HTTPDump ns = new HTTPDump();
+		final TestService ts = new TestService();
 		final int t = Thread.activeCount();
 		for (int i = 0; i < 100; i++)
 		{
-			assertTrue(ns.tryStart());
-			while (!ns.isStarted())
-			{
-				ThreadUtil.sleep(42);
-			}
-			ns.stop();
-			while (!ns.isStopped())
-			{
-				ThreadUtil.sleep(42);
-			}
+			assertEquals(0, ts.doStart(null));
+			ThreadUtil.sleep(42);
+			assertEquals(0, ts.doStop(null));
+			ThreadUtil.sleep(42);
+
 			log.info(i + " " + Thread.activeCount());
 			assertEquals(Thread.activeCount(), t, 10);
 		}
-	}
-
-	@Test
-	public void testIsStarted() throws InterruptedException
-	{
-		final HTTPDump ns = new HTTPDump();
-		assertFalse(ns.isStarted());
-		assertTrue(ns.tryStart());
-		assertTrue(ns.isStarted());
-		ns.stop();
-		assertFalse(ns.isStarted());
-		ns.join();
-	}
-
-	@Test
-	public void testIsRunning() throws InterruptedException
-	{
-		final HTTPDump ns = new HTTPDump();
-		ns.start();
-		assertTrue(ns.isRunning());
-		ns.stop();
-		assertFalse(ns.isStarted());
-		ns.join();
 	}
 
 }
