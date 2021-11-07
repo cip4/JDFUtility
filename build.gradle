@@ -54,7 +54,7 @@ publishing {
 
                 licenses {
                     license {
-                        name = 'TCIP4 Software License'
+                        name = 'CIP4 Software License'
                         url = 'https://github.com/cip4/JDFUtility/blob/master/LICENSE.md'
                     }
                 }
@@ -66,12 +66,6 @@ publishing {
             }
         }
     }
-repositories {
-    mavenCentral()
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-}
 }
 
 nexusStaging {
