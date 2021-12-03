@@ -328,18 +328,25 @@ public abstract class JettyServer
 		private final String strip;
 
 		@Override
-		public Resource getResource(String url) throws IOException
+		public Resource getResource(String url)
 		{
 
 			if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
 			{
 				url = url.substring(strip.length());
 			}
-			if ("".equals(url) || "/".equals(url))
+			try
 			{
-				return super.getResource(getHome());
+				if ("".equals(url) || "/".equals(url))
+				{
+					return super.getResource(getHome());
+				}
+				return super.getResource(url);
 			}
-			return super.getResource(url);
+			catch (Exception x)
+			{
+				return null;
+			}
 		}
 
 		@Override
