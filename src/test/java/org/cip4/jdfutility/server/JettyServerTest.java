@@ -38,11 +38,14 @@ package org.cip4.jdfutility.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
+import org.cip4.jdfutility.server.JettyServer.MyResourceHandler;
 import org.junit.Test;
 
 public class JettyServerTest extends JDFUtilityTestBase
@@ -99,6 +102,22 @@ public class JettyServerTest extends JDFUtilityTestBase
 		ns.stop();
 		assertFalse(ns.isStarted());
 		ns.join();
+	}
+
+	@Test
+	public void testResHandler() throws InterruptedException
+	{
+		final HTTPDump ns = new HTTPDump();
+		MyResourceHandler rh = ns.new MyResourceHandler("foo");
+		assertNull(rh.getResource("nix"));
+	}
+
+	@Test
+	public void testResHandlerString() throws InterruptedException
+	{
+		final HTTPDump ns = new HTTPDump();
+		MyResourceHandler rh = ns.new MyResourceHandler("foo");
+		assertNotNull(rh.toString());
 	}
 
 }
