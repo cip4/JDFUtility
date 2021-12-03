@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2020 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -86,7 +86,6 @@ public abstract class JettyServer
 	/**
 	 * @param context
 	 * @param port
-	 *
 	 */
 	public JettyServer(String context, final int port)
 	{
@@ -119,7 +118,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @param port the ssl port
 	 * @param keystorePath
 	 * @return may be used for additional setup
@@ -133,7 +131,7 @@ public abstract class JettyServer
 		}
 		else
 		{
-			sslFactory = new SslContextFactory();
+			sslFactory = new SslContextFactory.Server();
 
 			if (keystorePath == null)
 			{
@@ -146,7 +144,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public String getDefaultKeyStore()
@@ -182,10 +179,8 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
-	 * the doing routine to run a jetty server
-	 *
-	 * it is generally a bad idea to overwrite this routine - it is not final to allow an empty null server
+	 * the doing routine to run a jetty server it is generally a bad idea to overwrite this routine - it is not final to allow an empty null
+	 * server
 	 *
 	 * @throws Exception
 	 * @throws InterruptedException
@@ -216,7 +211,7 @@ public abstract class JettyServer
 			log.info("Updating ssl port to: " + sslPort);
 			final HttpConfiguration https = new HttpConfiguration();
 			https.addCustomizer(new SecureRequestCustomizer());
-			final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslFactory, "http/1.1");
+			final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory();
 			final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(https);
 			final ServerConnector sslConnector = new ServerConnector(server, sslConnectionFactory, httpConnectionFactory);
 			sslConnector.setPort(sslPort);
@@ -226,8 +221,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
-	 *
 	 * @return
 	 */
 	protected HandlerList createHandlerList()
@@ -248,7 +241,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * create the base handler collection that contains all handlers to be processed multiple times
 	 *
 	 * @param handlers
@@ -318,8 +310,8 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
-	 * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
+	 * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually
+	 * requiring the war file
 	 *
 	 * @author rainer prosi
 	 * @date Dec 10, 2010
@@ -336,7 +328,7 @@ public abstract class JettyServer
 		private final String strip;
 
 		@Override
-		public Resource getResource(String url)
+		public Resource getResource(String url) throws IOException
 		{
 
 			if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
@@ -358,17 +350,17 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @author rainer prosi
-	 *
 	 */
 	private class RedirectHandler extends AbstractHandler
 	{
 		/**
-		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest,
+		 *      javax.servlet.http.HttpServletResponse)
 		 */
 		@Override
-		public void handle(final String pathInContext, final Request arg1, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException
+		public void handle(final String pathInContext, final Request arg1, final HttpServletRequest request, final HttpServletResponse response)
+				throws IOException, ServletException
 		{
 			response.sendRedirect(getHome());
 			arg1.setHandled(true);
@@ -376,7 +368,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	protected ResourceHandler createResourceHandler()
@@ -392,19 +383,16 @@ public abstract class JettyServer
 	protected abstract String getHome();
 
 	/**
-	 *
 	 * @return
 	 */
 	protected abstract int getDefaultPort();
 
 	/**
-	 *
 	 * @return
 	 */
 	protected abstract ServletContextHandler createServletHandler();
 
 	/**
-	 *
 	 * @see Server start()
 	 */
 	public void start()
@@ -413,7 +401,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see Server start()
 	 */
 	public boolean tryStart()
@@ -449,7 +436,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see Server stop()
 	 */
 	public void stop()
@@ -474,7 +460,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see Server destroy()
 	 */
 	public void destroy()
@@ -494,7 +479,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see #JettyServer.isRunning()
 	 * @return
 	 */
@@ -504,7 +488,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see #JettyServer.isStarted()
 	 * @return
 	 */
@@ -514,7 +497,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see #JettyServer.isStarting()
 	 * @return
 	 */
@@ -524,7 +506,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see #JettyServer.isStopped()
 	 * @return
 	 */
@@ -534,7 +515,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see #JettyServer.isStopping()
 	 * @return
 	 */
@@ -572,7 +552,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -592,7 +571,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 *
 	 * @param server
 	 */
 	public static void setServer(final JettyServer server)
