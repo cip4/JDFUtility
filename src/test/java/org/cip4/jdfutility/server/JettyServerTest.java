@@ -51,18 +51,27 @@ import org.junit.Test;
 public class JettyServerTest extends JDFUtilityTestBase
 {
 
+	static volatile int PORT = 54242;
+
+	private static int getPort()
+	{
+		return PORT++;
+	}
+
 	@Test
-	public void testStart()
+	public synchronized void testStart()
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		assertTrue(ns.tryStart());
 		ns.stop();
 	}
 
 	@Test
-	public void testStartStop()
+	public synchronized void testStartStop()
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		final int t = Thread.activeCount();
 		for (int i = 0; i < 100; i++)
 		{
@@ -85,6 +94,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	public void testIsStarted() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		assertFalse(ns.isStarted());
 		assertTrue(ns.tryStart());
 		assertTrue(ns.isStarted());
@@ -97,6 +107,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	public void testIsRunning() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		ns.start();
 		assertTrue(ns.isRunning());
 		ns.stop();
@@ -108,6 +119,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	public void testResHandler() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		MyResourceHandler rh = ns.new MyResourceHandler("foo");
 		assertNull(rh.getResource("nix"));
 	}
@@ -116,6 +128,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	public void testResHandlerString() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
 		MyResourceHandler rh = ns.new MyResourceHandler("foo");
 		assertNotNull(rh.toString());
 	}
