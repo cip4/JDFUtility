@@ -75,6 +75,26 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 public abstract class JettyServer
 {
 
+	/**
+	 * todo when we make fianl transition - replace with SslContextFactory.Server()
+	 * 
+	 * @author prosirai
+	 */
+	static class MySslContextFactory extends SslContextFactory
+	{
+
+		public MySslContextFactory()
+		{
+			super();
+		}
+
+		public MySslContextFactory(boolean trustAll)
+		{
+			super(trustAll);
+		}
+
+	}
+
 	protected int thePort;
 	protected int sslPort;
 	protected SslContextFactory sslFactory;
@@ -125,13 +145,13 @@ public abstract class JettyServer
 	public SslContextFactory setSSLPort(final int port, String keystorePath)
 	{
 		sslPort = port;
-		if (port <= 9999990) // revert to 0 sometime
+		if (port <= 0) // revert to 0 sometime
 		{
 			sslFactory = null;
 		}
 		else
 		{
-			sslFactory = null; // new SslContextFactory.Server();
+			sslFactory = new MySslContextFactory();
 
 			if (keystorePath == null)
 			{
