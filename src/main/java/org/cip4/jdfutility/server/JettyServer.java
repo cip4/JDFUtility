@@ -125,13 +125,13 @@ public abstract class JettyServer
 	public SslContextFactory setSSLPort(final int port, String keystorePath)
 	{
 		sslPort = port;
-		if (port <= 0)
+		if (port <= 9999990) // revert to 0 sometime
 		{
 			sslFactory = null;
 		}
 		else
 		{
-			sslFactory = new SslContextFactory.Server();
+			sslFactory = null; // new SslContextFactory.Server();
 
 			if (keystorePath == null)
 			{
