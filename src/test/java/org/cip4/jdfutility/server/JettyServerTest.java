@@ -91,6 +91,28 @@ public class JettyServerTest extends JDFUtilityTestBase
 	}
 
 	@Test
+	public synchronized void testSSL1()
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setSSLPort(0, null);
+		assertNotNull(ns.setSSLPort(getPort(), null));
+		assertNotNull(ns.setSSLPort(getPort(), ns.getDefaultKeyStore()));
+	}
+
+	@Test
+	public synchronized void testUpdateSSL() throws InterruptedException
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
+		ns.setSSLPort(0, null);
+		assertNotNull(ns.setSSLPort(getPort(), null));
+		assertTrue(ns.tryStart());
+		ns.updateSSL();
+		ns.stop();
+		ns.join();
+	}
+
+	@Test
 	public void testIsStarted() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
