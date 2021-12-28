@@ -22,7 +22,7 @@ RUN dos2unix gradlew
 RUN ./gradlew -i build -PprojectVersion=${VERSION} -PbuildNumber=${BUILD_NUMBER} --no-daemon
 
 # create final image
-FROM amazoncorretto:11
+FROM amazoncorretto:mazoncorretto:11-alpine-jdk
 
 ARG VERSION
 ARG BUILD_NUMBER
