@@ -14,10 +14,14 @@ version = project.hasProperty('projectVersion') ? project.projectVersion : '1.0-
 java {
     withJavadocJar()
     withSourcesJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
 }
 
-sourceCompatibility = 11
-targetCompatibility = 11
+
+//sourceCompatibility = 11
+//targetCompatibility = 11
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
