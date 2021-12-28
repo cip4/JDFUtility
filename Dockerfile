@@ -32,7 +32,7 @@ ENV VERSION=${VERSION}
 ENV BUILD_NUMBER=${BUILD_NUMBER}
 ENV GIT_REV=${GIT_REV}
 
-RUN addgroup -S cip4 && adduser -S cip4 -G cip4
+RUN /usr/sbin/addgroup -S cip4 && /usr/sbin/adduser -S cip4 -G cip4
 
 COPY --chown=cip4:cip4 --from=java-builder ["/work/build/libs/*-${VERSION}.jar", "/app/jdfutility.jar"]
 
