@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2018 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -37,8 +37,8 @@
 package org.cip4.jdfutility;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.servlet.ServletConfig;
@@ -47,17 +47,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.lf5.util.StreamUtils;
 import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.StreamUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
 /**
- *
  * @author rainer
- *
- *
  */
 public class GetFileServlet extends HttpServlet
 {
@@ -124,7 +122,7 @@ public class GetFileServlet extends HttpServlet
 	 * @param response
 	 * @throws IOException
 	 */
-	private void processRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException
+	void processRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{
 		final OutputStream os = response.getOutputStream();
 		final String localName = request.getPathInfo();
@@ -132,8 +130,9 @@ public class GetFileServlet extends HttpServlet
 		if (f.exists())
 		{
 			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
-			final FileInputStream input = new FileInputStream(f);
-			StreamUtils.copyThenClose(input, response.getOutputStream());
+			final InputStream input = FileUtil.getBufferedInputStream(f);
+			IOUtils.copy(input, os);
+			input.close();
 		}
 		else
 		{
@@ -142,6 +141,7 @@ public class GetFileServlet extends HttpServlet
 			os.write(localName.getBytes());
 			os.write("</HTML>".getBytes());
 		}
+		StreamUtil.close(os);
 	}
 
 	/**
