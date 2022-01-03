@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,7 +68,7 @@
  */
 package org.cip4.jdfutility.exe;
 
-import org.apache.log4j.BasicConfigurator;
+import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.DumpJDFServlet;
 import org.cip4.jdfutility.server.JettyServer;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -76,6 +76,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * standalone app for bambi using an embedded jetty server
+ * 
  * @author rainer prosi
  * @date Dec 9, 2010
  */
@@ -88,14 +89,11 @@ public final class HTTPDump extends JettyServer
 	public HTTPDump()
 	{
 		super();
-		BasicConfigurator.resetConfiguration();
-		BasicConfigurator.configure();
+		LogConfigurator.configureLog(null, null);
 		log.info("starting HTTPDump at context: " + context + " port: " + getPort());
 	}
 
 	/**
-	 *
-	 *
 	 * @param args
 	 * @throws Exception
 	 */
@@ -129,7 +127,6 @@ public final class HTTPDump extends JettyServer
 	}
 
 	/**
-	 *
 	 * @see org.cip4.jdfutility.server.JettyServer#getDefaultPort()
 	 */
 	@Override
