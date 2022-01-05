@@ -49,4 +49,11 @@ public class LogConfiguratorTest extends JDFUtilityTestBase
 		log.info("test");
 	}
 
+	@Test
+	public void testMain()
+	{
+		LogConfigurator.main(null);
+		log.info("test");
+	}
+
 }
