@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2022 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -72,13 +72,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.ThreadUtil;
-import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdflib.util.net.ProxyUtil;
 import org.cip4.jdflib.util.thread.MyMutex;
+import org.cip4.jdfutility.logging.LogConfigurator;
 
 /**
- * starter / stopper class when using a windows service
- * see DummyService for an example implementation
+ * starter / stopper class when using a windows service see DummyService for an example implementation
+ * 
  * @author rainer prosi
  * @date Oct 26, 2011
  */
@@ -100,7 +100,6 @@ public abstract class JettyService
 		}
 
 		/**
-		 *
 		 * @see java.lang.Thread#run()
 		 */
 		@Override
@@ -114,13 +113,14 @@ public abstract class JettyService
 			}
 			catch (final InterruptedException x)
 			{
-				//nop
+				// nop
 			}
 		}
 	}
 
 	/**
 	 * this gets the actual server instance
+	 * 
 	 * @param args
 	 * @return
 	 */
@@ -142,21 +142,20 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
 	 * main ... this main obviously won't work but is an example main. see BambiService for a working implementation
+	 * 
 	 * @param args
-	 *
 	 */
 	public static void main(final String[] args)
 	{
 		LogConfigurator.configureLog(".", "jetty.log");
 		theService = null;
-		//		theService.doMain(args);
+		// theService.doMain(args);
 	}
 
 	/**
-	 *
 	 * start
+	 * 
 	 * @param args
 	 */
 	public static final void start(final String[] args)
@@ -165,8 +164,8 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
 	 * main ...
+	 * 
 	 * @param args
 	 */
 	public static final void stop(final String[] args)
@@ -175,9 +174,7 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
 	 * @return true if we are in a jetty service environment
-	 *
 	 */
 	public static final boolean isJettyEnvironment()
 	{
@@ -185,8 +182,6 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
-	 *
 	 * @param args
 	 * @return
 	 */
@@ -252,7 +247,6 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
 	 * @param args
 	 * @return
 	 */
@@ -272,8 +266,8 @@ public abstract class JettyService
 	}
 
 	/**
-	 *
 	 * overwrite this if you want a different unlicensed server implementation. null is also an option in case you want to fail miserably
+	 * 
 	 * @param args
 	 * @return
 	 */
@@ -283,8 +277,8 @@ public abstract class JettyService
 	}
 
 	/**
-	 * you can overwrite this for a license check and return a null server in case licensing fails
-	 * this implementation simply checks for the non-existence of an environment variable JettyNoStart
+	 * you can overwrite this for a license check and return a null server in case licensing fails this implementation simply checks for the
+	 * non-existence of an environment variable JettyNoStart
 	 *
 	 * @param args
 	 * @return
@@ -298,7 +292,6 @@ public abstract class JettyService
 
 	/**
 	 * wait for the server to stop - useful to keep the main thread alive
-	 *
 	 */
 	public void waitStopped()
 	{
@@ -311,6 +304,7 @@ public abstract class JettyService
 
 	/**
 	 * stop the actual server - note: calls exit so MUST be called last
+	 * 
 	 * @param args
 	 * @return
 	 */

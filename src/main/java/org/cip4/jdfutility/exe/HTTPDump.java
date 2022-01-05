@@ -68,8 +68,8 @@
  */
 package org.cip4.jdfutility.exe;
 
-import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.DumpJDFServlet;
+import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.jdfutility.server.JettyServer;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;

@@ -36,7 +36,6 @@
  */
 package org.cip4.jdfutility.logging;
 
-import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.junit.Test;
 
