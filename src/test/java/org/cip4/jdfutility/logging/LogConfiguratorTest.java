@@ -34,8 +34,9 @@
  * For more information on The International Cooperation for the Integration of Processes in Prepress, Press and Postpress , please see <http://www.cip4.org/>.
  *
  */
-package org.cip4.jdflib.util.logging;
+package org.cip4.jdfutility.logging;
 
+import org.cip4.jdflib.util.logging.LogConfigurator;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.junit.Test;
 

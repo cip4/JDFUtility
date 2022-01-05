@@ -66,7 +66,7 @@
  *
  *
  */
-package org.cip4.jdflib.logging;
+package org.cip4.jdfutility.logging;
 
 import java.io.File;
 
