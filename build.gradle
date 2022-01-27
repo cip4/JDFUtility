@@ -45,6 +45,12 @@ publishing {
                     name = "CIP4 Organization"
                     url = "https://www.cip4.org"
                 }
+                developers {
+                    developer {
+                        id = "rainer-prosi"
+                        name = "Dr. Rainer Prosi"
+                    }
+                }
                 licenses {
                     license {
                         name = 'CIP4 Software License'
