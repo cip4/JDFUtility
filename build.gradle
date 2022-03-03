@@ -127,7 +127,7 @@ dependencies {
     implementation ('org.cip4.lib.jdf:JDFLibJ:2.1.7.+'){
   		 exclude group: 'xml-apis'
 	}
-    
+
     implementation 'org.eclipse.jetty:jetty-servlet:10.0.7'
     implementation 'commons-fileupload:commons-fileupload:1.4'
     implementation 'org.apache.logging.log4j:log4j-core:2.17.2'
@@ -141,4 +141,13 @@ test {
     systemProperty "file.encoding", "utf-8"
     maxParallelForks = 1
     forkEvery = 1
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'org.cip4.jdfutility.exe.CheckJDFServer'
+    }
+    archiveAppendix = "fat"
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

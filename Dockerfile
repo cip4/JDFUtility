@@ -19,7 +19,7 @@ RUN apk add --no-cache dos2unix
 WORKDIR /work
 
 RUN dos2unix gradlew
-RUN ./gradlew -i build -PprojectVersion=${VERSION} -PbuildNumber=${BUILD_NUMBER} --no-daemon
+RUN ./gradlew -i build fatJar -PprojectVersion=${VERSION} -PbuildNumber=${BUILD_NUMBER} --no-daemon
 
 # create final image
 FROM amazoncorretto:11-alpine-jdk
@@ -34,7 +34,7 @@ ENV GIT_REV=${GIT_REV}
 
 RUN /usr/sbin/addgroup -S cip4 && /usr/sbin/adduser -S cip4 -G cip4
 
-COPY --chown=cip4:cip4 --from=java-builder ["/work/build/libs/*-${VERSION}.jar", "/app/jdfutility.jar"]
+COPY --chown=cip4:cip4 --from=java-builder ["/work/build/libs/*-fat-${VERSION}.jar", "/app/jdfutility.jar"]
 
 USER cip4
 WORKDIR /home/cip4
