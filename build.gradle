@@ -142,9 +142,3 @@ test {
     maxParallelForks = 1
     forkEvery = 1
 }
-
-jar {
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
