@@ -107,6 +107,8 @@ public class LogConfigurator
 
 	}
 
+	final private static String pattern = "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36}[%L] - %msg%n";
+
 	/**
 	 * @param logDir the log directory, null console only
 	 * @param logName the name of the log file
@@ -120,7 +122,7 @@ public class LogConfigurator
 			builder.setConfigurationName("DefaultLogger");
 
 			final LayoutComponentBuilder newLayout = builder.newLayout(PatternLayout.class.getSimpleName());
-			newLayout.addAttribute("pattern", "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n");
+			newLayout.addAttribute("pattern", pattern);
 
 			// configure a console appender
 			final AppenderComponentBuilder consoleAppender = builder.newAppender("stdout", "Console");
@@ -143,8 +145,8 @@ public class LogConfigurator
 				final AppenderComponentBuilder fileleAppender = builder.newAppender("file", "RollingFile");
 				fileleAppender.add(newLayout);
 				fileleAppender.addAttribute("fileName", logFileName);
-				final String pattern = UrlUtil.newExtension(logFileName, "%i." + UrlUtil.extension(logFileName));
-				fileleAppender.addAttribute("filePattern", pattern);
+				final String filePattern = UrlUtil.newExtension(logFileName, "%i." + UrlUtil.extension(logFileName));
+				fileleAppender.addAttribute("filePattern", filePattern);
 
 				final ComponentBuilder<?> policies = builder.newComponent("Policies");
 				final ComponentBuilder<?> trigger = builder.newComponent("SizeBasedTriggeringPolicy");
