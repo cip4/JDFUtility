@@ -38,8 +38,10 @@ package org.cip4.jdfutility;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -47,10 +49,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StreamUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
@@ -126,19 +127,27 @@ public class GetFileServlet extends HttpServlet
 	{
 		final OutputStream os = response.getOutputStream();
 		final String localName = request.getPathInfo();
-		final File f = FileUtil.getFileInDirectory(baseDir, new File(localName));
-		if (f.exists())
+		Path localPath = null;
+		try {
+			localPath = baseDir.toPath().resolve(localName).normalize();
+		} catch (InvalidPathException ignored) {
+		}
+
+		if (
+				localPath != null
+				&& localPath.startsWith(baseDir.toPath().normalize())
+				&& Files.exists(localPath)
+		)
 		{
 			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
-			final InputStream input = FileUtil.getBufferedInputStream(f);
-			IOUtils.copy(input, os);
-			input.close();
+			Files.copy(localPath, os);
 		}
 		else
 		{
 			response.setContentType(UrlUtil.TEXT_HTML);
+			response.setStatus(404);
 			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
-			os.write(localName.getBytes());
+			os.write(StringEscapeUtils.escapeHtml(localName).getBytes());
 			os.write("</HTML>".getBytes());
 		}
 		StreamUtil.close(os);

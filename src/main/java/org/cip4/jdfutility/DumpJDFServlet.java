@@ -48,6 +48,8 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -64,7 +66,6 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.ByteArrayIOStream;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.DumpDir;
-import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.MimeUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -95,15 +96,13 @@ public class DumpJDFServlet extends UtilityServlet
 		 * Handles all HTTP <code>GET / POST etc.</code> methods.
 		 */
 		@Override
-		protected void processGet()
-		{
+		protected void processGet() throws IOException {
 			final String error = updateProxy();
-			final String dir = request.getPathInfo();
-			final File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
-			final ByteArrayIOStream bos = dumpToFile();
+			final Path targetDir = getTargetDir();
+			final ByteArrayIOStream bos = dumpToFile(targetDir);
 			final KElement body = getHTMLRoot().getCreateElement("body");
 			HTMLUtil.appendHeader(body, 1, "Dump HTML");
-			HTMLUtil.appendLine(body, "Dump Directory: " + newDir);
+			HTMLUtil.appendLine(body, "Dump Directory: " + targetDir);
 			final String header = getRequestURL();
 			HTMLUtil.appendLine(body, header);
 			if (error != null)
@@ -167,15 +166,14 @@ public class DumpJDFServlet extends UtilityServlet
 		 * Handles all HTTP <code>GET / POST etc.</code> methods.
 		 */
 		@Override
-		protected void processPost()
-		{
+		protected void processPost() throws IOException {
 			// System.out.println("dump service");
 			final String nodump = request.getParameter("nodump");
 			final boolean dump = !StringUtil.parseBoolean(nodump, false);
 			ByteArrayIOStream bos = null;
 			if (dump)
 			{
-				bos = dumpToFile();
+				bos = dumpToFile(getTargetDir());
 			}
 			else
 			{
@@ -239,19 +237,9 @@ public class DumpJDFServlet extends UtilityServlet
 		/**
 		 * @return
 		 */
-		private ByteArrayIOStream dumpToFile()
-		{
-			final String dir = request.getPathInfo();
-			File newDir = dir == null ? baseDir.getDir() : FileUtil.getFileInDirectory(baseDir.getDir(), new File(dir));
-			if (newDir.exists() && !newDir.isDirectory())
-			{
-				newDir = baseDir.getDir();
-			}
-			else
-			{
-				newDir.mkdirs();
-			}
-			final DumpDir theDump = getCreateDump(newDir);
+		private ByteArrayIOStream dumpToFile(final Path targetDir) throws IOException {
+			Files.createDirectories(targetDir);
+			final DumpDir theDump = getCreateDump(targetDir.toFile());
 			String header = getRequestURL();
 			contentLength = request.getContentLength();
 			header += "\nmethod: " + request.getMethod();
@@ -401,6 +389,22 @@ public class DumpJDFServlet extends UtilityServlet
 				// nop
 			}
 
+		}
+
+		private Path getTargetDir()
+		{
+			final String dir = request.getPathInfo();
+			final Path basePath = baseDir.getDir().toPath().normalize();
+			final Path targetDir = dir == null ? basePath : basePath.resolve(dir).normalize();
+			if (!targetDir.startsWith(basePath)) {
+				throw new IllegalArgumentException("Path is invalid");
+			}
+			if (Files.exists(targetDir) && !Files.isDirectory(targetDir))
+			{
+				return baseDir.getDir().toPath();
+			} else {
+				return targetDir;
+			}
 		}
 	}
 
