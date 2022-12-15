@@ -135,7 +135,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.springframework:spring-test:5.3.23'
-    testImplementation 'org.springframework:spring-web:5.3.23'
+    testImplementation 'org.springframework:spring-web:6.0.3'
 }
 
 test {
