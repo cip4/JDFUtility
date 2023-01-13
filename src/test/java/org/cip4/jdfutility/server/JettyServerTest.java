@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -51,7 +51,7 @@ import org.junit.Test;
 public class JettyServerTest extends JDFUtilityTestBase
 {
 
-	static volatile int PORT = 54242;
+	static volatile int PORT = 33666;
 
 	private static int getPort()
 	{
@@ -113,7 +113,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testIsStarted() throws InterruptedException
+	public synchronized void testIsStarted() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
@@ -126,7 +126,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testIsRunning() throws InterruptedException
+	public synchronized void testIsRunning() throws InterruptedException
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
