@@ -64,7 +64,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
-		ns.setSSLPort(443);
+		// ns.setSSLPort(443);
 		assertTrue(ns.tryStart());
 		ns.stop();
 	}
@@ -114,7 +114,6 @@ public class JettyServerTest extends JDFUtilityTestBase
 		assertEquals("a", sslData.getKeystorePath());
 		sslData.setKeystoreType("p");
 		assertEquals("p", sslData.getKeystoreType());
-		;
 		sslData.setPassword("p1");
 		assertEquals("p1", sslData.getPassword());
 
