@@ -52,7 +52,7 @@ import org.junit.Test;
 public class JettyServerTest extends JDFUtilityTestBase
 {
 
-	static volatile int PORT = 45242;
+	static volatile int PORT = 54242;
 
 	private static int getPort()
 	{
