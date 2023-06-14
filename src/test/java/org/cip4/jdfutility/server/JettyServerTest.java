@@ -45,13 +45,14 @@ import static org.junit.Assert.assertTrue;
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
+import org.cip4.jdfutility.server.JettyServer.JettySSLData;
 import org.cip4.jdfutility.server.JettyServer.MyResourceHandler;
 import org.junit.Test;
 
 public class JettyServerTest extends JDFUtilityTestBase
 {
 
-	static volatile int PORT = 54242;
+	static volatile int PORT = 22345;
 
 	private static int getPort()
 	{
@@ -63,6 +64,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
+		ns.setSSLPort(443);
 		assertTrue(ns.tryStart());
 		ns.stop();
 	}
@@ -94,9 +96,38 @@ public class JettyServerTest extends JDFUtilityTestBase
 	public synchronized void testSSL1()
 	{
 		final HTTPDump ns = new HTTPDump();
-		ns.setSSLPort(0, null);
-		assertNotNull(ns.setSSLPort(getPort(), null));
-		assertNotNull(ns.setSSLPort(getPort(), ns.getDefaultKeyStore()));
+		ns.setSSLPort(443);
+		ns.setSSLPort(getPort());
+		ns.setSSLPort(getPort());
+	}
+
+	@Test
+	public synchronized void testSSLData()
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setSSLPort(443);
+		JettySSLData sslData = ns.getSSLData();
+		assertNotNull(sslData.toString());
+		sslData.setAllowFlakySSL(true);
+		assertTrue(sslData.isAllowFlakySSL());
+		sslData.setKeystorePath("a");
+		assertEquals("a", sslData.getKeystorePath());
+		sslData.setKeystoreType("p");
+		assertEquals("p", sslData.getKeystoreType());
+		;
+		sslData.setPassword("p1");
+		assertEquals("p1", sslData.getPassword());
+
+	}
+
+	@Test
+	public void testSSLDataKeystore()
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setSSLPort(443);
+		JettySSLData sslData = ns.getSSLData();
+		assertNotNull(sslData.getKeystore());
+
 	}
 
 	@Test
@@ -104,10 +135,10 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
-		ns.setSSLPort(0, null);
-		assertNotNull(ns.setSSLPort(getPort(), null));
+		ns.setSSLPort(0);
+		ns.setSSLPort(getPort());
 		assertTrue(ns.tryStart());
-		ns.updateSSL();
+		ns.updateHTTP();
 		ns.stop();
 		ns.join();
 	}

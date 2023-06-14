@@ -73,11 +73,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.security.KeyStore;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.apache.commons.logging.Log;
@@ -86,6 +91,7 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdflib.util.thread.MyMutex;
 import org.cip4.jdfutility.server.JettyServer;
+import org.cip4.jdfutility.server.JettyServer.JettySSLData;
 
 /**
  * @author rainer prosi
@@ -113,6 +119,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	/**
 	 * 
 	 * get my server
+	 * 
 	 * @return
 	 */
 	protected JettyServer getServer()
@@ -122,9 +129,15 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 
 	private final JButton button;
 	private final MyMutex stopper;
-	JTextField urlField;
 	JTextField portField;
+	JTextField sslPortField;
 	protected final Log log;
+	private JCheckBox flakyBox;
+	private JTextField urlField;
+	private JTextField sslField;
+	private JTextField keystoreField;
+	private JComboBox<String> keystoreType;
+	private JPasswordField keystorePW;
 
 	/**
 	 * 
@@ -150,28 +163,66 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		addWindowListener(new StopListener());
 
 		JPanel panel = new JPanel();
-		setSize(new Dimension(500, 223));
+		BoxLayout mgr = new BoxLayout(panel, BoxLayout.Y_AXIS);
 
-		panel.add(new JLabel("http web ui address:"));
-		panel.add(new JLabel("please copy / paste the next line into a browser of your choice:"));
-		urlField = new JTextField(this.server.getBaseURL());
+		panel.setLayout(mgr);
+		setSize(new Dimension(500, 222));
+
+		JPanel p0 = new JPanel();
+		p0.setLayout(new BoxLayout(p0, BoxLayout.Y_AXIS));
+		p0.add(new JLabel("http web ui address:"));
+		p0.add(new JLabel("please copy / paste one of the next lines into a browser of your choice:"));
+
+		panel.add(p0);
+
+		JPanel p1 = new JPanel();
+		p1.add(new JLabel("port: "));
+		portField = new JTextField();
+		portField.setEditable(true);
+		portField.setText("" + server.getPort());
+		p1.add(portField);
+		String baseURL = server.getBaseURL(false);
+		urlField = new JTextField(baseURL);
 		urlField.setEditable(false);
-		panel.add(urlField);
+		p1.add(urlField);
+
+		panel.add(p1);
 
 		JPanel p2 = new JPanel();
 
-		p2.add(new JLabel("port: "));
-		portField = new JTextField(server.getBaseURL());
-		portField.setEditable(true);
-		portField.setText("" + server.getPort());
-		p2.add(portField);
+		p2.add(new JLabel("ssl port: "));
+		sslPortField = new JTextField();
+		sslPortField.setEditable(true);
+		sslPortField.setText("" + server.getSSLPort());
+		p2.add(sslPortField);
+		baseURL = server.getBaseURL(true);
+		sslField = new JTextField(baseURL);
+		sslField.setEditable(false);
+		p2.add(sslField);
+
+		flakyBox = new JCheckBox("Allow flaky SSL");
+		flakyBox.setSelected(false);
+		p2.add(flakyBox);
+
+		keystoreField = new JTextField();
+		keystoreField.setText(JettyServer.getDefaultKeyStorePath());
+		p2.add(keystoreField);
+
+		keystorePW = new JPasswordField();
+		keystorePW.setText("changeit");
+		p2.add(keystorePW);
+
+		keystoreType = new JComboBox<>(new String[] { KeyStore.getDefaultType(), "PKCS12" });
+		p2.add(keystoreType);
 		panel.add(p2);
+
 		return panel;
 	}
 
 	/**
 	 * 
 	 * call this in main to wait for an end
+	 * 
 	 * @return
 	 */
 	public int waitCompleted()
@@ -220,8 +271,21 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	{
 		button.setText("Stop Server");
 		server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
-		urlField.setText(server.getBaseURL());
+		server.setSSLPort(StringUtil.parseInt(sslPortField.getText(), server.getSSLPort()));
+		JettySSLData ssl = server.getSSLData();
+		ssl.setAllowFlakySSL(flakyBox.isSelected());
+		ssl.setPassword(new String(keystorePW.getText()));
+		ssl.setKeystoreType((String) keystoreType.getSelectedItem());
+		ssl.setKeystorePath(keystoreField.getText());
 		portField.setEditable(false);
+		sslPortField.setEditable(false);
+		flakyBox.setEnabled(false);
+		sslField.setText(server.getBaseURL(true));
+		urlField.setText(server.getBaseURL(false));
+		keystoreField.setEditable(false);
+		keystorePW.setEditable(false);
+		keystoreType.setEditable(false);
+
 	}
 
 	protected void stopped()
@@ -229,6 +293,11 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		button.setText("Start Server");
 		button.setEnabled(true);
 		portField.setEditable(true);
+		sslPortField.setEditable(true);
+		flakyBox.setEnabled(true);
+		keystoreField.setEditable(true);
+		keystorePW.setEditable(true);
+		keystoreType.setEditable(true);
 	}
 
 	/**

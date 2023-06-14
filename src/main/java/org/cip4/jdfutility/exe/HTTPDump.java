@@ -68,6 +68,8 @@
  */
 package org.cip4.jdfutility.exe;
 
+import org.cip4.jdflib.util.MyArgs;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdfutility.DumpJDFServlet;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.jdfutility.server.JettyServer;
@@ -100,6 +102,12 @@ public final class HTTPDump extends JettyServer
 	public static void main(final String[] args) throws Exception
 	{
 		final HTTPDump dump = new HTTPDump();
+		MyArgs myargs = new MyArgs(args, "s", "p", null);
+		if (myargs.boolParameter('s'))
+		{
+			int p = StringUtil.parseInt(myargs.parameterString('p'), 443);
+			dump.setSSLPort(p);
+		}
 		final HTTPFrame frame = new HTTPFrame(dump);
 		System.exit(frame.waitCompleted());
 	}
