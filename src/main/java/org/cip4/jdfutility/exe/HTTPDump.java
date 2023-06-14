@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2023 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,6 +68,9 @@
  */
 package org.cip4.jdfutility.exe;
 
+import org.cip4.jdflib.core.JDFConstants;
+import org.cip4.jdflib.util.MyArgs;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdfutility.DumpJDFServlet;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.jdfutility.server.JettyServer;
@@ -100,6 +103,12 @@ public final class HTTPDump extends JettyServer
 	public static void main(final String[] args) throws Exception
 	{
 		final HTTPDump dump = new HTTPDump();
+		MyArgs myargs = new MyArgs(args, "s", "p", null);
+		if (myargs.boolParameter('s'))
+		{
+			int p = StringUtil.parseInt(myargs.parameterString('p'), 443);
+			dump.setSSLPort(p);
+		}
 		final HTTPFrame frame = new HTTPFrame(dump);
 		System.exit(frame.waitCompleted());
 	}
@@ -123,7 +132,7 @@ public final class HTTPDump extends JettyServer
 	@Override
 	protected String getHome()
 	{
-		return context + "/overview";
+		return StringUtil.addToken(context, JDFConstants.SLASH, "overview");
 	}
 
 	/**
