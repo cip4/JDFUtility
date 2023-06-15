@@ -71,10 +71,18 @@ package org.cip4.jdfutility.exe;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.cip4.jdfutility.JDFUtilityTestBase;
+import org.junit.Before;
 import org.junit.Test;
 
-public class HTTPDumpTest
+public class HTTPDumpTest extends JDFUtilityTestBase
 {
+
+	@Before
+	public void setup() throws Exception
+	{
+		System.setProperty(" java.awt.headless", "true");
+	}
 
 	@Test
 	public void testCreate()
@@ -102,7 +110,7 @@ public class HTTPDumpTest
 		HTTPDump dump = new HTTPDump();
 		dump.setSSLPort(123);
 
-		final HTTPFrame frame = new HTTPFrame(dump);
+		new HTTPFrame(dump);
 	}
 
 }
