@@ -10,7 +10,7 @@ public class JettyFrameTest
 	@Before
 	public void setup() throws Exception
 	{
-		System.setProperty(" java.awt.headless", "true");
+		System.setProperty("java.awt.headless", "false");
 	}
 
 	@Test
