@@ -96,7 +96,8 @@ public class DumpJDFServlet extends UtilityServlet
 		 * Handles all HTTP <code>GET / POST etc.</code> methods.
 		 */
 		@Override
-		protected void processGet() throws IOException {
+		protected void processGet() throws IOException
+		{
 			final String error = updateProxy();
 			final Path targetDir = getTargetDir();
 			final ByteArrayIOStream bos = dumpToFile(targetDir);
@@ -166,7 +167,8 @@ public class DumpJDFServlet extends UtilityServlet
 		 * Handles all HTTP <code>GET / POST etc.</code> methods.
 		 */
 		@Override
-		protected void processPost() throws IOException {
+		protected void processPost() throws IOException
+		{
 			// System.out.println("dump service");
 			final String nodump = request.getParameter("nodump");
 			final boolean dump = !StringUtil.parseBoolean(nodump, false);
@@ -237,7 +239,8 @@ public class DumpJDFServlet extends UtilityServlet
 		/**
 		 * @return
 		 */
-		private ByteArrayIOStream dumpToFile(final Path targetDir) throws IOException {
+		private ByteArrayIOStream dumpToFile(final Path targetDir) throws IOException
+		{
 			Files.createDirectories(targetDir);
 			final DumpDir theDump = getCreateDump(targetDir.toFile());
 			String header = getRequestURL();
@@ -393,16 +396,24 @@ public class DumpJDFServlet extends UtilityServlet
 
 		private Path getTargetDir()
 		{
-			final String dir = request.getPathInfo();
+			String dir = request.getPathInfo();
 			final Path basePath = baseDir.getDir().toPath().normalize();
-			final Path targetDir = dir == null ? basePath : basePath.resolve(dir).normalize();
-			if (!targetDir.startsWith(basePath)) {
-				throw new IllegalArgumentException("Path is invalid");
+			Path targetDir = dir == null || "/".equals(dir) ? basePath : basePath.resolve(dir).normalize();
+			if (!targetDir.startsWith(basePath))
+			{
+				dir = new File(baseDir.getDir(), dir).getPath();
+				targetDir = dir == null || "/".equals(dir) ? basePath : basePath.resolve(dir).normalize();
+				if (!targetDir.startsWith(basePath))
+				{
+					throw new IllegalArgumentException("Path is invalid");
+				}
 			}
 			if (Files.exists(targetDir) && !Files.isDirectory(targetDir))
 			{
 				return baseDir.getDir().toPath();
-			} else {
+			}
+			else
+			{
 				return targetDir;
 			}
 		}
