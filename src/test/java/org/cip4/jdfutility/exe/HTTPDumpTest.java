@@ -96,4 +96,13 @@ public class HTTPDumpTest
 		assertEquals("/overview", dump.getHome());
 	}
 
+	@Test
+	public void testStart()
+	{
+		HTTPDump dump = new HTTPDump();
+		dump.setSSLPort(123);
+
+		final HTTPFrame frame = new HTTPFrame(dump);
+	}
+
 }
