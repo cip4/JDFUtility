@@ -328,7 +328,7 @@ public abstract class JettyServer
 
 			final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
 
-			SecureRequestCustomizer customizer = new SecureRequestCustomizer();
+			SecureRequestCustomizer customizer = getRequestCustomizer();
 			customizer.setSniHostCheck(!sslData.allowFlakySSL);
 			customizer.setSniRequired(!sslData.allowFlakySSL);
 			customizer.setStsIncludeSubDomains(sslData.allowFlakySSL);
@@ -355,6 +355,16 @@ public abstract class JettyServer
 			server.addConnector(connector);
 		}
 
+	}
+
+	/**
+	 * hook for more or less secure customizers
+	 * 
+	 * @return
+	 */
+	protected BambiRequestCustomizer getRequestCustomizer()
+	{
+		return new BambiRequestCustomizer();
 	}
 
 	/**
