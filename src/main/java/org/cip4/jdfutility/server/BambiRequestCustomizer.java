@@ -83,19 +83,22 @@ public class BambiRequestCustomizer extends SecureRequestCustomizer
 
 			try
 			{
-				InetAddress add = InetAddress.getByName(server);
-				if (InetAddress.getLocalHost().equals(add) || "localhost".equalsIgnoreCase(add.getHostName()))
+				InetAddress[] adds = InetAddress.getAllByName(server);
+				for (InetAddress add : adds)
 				{
-					String message = "bypassing sni for " + server;
-					if (logged.add(message))
+					if (InetAddress.getLocalHost().equals(add) || "localhost".equalsIgnoreCase(add.getHostName()) || add.isLoopbackAddress())
 					{
-						log.warn(message);
+						String message = "bypassing sni for " + server;
+						if (logged.add(message))
+						{
+							log.warn(message);
+						}
+						BambiRequestCustomizer delegate = new BambiRequestCustomizer(this);
+						delegate.setSniHostCheck(false);
+						delegate.setSniRequired(false);
+						delegate.delegate(sslEngine, request);
+						return;
 					}
-					BambiRequestCustomizer delegate = new BambiRequestCustomizer(this);
-					delegate.setSniHostCheck(false);
-					delegate.setSniRequired(false);
-					delegate.delegate(sslEngine, request);
-					return;
 				}
 			}
 			catch (UnknownHostException e)

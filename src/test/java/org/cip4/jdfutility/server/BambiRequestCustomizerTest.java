@@ -74,8 +74,18 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 
 		Mockito.when(request.getServerName()).thenReturn("localhost");
 		rq.customize(e, request);
+		Mockito.when(request.getServerName()).thenReturn("127.0.0.1");
+		rq.customize(e, request);
 
 		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName());
+		rq.customize(e, request);
+		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toLowerCase());
+		rq.customize(e, request);
+		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toUpperCase());
+		rq.customize(e, request);
+		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostAddress());
+		rq.customize(e, request);
+		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getCanonicalHostName());
 		rq.customize(e, request);
 
 	}
