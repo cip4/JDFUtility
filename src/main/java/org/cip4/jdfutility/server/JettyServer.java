@@ -470,9 +470,7 @@ public abstract class JettyServer
 		String ssl = getBaseURL(true);
 		if (http == null)
 			return ssl;
-		if (ssl == null)
-			return http;
-		return http + '\n' + ssl;
+		return http;
 	}
 
 	/**
