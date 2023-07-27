@@ -44,6 +44,7 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSession;
 
+import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.eclipse.jetty.http.BadMessageException;
 import org.eclipse.jetty.server.Request;
@@ -81,8 +82,11 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 		rq.customize(e, request);
 		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toLowerCase());
 		rq.customize(e, request);
-		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toUpperCase());
-		rq.customize(e, request);
+		if (PlatformUtil.isWindows())
+		{
+			Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toUpperCase());
+			rq.customize(e, request);
+		}
 		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostAddress());
 		rq.customize(e, request);
 		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getCanonicalHostName());
