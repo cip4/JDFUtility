@@ -18,11 +18,14 @@ jobs:
       - name: Check out sources...
         uses: actions/checkout@v2
 
-      - name: Setup GCloud CLI
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@7159039b8c614f8ed6d9bd75af3f6113681a8ff4
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
         with:
-          version: '298.0.0'
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Setup GCloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Docker Auth GCloud
