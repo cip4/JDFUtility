@@ -150,10 +150,6 @@ test {
     systemProperty "file.encoding", "utf-8"
     maxParallelForks = 1
     forkEvery = 1
-
-    testLogging {
-        exceptionFormat = 'full'
-    }
 }
 
 jar {
