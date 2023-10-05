@@ -7,6 +7,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'io.codearte.nexus-staging' version '0.30.0'
+    id 'jacoco'
 }
 
 group = 'org.cip4.tools.jdfutility'
@@ -20,10 +21,6 @@ java {
         languageVersion = JavaLanguageVersion.of(11)
     }
 }
-
-
-//sourceCompatibility = 11
-//targetCompatibility = 11
 
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
@@ -117,18 +114,18 @@ javadoc {
 processResources {
     filesMatching(['**/*.properties']) {
         filter(ReplaceTokens, tokens: [
-                'name'      : project.properties['description'],
-                'version'   : project.properties['version'],
+                'name': project.properties['description'],
+                'version': project.properties['version'],
                 'artifactId': project.properties['name'],
-                'timestamp' : new Date().format('yyyy-MM-dd HH:mm:ssZ')
+                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ')
         ])
     }
 }
 
 dependencies {
-    implementation ('org.cip4.lib.jdf:JDFLibJ:2.1.7.+'){
-  		 exclude group: 'xml-apis'
-	}
+    implementation('org.cip4.lib.jdf:JDFLibJ:2.1.7.+') {
+        exclude group: 'xml-apis'
+    }
 
     implementation 'org.eclipse.jetty:jetty-servlet:10.0.15'
     implementation 'commons-fileupload:commons-fileupload:1.5'
@@ -139,18 +136,44 @@ dependencies {
     testImplementation 'org.springframework:spring-test:5.3.23'
     testImplementation 'org.springframework:spring-web:5.3.23'
     testImplementation 'org.mockito:mockito-core:4.11.0'
+}
 
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = false
+    }
 }
 
 test {
     systemProperty "file.encoding", "utf-8"
     maxParallelForks = 1
     forkEvery = 1
+
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.description,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor-Id": project.group,
+                "Specification-Title": project.description,
+                "Specification-Version": project.version,
+                "Build-Jdk": JavaVersion.current(),
+        )
+    }
 }
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'org.cip4.jdfutility.exe.CheckJDFServer'
+        attributes(
+                "Main-Class": "org.cip4.jdfutility.exe.CheckJDFServer"
+         )
     }
     archiveAppendix = "fat"
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
