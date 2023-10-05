@@ -36,12 +36,12 @@
  */
 package org.cip4.jdfutility.server;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JettyServiceTest extends JDFUtilityTestBase
 {

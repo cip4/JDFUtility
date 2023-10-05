@@ -36,7 +36,8 @@
  */
 package org.cip4.jdfutility.server;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -48,7 +49,7 @@ import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.eclipse.jetty.http.BadMessageException;
 import org.eclipse.jetty.server.Request;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class BambiRequestCustomizerTest extends JDFUtilityTestBase
@@ -94,7 +95,7 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 
 	}
 
-	@Test(expected = BadMessageException.class)
+	@Test
 	public void testCustomizeBad() throws UnknownHostException
 	{
 		BambiRequestCustomizer rq = new BambiRequestCustomizer();
@@ -105,8 +106,10 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 		Request request = Mockito.mock(Request.class);
 
 		Mockito.when(request.getServerName()).thenReturn("notMyHost");
-		rq.customize(e, request);
 
+		assertThrows(BadMessageException.class, () -> {
+            rq.customize(e, request);
+        });
 	}
 
 }

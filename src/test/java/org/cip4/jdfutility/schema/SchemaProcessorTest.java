@@ -68,8 +68,8 @@
  */
 package org.cip4.jdfutility.schema;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 
@@ -83,7 +83,7 @@ import org.cip4.jdflib.extensions.XJDF20;
 import org.cip4.jdflib.extensions.XJDFConstants;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *

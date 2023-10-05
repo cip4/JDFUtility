@@ -36,7 +36,8 @@
  */
 package org.cip4.jdfutility;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -46,7 +47,7 @@ import java.nio.file.Paths;
 import javax.servlet.ServletException;
 
 import org.cip4.jdflib.util.UrlUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
@@ -75,7 +76,7 @@ public class DumpJDFServletTest
 		assertEquals(200, response.getStatus());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void processRequestInjection() throws ServletException, IOException
 	{
 		MockServletConfig config = new MockServletConfig();
@@ -89,10 +90,6 @@ public class DumpJDFServletTest
 		request.setMethod(UrlUtil.GET);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 
-		servlet.service(request, response);
-
-		assertEquals(404, response.getStatus());
-		assertEquals("<HTML><H1>Error</H1><br/>Cannot find file: &lt;script&gt;attack&lt;/script&gt;</HTML>", response.getContentAsString());
-		assertEquals("text/html", response.getContentType());
+		assertThrows(IllegalArgumentException.class, () -> servlet.service(request, response));
 	}
 }

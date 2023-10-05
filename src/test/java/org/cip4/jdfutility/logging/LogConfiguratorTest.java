@@ -37,7 +37,7 @@
 package org.cip4.jdfutility.logging;
 
 import org.cip4.jdfutility.JDFUtilityTestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LogConfiguratorTest extends JDFUtilityTestBase
 {

@@ -36,12 +36,12 @@
  */
 package org.cip4.jdfutility.exe;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.cip4.jdflib.util.UrlPart;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CheckJDFServerTest extends JDFUtilityTestBase
 {

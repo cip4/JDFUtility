@@ -68,17 +68,17 @@
  */
 package org.cip4.jdfutility.exe;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.cip4.jdfutility.JDFUtilityTestBase;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 public class HTTPDumpTest extends JDFUtilityTestBase
 {
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception
 	{
 		System.setProperty("java.awt.headless", "false");

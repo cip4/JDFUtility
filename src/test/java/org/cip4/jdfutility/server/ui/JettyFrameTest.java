@@ -71,12 +71,12 @@ package org.cip4.jdfutility.server.ui;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.exe.HTTPFrame;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JettyFrameTest extends JDFUtilityTestBase
 {
-	@Before
+	@BeforeEach
 	public void setup() throws Exception
 	{
 		System.setProperty("java.awt.headless", "false");

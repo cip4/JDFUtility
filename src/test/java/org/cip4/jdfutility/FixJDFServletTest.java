@@ -1,15 +1,15 @@
 package org.cip4.jdfutility;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.cip4.jdflib.core.ElementName;
 import org.cip4.jdflib.core.JDFDoc;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdfutility.CheckJDFServlet.FixCall;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FixJDFServletTest extends JDFUtilityTestBase
 {

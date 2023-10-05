@@ -36,7 +36,7 @@
  */
 package org.cip4.jdfutility;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -47,7 +47,7 @@ import java.nio.file.Paths;
 import javax.servlet.ServletException;
 
 import org.cip4.jdflib.core.JDFCoreConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
