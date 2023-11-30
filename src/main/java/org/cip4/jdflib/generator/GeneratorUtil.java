@@ -43,8 +43,9 @@ public class GeneratorUtil
 {
 
 	/**
-	 * This method is for further expansions. There are right now no known "invalid" elements (elements which are defined, added or what ever, in other classes). To make the generator expandable this
-	 * method was added and is already in use in method "getAllValidElements". If there is an element which you don't want to be added in the autoclass add it here.
+	 * This method is for further expansions. There are right now no known "invalid" elements (elements which are defined, added or what ever, in other classes). To make the
+	 * generator expandable this method was added and is already in use in method "getAllValidElements". If there is an element which you don't want to be added in the autoclass
+	 * add it here.
 	 *
 	 * @param String strElementName - Name of the Element to validate
 	 *
@@ -66,10 +67,10 @@ public class GeneratorUtil
 		}
 		else if ("ResponseTypeObj".equals(elementName) || "QueryTypeObj".equals(elementName) || "AbstractTerms".equals(elementName) || "AbstractStates".equals(elementName)
 				|| "CommandTypeObj".equals(elementName) || "CommandOrQueryTypeObj".equals(elementName) || "JDF".equals(elementName) || "DevCapState".equals(elementName)
-				|| "EnumerationSpan".equals(elementName) || "IDPre".equals(elementName) || "IDPrp".equals(elementName) || "JDFAbstractNode".equals(elementName) || "JDFProcessNode".equals(elementName)
-				|| "IntentResourceElement".equals(elementName) || "IntentResourceLeaf".equals(elementName) || "Location".equals(elementName) || "NotificationDetails".equals(elementName)
-				|| "me".equals(elementName) || "FoldOperation".equals(elementName) || "PreflightValue".equals(elementName) || "PRGroupOccurrenceBase".equals(elementName)
-				|| "ResourceElement".equals(elementName) || "telem".equals(elementName))
+				|| "EnumerationSpan".equals(elementName) || "IDPre".equals(elementName) || "IDPrp".equals(elementName) || "JDFAbstractNode".equals(elementName)
+				|| "JDFProcessNode".equals(elementName) || "IntentResourceElement".equals(elementName) || "IntentResourceLeaf".equals(elementName) || "Location".equals(elementName)
+				|| "NotificationDetails".equals(elementName) || "me".equals(elementName) || "FoldOperation".equals(elementName) || "PreflightValue".equals(elementName)
+				|| "PRGroupOccurrenceBase".equals(elementName) || "ResourceElement".equals(elementName) || "telem".equals(elementName))
 		{
 			// no auto file generation for abstract classes
 			isValid = false;
@@ -106,8 +107,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Every complex type in the schema has elements and attributes. Some of the attributes defined in the Schema are already defined in the lib because they are attributes of a base resource. These
-	 * attributes do not need new getter and setter methods. This Function validates the attribute in an easy way if its already definded in the lib or not.
+	 * Every complex type in the schema has elements and attributes. Some of the attributes defined in the Schema are already defined in the lib because they are attributes of a
+	 * base resource. These attributes do not need new getter and setter methods. This Function validates the attribute in an easy way if its already definded in the lib or not.
 	 *
 	 * @param String strAttributeName - Name of the Attribute to "test"
 	 *
@@ -126,21 +127,22 @@ public class GeneratorUtil
 		// so in the end you will get them all
 
 		// Table 3-25: Partitionable resource element, JDFSpec 1.3
-		if (!"Part".equals(strComplexTypeName) && ("BinderySignatureName".equals(strAttributeName) || "BlockName".equals(strAttributeName) || "BinderySignaturePaginationIndex".equals(strAttributeName)
-				|| "BundleItemIndex".equals(strAttributeName) || "CellIndex".equals(strAttributeName) || "Condition".equals(strAttributeName)
-				|| (strAttributeName.startsWith("DeliveryUnit") && strAttributeName.length() == ("DeliveryUnit".length() + 1)) || "DocCopies".equals(strAttributeName)
-				|| "DocIndex".equals(strAttributeName) || "DocRunIndex".equals(strAttributeName) || "DocSheetIndex".equals(strAttributeName) || "DocTags".equals(strAttributeName)
-				|| "Edition".equals(strAttributeName) || "EditionVersion".equals(strAttributeName) || "FountainNumber".equals(strAttributeName) || "ItemNames".equals(strAttributeName)
-				|| "LayerIDs".equals(strAttributeName) || "Location".equals(strAttributeName) || (strAttributeName.startsWith("Metadata") && strAttributeName.length() == ("Metadata".length() + 1))
-				|| "Option".equals(strAttributeName) || "PageNumber".equals(strAttributeName) || "PageTags".equals(strAttributeName) || "PartVersion".equals(strAttributeName)
-				|| "PlateLayout".equals(strAttributeName) || "PreflightRule".equals(strAttributeName) || "PreviewType".equals(strAttributeName) || "ProductionRun".equals(strAttributeName)
+		if (!"Part".equals(strComplexTypeName) && ("BinderySignatureName".equals(strAttributeName) || "BlockName".equals(strAttributeName)
+				|| "BinderySignaturePaginationIndex".equals(strAttributeName) || "BundleItemIndex".equals(strAttributeName) || "CellIndex".equals(strAttributeName)
+				|| "Condition".equals(strAttributeName) || (strAttributeName.startsWith("DeliveryUnit") && strAttributeName.length() == ("DeliveryUnit".length() + 1))
+				|| "DocCopies".equals(strAttributeName) || "DocIndex".equals(strAttributeName) || "DocRunIndex".equals(strAttributeName) || "DocSheetIndex".equals(strAttributeName)
+				|| "DocTags".equals(strAttributeName) || "Edition".equals(strAttributeName) || "EditionVersion".equals(strAttributeName)
+				|| "FountainNumber".equals(strAttributeName) || "ItemNames".equals(strAttributeName) || "LayerIDs".equals(strAttributeName) || "Location".equals(strAttributeName)
+				|| (strAttributeName.startsWith("Metadata") && strAttributeName.length() == ("Metadata".length() + 1)) || "Option".equals(strAttributeName)
+				|| "PageNumber".equals(strAttributeName) || "PageTags".equals(strAttributeName) || "PartVersion".equals(strAttributeName) || "PlateLayout".equals(strAttributeName)
+				|| "PreflightRule".equals(strAttributeName) || "PreviewType".equals(strAttributeName) || "ProductionRun".equals(strAttributeName)
 				|| "RibbonName".equals(strAttributeName) || "Run".equals(strAttributeName) || "RunIndex".equals(strAttributeName) || "RunPage".equals(strAttributeName)
 				|| "RunSet".equals(strAttributeName) || "RunTags".equals(strAttributeName) || "SectionIndex".equals(strAttributeName) || "Separation".equals(strAttributeName)
-				|| "SetDocIndex".equals(strAttributeName) || "SetIndex".equals(strAttributeName) || "SetRunIndex".equals(strAttributeName) || "SetSheetIndex".equals(strAttributeName)
-				|| "SetTags".equals(strAttributeName) || "SheetIndex".equals(strAttributeName) || "SheetName".equals(strAttributeName) || "Side".equals(strAttributeName)
-				|| "SignatureName".equals(strAttributeName) || "Sorting".equals(strAttributeName) || "SortAmount".equals(strAttributeName) || "SubRun".equals(strAttributeName)
-				|| "TileID".equals(strAttributeName) || "WebName".equals(strAttributeName) || "WebProduct".equals(strAttributeName) || "NoOp".equals(strAttributeName)
-				|| "WebSetup".equals(strAttributeName)))
+				|| "SetDocIndex".equals(strAttributeName) || "SetIndex".equals(strAttributeName) || "SetRunIndex".equals(strAttributeName)
+				|| "SetSheetIndex".equals(strAttributeName) || "SetTags".equals(strAttributeName) || "SheetIndex".equals(strAttributeName) || "SheetName".equals(strAttributeName)
+				|| "Side".equals(strAttributeName) || "SignatureName".equals(strAttributeName) || "Sorting".equals(strAttributeName) || "SortAmount".equals(strAttributeName)
+				|| "SubRun".equals(strAttributeName) || "TileID".equals(strAttributeName) || "WebName".equals(strAttributeName) || "WebProduct".equals(strAttributeName)
+				|| "NoOp".equals(strAttributeName) || "WebSetup".equals(strAttributeName)))
 		{
 			isValid = false;
 		}
@@ -154,8 +156,8 @@ public class GeneratorUtil
 			isValid = false;
 		}
 
-		if (("JDFProcessNode".equals(strComplexTypeName) || "JDFAbstractNode".equals(strComplexTypeName) || "DevCapState".equals(strComplexTypeName) || "AbstractState".equals(strComplexTypeName))
-				&& "ID".equals(strAttributeName))
+		if (("JDFProcessNode".equals(strComplexTypeName) || "JDFAbstractNode".equals(strComplexTypeName) || "DevCapState".equals(strComplexTypeName)
+				|| "AbstractState".equals(strComplexTypeName)) && "ID".equals(strAttributeName))
 		// JDFResource Attribute IMPORTANT defined in JDFElement.OptionalAttributes()
 		// Action is JDFElementBased and needs the ID Attribute
 		{
@@ -206,7 +208,8 @@ public class GeneratorUtil
 		}
 
 		// Separation is a PartIDKey and a normal attribute, so fix it here
-		if ("Separation".equals(strAttributeName) && ("DensityMeasuringField".equals(strComplexTypeName) || "ScreenSelector".equals(strComplexTypeName) || "TransferCurve".equals(strComplexTypeName)))
+		if ("Separation".equals(strAttributeName)
+				&& ("DensityMeasuringField".equals(strComplexTypeName) || "ScreenSelector".equals(strComplexTypeName) || "TransferCurve".equals(strComplexTypeName)))
 		{
 			isValid = true;
 		}
@@ -221,10 +224,11 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Every complexType inside the Schema has many many elements and attributes. To reflect the Schema as closely as possible and the need of it, all VALID attributes will be listed inside the
-	 * SchemaComplexType (as a vector of attributes). What are Valid attributes? A ComplexType can be a Resource for example. A Resource has attributes which are listed as a String in the JDFResource
-	 * file but are also listed in the Schema and the Example ComplexType. To provide the attribute to be listed twice, it has to "validated". This validation isn't more then a question (is this
-	 * attribute already processed in JDFResource or somewhere else?). If not, its added to the "ComplexType" unique attribute list.
+	 * Every complexType inside the Schema has many many elements and attributes. To reflect the Schema as closely as possible and the need of it, all VALID attributes will be
+	 * listed inside the SchemaComplexType (as a vector of attributes). What are Valid attributes? A ComplexType can be a Resource for example. A Resource has attributes which are
+	 * listed as a String in the JDFResource file but are also listed in the Schema and the Example ComplexType. To provide the attribute to be listed twice, it has to "validated".
+	 * This validation isn't more then a question (is this attribute already processed in JDFResource or somewhere else?). If not, its added to the "ComplexType" unique attribute
+	 * list.
 	 *
 	 * @param schemaElement TODO
 	 * @param vComplexTypes TODO
@@ -234,8 +238,7 @@ public class GeneratorUtil
 	 * @param SchemaComplexType complexType - The ComplexType the attributes to process for
 	 * @return SchemaComplexType - The attribute done SchemaComplextype
 	 */
-	public static SchemaComplexType getAllValidAttributes(final KElement schemaElement, final Vector vComplexTypes, final VElement vSimpleType, final String[] parents, final VElement vAppInfoElements,
-			final SchemaComplexType complexType)
+	public static SchemaComplexType getAllValidAttributes(final KElement schemaElement, final Vector vComplexTypes, final VElement vSimpleType, final String[] parents, final VElement vAppInfoElements, final SchemaComplexType complexType)
 	{
 		final String complexTypeName = complexType.m_SchemaComplexTypeName;
 
@@ -331,8 +334,7 @@ public class GeneratorUtil
 		return vAttributes;
 	}
 
-	private static void fillAttributeIntoComplexType(final KElement attribute, final String complexTypeName, final String[] parents, final VElement vAppInfoElements, final VElement vSimpleType,
-			final SchemaComplexType complexType)
+	private static void fillAttributeIntoComplexType(final KElement attribute, final String complexTypeName, final String[] parents, final VElement vAppInfoElements, final VElement vSimpleType, final SchemaComplexType complexType)
 	{
 		final String attributeName = attribute.getAttribute("name").replace('-', '_');
 
@@ -388,10 +390,10 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Every complexType inside the Schema has many many elements and atributes. To reflect the Schema as closly as possible and the need of it, all VALID elements will be listed inside the
-	 * SchemaComplexType (as a Vector of elements). What are Valid elements? a ComplexType can be a Resource for example. A Resource has elements which are listed in the JDFResource file but are also
-	 * listed in the Schema and the Example ComplexType. To provide the element to be listed twice, it has to "validated". This validation isn't more then a question (is this elements already
-	 * processed in JDFResource or somewhere else?). If not, its added to the "ComplexType" unique elements list.
+	 * Every complexType inside the Schema has many many elements and atributes. To reflect the Schema as closly as possible and the need of it, all VALID elements will be listed
+	 * inside the SchemaComplexType (as a Vector of elements). What are Valid elements? a ComplexType can be a Resource for example. A Resource has elements which are listed in the
+	 * JDFResource file but are also listed in the Schema and the Example ComplexType. To provide the element to be listed twice, it has to "validated". This validation isn't more
+	 * then a question (is this elements already processed in JDFResource or somewhere else?). If not, its added to the "ComplexType" unique elements list.
 	 *
 	 * @param parents
 	 * @param vAppInfoElements
@@ -459,8 +461,7 @@ public class GeneratorUtil
 		return sequence;
 	}
 
-	private static void fillElementIntoComplexType(final KElement element, final String[] parents, final VElement vAppInfoElements, final String minOccurs, final String maxOccurs,
-			final SchemaComplexType complexType)
+	private static void fillElementIntoComplexType(final KElement element, final String[] parents, final VElement vAppInfoElements, final String minOccurs, final String maxOccurs, final SchemaComplexType complexType)
 	{
 		String elementName = element.getAttribute("ref");
 		if (complexType.isCore || complexType.isNode)
@@ -503,11 +504,11 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Every ComplexType is more then one time Present inside the Schema. It can be a: A 'Resource' indicated through '_r' at the end of it's name A 'ResourceElement' indicated through '_re' at the
-	 * end of it's name A 'PartitionableResource' indicated through '_rp' at the end of it's name A 'BaseElement' indicated through '__' at the end of it's name A 'Message' indicated through '_m' at
-	 * the end of it's name A 'WhatEver' indicated through nothing at the end of it's name So a ComplexType can have a '__' a '_r' and a '_rp'. At the end, there is only ONE file for this CompleyType.
-	 * This means All Elements and Attributes for this spezific ComplexType need to take out of these three Vector elements. To make this task a little easier, all names will be shorten ('_r', '_rp',
-	 * '___' and '_m', '_rp').
+	 * Every ComplexType is more then one time Present inside the Schema. It can be a: A 'Resource' indicated through '_r' at the end of it's name A 'ResourceElement' indicated
+	 * through '_re' at the end of it's name A 'PartitionableResource' indicated through '_rp' at the end of it's name A 'BaseElement' indicated through '__' at the end of it's
+	 * name A 'Message' indicated through '_m' at the end of it's name A 'WhatEver' indicated through nothing at the end of it's name So a ComplexType can have a '__' a '_r' and a
+	 * '_rp'. At the end, there is only ONE file for this CompleyType. This means All Elements and Attributes for this spezific ComplexType need to take out of these three Vector
+	 * elements. To make this task a little easier, all names will be shorten ('_r', '_rp', '___' and '_m', '_rp').
 	 *
 	 * @param SchemaComplexType nComplexType
 	 *
@@ -720,8 +721,9 @@ public class GeneratorUtil
 		}
 
 		// some messages are defined in the core part, these need to be changed here!!
-		if ("Signal".equals(nComplexTypeLocal.m_SchemaComplexTypeName) || "Acknowledge".equals(nComplexTypeLocal.m_SchemaComplexTypeName) || "Query".equals(nComplexTypeLocal.m_SchemaComplexTypeName)
-				|| "Registration".equals(nComplexTypeLocal.m_SchemaComplexTypeName) || "Response".equals(nComplexTypeLocal.m_SchemaComplexTypeName))
+		if ("Signal".equals(nComplexTypeLocal.m_SchemaComplexTypeName) || "Acknowledge".equals(nComplexTypeLocal.m_SchemaComplexTypeName)
+				|| "Query".equals(nComplexTypeLocal.m_SchemaComplexTypeName) || "Registration".equals(nComplexTypeLocal.m_SchemaComplexTypeName)
+				|| "Response".equals(nComplexTypeLocal.m_SchemaComplexTypeName))
 		{
 			nComplexTypeLocal.isResource = false;
 			nComplexTypeLocal.isMessage = true;
@@ -755,8 +757,8 @@ public class GeneratorUtil
 	} // unifyComplexTypNames
 
 	/**
-	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So this method expects
-	 * a group as input-paramter and will return you all attributes in the group (also with recursive call if there were attribute groups in the group)
+	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So
+	 * this method expects a group as input-paramter and will return you all attributes in the group (also with recursive call if there were attribute groups in the group)
 	 *
 	 * @param VElement - vector with groups (of attributes) to resolve into members
 	 *
@@ -793,8 +795,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So this Mehtod expects
-	 * a group as input-paramter and will return you all Attributes in the group (also with recursive call if there were Attribute groups in the group)
+	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So
+	 * this Mehtod expects a group as input-paramter and will return you all Attributes in the group (also with recursive call if there were Attribute groups in the group)
 	 *
 	 * @param VElement - vector with groups (of elements) to resolve into members
 	 *
@@ -832,8 +834,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTypes. To generate the file you need the Attributes out of these references. So this Method
-	 * expects a group as input-paramter and will return you all Attributes in the group (also with recursive call if there where Attribute groups in the group)
+	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTypes. To generate the file you need the Attributes out of these references.
+	 * So this Method expects a group as input-paramter and will return you all Attributes in the group (also with recursive call if there where Attribute groups in the group)
 	 *
 	 * @param KElement - the Group to resolve into its members
 	 *
@@ -960,8 +962,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same elements and element groups. If you would add all elements they refer you had many of them
-	 * twice or even more often. To prevent this, all elements will be added unique to a ComplexType.
+	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same elements and element groups. If you would add all elements they refer
+	 * you had many of them twice or even more often. To prevent this, all elements will be added unique to a ComplexType.
 	 *
 	 * @params SchemaComplexType nNewComplexType - the vector to add all attributes to
 	 * @params SchemaComplexType nOldComplexType - the source of the attributes
@@ -1002,8 +1004,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same attribute groups. If you would add all attributes together you had many of them twice or
-	 * even more often. To prevent this, all attribute will be added unique to a ComplexType
+	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same attribute groups. If you would add all attributes together you had
+	 * many of them twice or even more often. To prevent this, all attribute will be added unique to a ComplexType
 	 *
 	 * @params SchemaComplexType nNewComplexType - the vector to add all attributes to
 	 * @params SchemaComplexType nOldComplexType - the source of the attributes
@@ -1049,8 +1051,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * Every attribute can also be a enumeration. This method checks if the attribute is one further description: This is a little example how a attribute with enumeration looks like. With this in
-	 * mind it should be quit easy to follow the code:
+	 * Every attribute can also be a enumeration. This method checks if the attribute is one further description: This is a little example how a attribute with enumeration looks
+	 * like. With this in mind it should be quit easy to follow the code:
 	 *
 	 * - <xs:attribute name="StapleShape" use="optional"> - <xs:simpleType> - <xs:restriction base="xs:NMTOKEN"> <xs:enumeration value="Crown" /> <xs:enumeration value="Overlap" />
 	 * <xs:enumeration value="Butted" /> <xs:enumeration value="ClinchOut" /> <xs:enumeration value="Eyelet" /> </xs:restriction> </xs:simpleType> </xs:attribute>
@@ -1161,8 +1163,9 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * After all Elements and Attributes are set, there are some information which need to be set These Information are tied to the typ of input file (node, message or core) so all the "rest"
-	 * information will be set in this file. This method is also a placeholder for further enhancements. If more information will be added to the schema, it can be solved here.
+	 * After all Elements and Attributes are set, there are some information which need to be set These Information are tied to the typ of input file (node, message or core) so all
+	 * the "rest" information will be set in this file. This method is also a placeholder for further enhancements. If more information will be added to the schema, it can be
+	 * solved here.
 	 *
 	 * @param parents
 	 * @param vAppInfoElements
@@ -1217,8 +1220,8 @@ public class GeneratorUtil
 		boolean isGroupToAdd = true;
 
 		if (ref.endsWith("_u") || "PartitionAttribs".equals(ref) || "ResourceAttribs".equals(ref) || "ResourceElementAttribs".equals(ref) || "QuantityAttribs".equals(ref)
-				|| "PlaceHolderAttribs".equals(ref) || "ParameterAttribs".equals(ref) || "ImplementationAttribs".equals(ref) || "HandlingAttribs".equals(ref) || "ConsumableAttribs".equals(ref)
-				|| "PhysicalResourceAttribs".equals(ref) || "IntentAttribs".equals(ref) || "ResourcePartAttribs".equals(ref))
+				|| "PlaceHolderAttribs".equals(ref) || "ParameterAttribs".equals(ref) || "ImplementationAttribs".equals(ref) || "HandlingAttribs".equals(ref)
+				|| "ConsumableAttribs".equals(ref) || "PhysicalResourceAttribs".equals(ref) || "IntentAttribs".equals(ref) || "ResourcePartAttribs".equals(ref))
 		{
 			isGroupToAdd = false;
 		}
@@ -1356,8 +1359,8 @@ public class GeneratorUtil
 
 		if (strTypeLocal.equals("string") || strTypeLocal.equals("regExp") || strTypeLocal.equals("XPath") || strTypeLocal.equals("hexBinary") || strTypeLocal.equals("PDFPath")
 				|| strTypeLocal.equals("gYearMonth") || strTypeLocal.equals("longString") || strTypeLocal.equals("shortString") || strTypeLocal.equals("JDFJMFVersions")
-				|| strTypeLocal.equals("LanguagesOrAll") || strTypeLocal.equals("MatrixShift") || strTypeLocal.equals("NMTOKEN") || strTypeLocal.equals("language") || strTypeLocal.equals("URI")
-				|| strTypeLocal.equals("URL") || strTypeLocal.equals("ID") || strTypeLocal.equals("IDREF") || strTypeLocal.endsWith("Classes"))
+				|| strTypeLocal.equals("LanguagesOrAll") || strTypeLocal.equals("MatrixShift") || strTypeLocal.equals("NMTOKEN") || strTypeLocal.equals("language")
+				|| strTypeLocal.equals("URI") || strTypeLocal.equals("URL") || strTypeLocal.equals("ID") || strTypeLocal.equals("IDREF") || strTypeLocal.endsWith("Classes"))
 		{
 			strReturnType = isJava ? "String" : "KString";
 		}
@@ -1557,7 +1560,8 @@ public class GeneratorUtil
 				strReturnType = isJava ? "String" : "KString";
 			}
 		}
-		else if ("PreflightCommonPool".equals(strTypeLocal) || "PreflightValue".equals(strTypeLocal) || "PreflightCommonConstraintPool".equals(strTypeLocal) || "PayTerm".equals(strName))
+		else if ("PreflightCommonPool".equals(strTypeLocal) || "PreflightValue".equals(strTypeLocal) || "PreflightCommonConstraintPool".equals(strTypeLocal)
+				|| "PayTerm".equals(strName))
 		{
 			strReturnType = "JDFElement"; // pre 1.3, keep it simple
 		}
@@ -1737,18 +1741,20 @@ public class GeneratorUtil
 		{
 			bGenerateIt = false;
 		}
-		if ("ResponseTypeObj".equals(strComplexTypeName) || "QueryTypeObj".equals(strComplexTypeName) || "AbstractTerms".equals(strComplexTypeName) || "AbstractStates".equals(strComplexTypeName)
-				|| "CommandTypeObj".equals(strComplexTypeName) || "CommandOrQueryTypeObj".equals(strComplexTypeName) || "JDF".equals(strComplexTypeName) || "CutLines".equals(strComplexTypeName)
-				|| "DevCapState".equals(strComplexTypeName) || "EnumerationSpan".equals(strComplexTypeName) || "IDPre".equals(strComplexTypeName) || "IDPrp".equals(strComplexTypeName)
+		if ("ResponseTypeObj".equals(strComplexTypeName) || "QueryTypeObj".equals(strComplexTypeName) || "AbstractTerms".equals(strComplexTypeName)
+				|| "AbstractStates".equals(strComplexTypeName) || "CommandTypeObj".equals(strComplexTypeName) || "CommandOrQueryTypeObj".equals(strComplexTypeName)
+				|| "JDF".equals(strComplexTypeName) || "CutLines".equals(strComplexTypeName) || "DevCapState".equals(strComplexTypeName)
+				|| "EnumerationSpan".equals(strComplexTypeName) || "IDPre".equals(strComplexTypeName) || "IDPrp".equals(strComplexTypeName)
 				|| "JDFAbstractNode".equals(strComplexTypeName) || "JDFProcessNode".equals(strComplexTypeName) || "IntentResourceElement".equals(strComplexTypeName)
-				|| "IntentResourceLeaf".equals(strComplexTypeName) || "me".equals(strComplexTypeName) || "NotificationDetails".equals(strComplexTypeName) || "FoldOperation".equals(strComplexTypeName)
-				|| "PreflightValue".equals(strComplexTypeName) || "PRGroupOccurrenceBase".equals(strComplexTypeName) || "NotificationDetails".equals(strComplexTypeName)
-				|| "ResourceElement".equals(strComplexTypeName) || "Sheet".equals(strComplexTypeName) || "Signature".equals(strComplexTypeName) || "Surface".equals(strComplexTypeName)
-				|| "telem".equals(strComplexTypeName))
+				|| "IntentResourceLeaf".equals(strComplexTypeName) || "me".equals(strComplexTypeName) || "NotificationDetails".equals(strComplexTypeName)
+				|| "FoldOperation".equals(strComplexTypeName) || "PreflightValue".equals(strComplexTypeName) || "PRGroupOccurrenceBase".equals(strComplexTypeName)
+				|| "NotificationDetails".equals(strComplexTypeName) || "ResourceElement".equals(strComplexTypeName) || "Sheet".equals(strComplexTypeName)
+				|| "Signature".equals(strComplexTypeName) || "Surface".equals(strComplexTypeName) || "telem".equals(strComplexTypeName))
 		{
 			bGenerateIt = false;
 		}
-		if (strComplexTypeName.startsWith("JMFAbstract") || strComplexTypeName.startsWith("Physical") || strComplexTypeName.startsWith("Quantity") || strComplexTypeName.startsWith("PreflightCommon"))
+		if (strComplexTypeName.startsWith("JMFAbstract") || strComplexTypeName.startsWith("Physical") || strComplexTypeName.startsWith("Quantity")
+				|| strComplexTypeName.startsWith("PreflightCommon"))
 		{
 			// Update Elements will be handled in their 'mother' objects (JDFResource, JDFElement etc)
 			bGenerateIt = false;
@@ -2112,7 +2118,6 @@ public class GeneratorUtil
 					(isElementInParent(parentsPath, elementPath) || isElementInSchema(elementPath, elementName)
 					// I don�t want to implement [@xxx ... notation, so I use a special case for it
 							|| (parentsPath.equals("EndSheet/GlueLine") && elementPath.equals("EndSheet[@Side=\"Back\"]/GlueLine"))
-							|| (parentsPath.equals("FileSpec") && elementPath.startsWith("FileSpec[@ResourceUsage="))
 							|| (elementPath.equals("SpinePreparationParams GlueApplication SpineTapingParams CoverApplicationParams") && elementPath.indexOf(parentsPath) >= 0)
 							|| (elementPath.equals("MarkObject/DynamicField/DeviceMark") && parentsPath.equals("DynamicField/DeviceMark"))))
 			{
@@ -2325,8 +2330,8 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * generates a string of form 11111333. Each digit denotates a version starting at the right with version 1.0 and incrementing to the left 1.1, 1.2 ... 1.7 (not sure if the world exists after 1.7
-	 * ;)
+	 * generates a string of form 11111333. Each digit denotates a version starting at the right with version 1.0 and incrementing to the left 1.1, 1.2 ... 1.7 (not sure if the
+	 * world exists after 1.7 ;)
 	 *
 	 * Number lookup for attributes (-> JDFSpec 1.3, 1.3.4 Specification of Cardinality None = 1 Required = 2 - A Optional = 3 - A? Deprecated = 4
 	 *
@@ -2396,8 +2401,8 @@ public class GeneratorUtil
 	/**
 	 * generates a string of form 33333333. Every digit is a version starting at the right with version 1.0 and incrementing to the left 1.1, 1.2 etc.
 	 *
-	 * Number lookup for elements (-> JDFSpec 1.3, 1.3.4 Specification of Cardinality None = 1 Required = 2 - E+ Optional = 3 - E* Deprecated = 4 Single Required = 5 - E Single Optional = 6 - E?
-	 * Single Deprecated = 7 Dummy = 8
+	 * Number lookup for elements (-> JDFSpec 1.3, 1.3.4 Specification of Cardinality None = 1 Required = 2 - E+ Optional = 3 - E* Deprecated = 4 Single Required = 5 - E Single
+	 * Optional = 6 - E? Single Deprecated = 7 Dummy = 8
 	 *
 	 * 00000432 means "was required in 1.0, was optional in 1.1, is deprecated in 1.2 and no informations for further versions are available"
 	 *
