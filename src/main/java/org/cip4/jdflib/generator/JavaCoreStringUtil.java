@@ -299,8 +299,9 @@ public class JavaCoreStringUtil
 			String defaultValue = schemaAttribute.getStrDefault();
 			defaultValue = defaultValue.equals(JDFConstants.EMPTYSTRING) ? "null" : "\"" + defaultValue + "\"";
 
-			strbufResult.append(strDepth2).append("atrInfoTable[").append(i).append("] = new AtrInfoTable(AttributeName.").append(attributeName.toUpperCase()).append(", 0x").append(versionInfo)
-					.append(", AttributeInfo.EnumAttributeType.").append(enumAttributeType).append(", ").append(enumType).append(", ").append(defaultValue).append(");").append(strLineEnd);
+			strbufResult.append(strDepth2).append("atrInfoTable[").append(i).append("] = new AtrInfoTable(AttributeName.").append(attributeName.toUpperCase()).append(", 0x")
+					.append(versionInfo).append(", AttributeInfo.EnumAttributeType.").append(enumAttributeType).append(", ").append(enumType).append(", ").append(defaultValue)
+					.append(");").append(strLineEnd);
 		}
 
 		strbufResult.append(strDepth1).append("}").append(strLineEnd);
@@ -393,10 +394,11 @@ public class JavaCoreStringUtil
 				final SchemaElement element = (SchemaElement) elementsForVersion.elementAt(i);
 				final String elemName = element.getStrElementName().toUpperCase();
 
-				final String versionInfo = GeneratorUtil.getVersionInfoElements(element.getIsOptionalElement(), element.getFirstVersion(), element.getLastVersion(), element.getStrMaxOccurs());
+				final String versionInfo = GeneratorUtil.getVersionInfoElements(element.getIsOptionalElement(), element.getFirstVersion(), element.getLastVersion(),
+						element.getStrMaxOccurs());
 
-				strbufResult.append(strDepth2).append("elemInfoTable[").append(i).append("] = new ElemInfoTable(ElementName.").append(elemName).append(", 0x").append(versionInfo).append(");")
-						.append(strLineEnd);
+				strbufResult.append(strDepth2).append("elemInfoTable[").append(i).append("] = new ElemInfoTable(ElementName.").append(elemName).append(", 0x").append(versionInfo)
+						.append(");").append(strLineEnd);
 			}
 
 			strbufResult.append(strDepth1).append("}").append(strLineEnd);
@@ -575,7 +577,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(String enumName)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumName);").append(strLineEnd);
+				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumName);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
 
 				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
@@ -584,7 +587,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(int enumValue)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumValue);").append(strLineEnd);
+				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumValue);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
 
 				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
@@ -788,7 +792,8 @@ public class JavaCoreStringUtil
 
 				if (schemaAttribute.getIsEnum())
 				{
-					appendAttributeGetterAndSetterForEnum(strbufResult, complexTypeName, schemaAttribute, attributeName, modifiedAttributeName, modifiedAttributeTypeName, returnType);
+					appendAttributeGetterAndSetterForEnum(strbufResult, complexTypeName, schemaAttribute, attributeName, modifiedAttributeName, modifiedAttributeTypeName,
+							returnType);
 				}
 				else
 				{
@@ -798,8 +803,7 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static void appendAttributeGetterAndSetterForEnum(final StringBuffer strbufResult, final String complexTypeName, final SchemaAttribute schemaAttribute, final String attributeName,
-			final String modifiedAttributeName, final String modifiedAttributeTypeName, final String returnType)
+	private static void appendAttributeGetterAndSetterForEnum(final StringBuffer strbufResult, final String complexTypeName, final SchemaAttribute schemaAttribute, final String attributeName, final String modifiedAttributeName, final String modifiedAttributeTypeName, final String returnType)
 	{
 		// set
 		if (!"Status".equals(attributeName) || "Queue".equals(complexTypeName) || "QueueEntry".equals(complexTypeName) || "ResourceCmdParams".equals(complexTypeName)
@@ -849,10 +853,11 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  * (5) set attribute ").append(attributeName).append(strLineEnd);
 				strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(modifiedAttributeTypeName).append(" enumVar)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", enumVar==null ? null : enumVar.getName(), null);")
+				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(modifiedAttributeTypeName).append(" enumVar)")
 						.append(strLineEnd);
+				strbufResult.append(strDepth2).append("{").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase())
+						.append(", enumVar==null ? null : enumVar.getName(), null);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 
@@ -869,13 +874,13 @@ public class JavaCoreStringUtil
 				if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 				{
 					// System.out.println ("6");
-					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
-							.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+							.append(modifiedAttributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
 				}
 				else
 				{
-					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
-							.append(", null, null));").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+							.append(modifiedAttributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
 				}
 
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -910,19 +915,21 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth2).append("  * (35) get ").append(modifiedAttributeName).append(" attribute ").append(modifiedAttributeName).append(strLineEnd);
 					strbufResult.append(strDepth2).append("  * @return ").append(modifiedAttributeTypeName).append(" the value of the attribute").append(strLineEnd);
 					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-					strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(" get").append(modifiedAttributeName).append("JDF").append("()").append(strLineEnd);
+					strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(" get").append(modifiedAttributeName).append("JDF").append("()")
+							.append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
 
 					if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 					{
 						// System.out.println ("35");
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
-								.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+								.append(modifiedAttributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));")
+								.append(strLineEnd);
 					}
 					else
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
-								.append(", null, null));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+								.append(modifiedAttributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
 					}
 
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -957,13 +964,13 @@ public class JavaCoreStringUtil
 
 					if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase())
-								.append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+								.append(attributeName.toUpperCase()).append(", null, ").append("\"").append(schemaAttribute.getStrDefault()).append("\"));").append(strLineEnd);
 					}
 					else
 					{
-						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.").append(attributeName.toUpperCase())
-								.append(", null, null));").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return ").append(modifiedAttributeTypeName).append(".getEnum(getAttribute(AttributeName.")
+								.append(attributeName.toUpperCase()).append(", null, null));").append(strLineEnd);
 					}
 
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -995,8 +1002,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", new JDFDuration().getDurationISO(), null);")
-						.append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+						.append(", new JDFDuration().getDurationISO(), null);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 
 				// set2
@@ -1006,8 +1013,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(returnTypeLocal).append(" value)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getDurationISO(), null);")
-						.append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+						.append(", value==null ? null : value.getDurationISO(), null);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 
 				// get 5
@@ -1017,7 +1024,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("String str = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("String str = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth5).append("JDFDuration ret = JDFDuration.createDuration(str);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return ret;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1033,7 +1041,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
 				strbufResult.append(strDepth3).append("JDFDate date = value;").append(strLineEnd);
 				strbufResult.append(strDepth3).append("if (date == null) date = new JDFDate();").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", date.getDateTimeISO(), null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", date.getDateTimeISO(), null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 
 				// get 12
@@ -1043,7 +1052,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("String str = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("String str = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth5).append("JDFDate ret = JDFDate.createDate(str);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return ret;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1061,8 +1071,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(returnTypeLocal).append(" value)").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value==null ? null : value.getName(), null);")
-						.append(strLineEnd);
+				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+						.append(", value==null ? null : value.getName(), null);").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 			else
@@ -1075,7 +1085,8 @@ public class JavaCoreStringUtil
 
 				if ("Attribute".equals(modifiedAttributeName))
 				{
-					strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("JDF(").append(returnTypeLocal).append(" value)").append(strLineEnd);
+					strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("JDF(").append(returnTypeLocal).append(" value)")
+							.append(strLineEnd);
 				}
 				else
 				{
@@ -1087,7 +1098,8 @@ public class JavaCoreStringUtil
 				// method body
 				if ("JDFXYPairRangeList".equals(returnTypeLocal))
 				{
-					strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", value.toString(), null);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+							.append(",value==null?null: value.toString(), null);").append(strLineEnd);
 				}
 				else
 				{
@@ -1115,7 +1127,8 @@ public class JavaCoreStringUtil
 				}
 				else
 				{
-					strbufResult.append(strDepth3).append("return getIntAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getIntAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0);")
+							.append(strLineEnd);
 				}
 
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1131,7 +1144,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 					strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF()").append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
-					strbufResult.append(strDepth3).append("return getRealAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0.0);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getRealAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0.0);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -1142,7 +1156,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 					strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
-					strbufResult.append(strDepth3).append("return getRealAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0.0);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getRealAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, 0.0);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 			}
@@ -1158,14 +1173,16 @@ public class JavaCoreStringUtil
 				{
 					strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
-					strbufResult.append(strDepth3).append("return getBoolAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, true);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getBoolAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, true);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
 				{
 					strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
-					strbufResult.append(strDepth3).append("return getBoolAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, false);").append(strLineEnd);
+					strbufResult.append(strDepth3).append("return getBoolAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, false);")
+							.append(strLineEnd);
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 
@@ -1181,8 +1198,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
 				strbufResult.append(strDepth3).append("String strAttrName = \"\";").append(strLineEnd);
 				strbufResult.append(strDepth3).append(returnTypeLocal).append(" nPlaceHolder = null;").append(strLineEnd);
-				strbufResult.append(strDepth3).append("strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
-						.append(strLineEnd);
+				strbufResult.append(strDepth3).append("strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+						.append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("nPlaceHolder = ").append(returnTypeLocal).append(".getEnum(strAttrName);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return nPlaceHolder;").append(strLineEnd);
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
@@ -1197,7 +1214,8 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("String strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);").append(strLineEnd);
+				strbufResult.append(strDepth3).append("String strAttrName = getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, null);")
+						.append(strLineEnd);
 				strbufResult.append(strDepth3).append(returnTypeLocal).append(" nPlaceHolder = ").append(returnTypeLocal).append(".create").append(returnTypeLocal.substring(3))
 						.append("(strAttrName);").append(strLineEnd);
 				strbufResult.append(strDepth3).append("return nPlaceHolder;").append(strLineEnd);
@@ -1215,10 +1233,12 @@ public class JavaCoreStringUtil
 
 						if ("Attributes".equals(modifiedAttributeName))
 						{
-							strbufResult.append(strDepth2).append("  * (21) get ").append(returnTypeLocal).append(" attribute ").append(modifiedAttributeName).append("JDF").append(strLineEnd);
+							strbufResult.append(strDepth2).append("  * (21) get ").append(returnTypeLocal).append(" attribute ").append(modifiedAttributeName).append("JDF")
+									.append(strLineEnd);
 							strbufResult.append(strDepth2).append("  * @return ").append(returnTypeLocal).append(" the value of the attribute").append(strLineEnd);
 							strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-							strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF").append("()").append(strLineEnd);
+							strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF").append("()")
+									.append(strLineEnd);
 						}
 						else
 						{
@@ -1255,10 +1275,11 @@ public class JavaCoreStringUtil
 							strbufResult.append(strDepth2).append("  * (22) get ").append(returnTypeLocal).append(" attribute ").append(modifiedAttributeName).append(strLineEnd);
 							strbufResult.append(strDepth2).append("  * @return ").append(returnTypeLocal).append(" the value of the attribute").append(strLineEnd);
 							strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-							strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF()").append(strLineEnd);
-							strbufResult.append(strDepth2).append("{").append(strLineEnd);
-							strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
+							strbufResult.append(strDepth2).append("public ").append(returnTypeLocal).append(" get").append(modifiedAttributeName).append("JDF()")
 									.append(strLineEnd);
+							strbufResult.append(strDepth2).append("{").append(strLineEnd);
+							strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+									.append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
 							strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 						}
 						else
@@ -1273,8 +1294,8 @@ public class JavaCoreStringUtil
 
 							if (schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
 							{
-								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, JDFCoreConstants.EMPTYSTRING);")
-										.append(strLineEnd);
+								strbufResult.append(strDepth3).append("return getAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase())
+										.append(", null, JDFCoreConstants.EMPTYSTRING);").append(strLineEnd);
 							}
 							else
 							{
@@ -1349,8 +1370,8 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 						strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("(int iSkip)").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);")
-								.append(strLineEnd);
+						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase())
+								.append(", null, iSkip);").append(strLineEnd);
 						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 						// get Collection
@@ -1361,12 +1382,14 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 						strbufResult.append(strDepth1).append("public Collection<").append(strReturnType).append("> getAll").append(strElementName).append("()").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						strbufResult.append(strDepth2).append("final VElement vc = getChildElementVector(ElementName.").append(strElementName.toUpperCase()).append(", null);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("final VElement vc = getChildElementVector(ElementName.").append(strElementName.toUpperCase()).append(", null);")
+								.append(strLineEnd);
 						strbufResult.append(strDepth2).append("if (vc == null || vc.isEmpty())").append(strLineEnd);
 						strbufResult.append(strDepth2).append("{").append(strLineEnd);
 						strbufResult.append(strDepth3).append("return null;").append(strLineEnd);
 						strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
-						strbufResult.append(strDepth2).append("final Vector<").append(strReturnType).append("> v = new Vector<").append(strReturnType).append(">();").append(strLineEnd);
+						strbufResult.append(strDepth2).append("final Vector<").append(strReturnType).append("> v = new Vector<").append(strReturnType).append(">();")
+								.append(strLineEnd);
 						strbufResult.append(strDepth2).append("for (int i = 0; i < vc.size(); i++)").append(strLineEnd);
 						strbufResult.append(strDepth2).append("{").append(strLineEnd);
 						strbufResult.append(strDepth3).append("v.add((").append(strReturnType).append(") vc.get(i));").append(strLineEnd);
@@ -1383,8 +1406,8 @@ public class JavaCoreStringUtil
 						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 						strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("()").append(strLineEnd);
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
-						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, 0);")
-								.append(strLineEnd);
+						strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase())
+								.append(", null, 0);").append(strLineEnd);
 						strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 					}
 
@@ -1395,8 +1418,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" getCreate").append(strElementName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.").append(strElementName.toUpperCase())
-							.append(", null, 0);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.")
+							.append(strElementName.toUpperCase()).append(", null, 0);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -1409,8 +1432,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" getCreate").append(strElementName).append("(int iSkip)").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.").append(strElementName.toUpperCase())
-							.append(", null, iSkip);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getCreateElement_JDFElement(ElementName.")
+							.append(strElementName.toUpperCase()).append(", null, iSkip);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 					// get
@@ -1422,8 +1445,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" get").append(strElementName).append("(int iSkip)").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase()).append(", null, iSkip);")
-							.append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") getElement(ElementName.").append(strElementName.toUpperCase())
+							.append(", null, iSkip);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 
 					// get Collection
@@ -1448,8 +1471,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("() ").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElementN(ElementName.").append(strElementName.toUpperCase()).append(", 1, null);")
-							.append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElementN(ElementName.").append(strElementName.toUpperCase())
+							.append(", 1, null);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -1461,8 +1484,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth1).append(" */").append(strLineEnd);
 					strbufResult.append(strDepth1).append("public ").append(strReturnType).append(" append").append(strElementName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth1).append("{").append(strLineEnd);
-					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElement(ElementName.").append(strElementName.toUpperCase()).append(", null);")
-							.append(strLineEnd);
+					strbufResult.append(strDepth2).append("return (").append(strReturnType).append(") appendElement(ElementName.").append(strElementName.toUpperCase())
+							.append(", null);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
 
@@ -1481,7 +1504,8 @@ public class JavaCoreStringUtil
 						if ("JDFShapeElement".equals(strReturnType))
 							strbufResult.append(strDepth1).append("public void ref").append(strElementName).append("(JDFShapeElement").append(" refTarget)").append(strLineEnd);
 						else
-							strbufResult.append(strDepth1).append("public void ref").append(strElementName).append("(JDF").append(strElementName).append(" refTarget)").append(strLineEnd);
+							strbufResult.append(strDepth1).append("public void ref").append(strElementName).append("(JDF").append(strElementName).append(" refTarget)")
+									.append(strLineEnd);
 
 						strbufResult.append(strDepth1).append("{").append(strLineEnd);
 						strbufResult.append(strDepth2).append("refElement(refTarget);").append(strLineEnd);
