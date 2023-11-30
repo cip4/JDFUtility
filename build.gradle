@@ -19,7 +19,7 @@ java {
     withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
-    }
+	}
 }
 
 compileJava.options.encoding = "UTF-8"
@@ -29,57 +29,57 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = project.name
-
+			
             from components.java
             versionMapping {
                 usage('java-api') {
                     fromResolutionOf('runtimeClasspath')
-                }
+				}
                 usage('java-runtime') {
                     fromResolutionResult()
-                }
-            }
+				}
+			}
             pom {
                 name = project.description
                 description = 'CIP4 JDF Utilities'
                 url = 'https://github.com/cip4/JDFUtility'
-
+				
                 organization {
                     name = "CIP4 Organization"
                     url = "https://www.cip4.org"
-                }
+				}
                 developers {
                     developer {
                         id = "rainer-prosi"
                         name = "Dr. Rainer Prosi"
-                    }
-                }
+					}
+				}
                 licenses {
                     license {
                         name = 'CIP4 Software License'
                         url = 'https://github.com/cip4/JDFUtility/blob/master/LICENSE.md'
-                    }
-                }
+					}
+				}
                 scm {
                     connection = 'https://github.com/cip4/JDFUtility.git'
                     developerConnection = 'scm:git:https://github.com/cip4/JDFUtility.git'
                     url = 'https://github.com/cip4/JDFUtility'
-                }
-            }
-        }
-    }
+				}
+			}
+		}
+	}
     repositories {
         maven {
             def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
             def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
+			
             credentials {
                 username ossrhUsername
                 password ossrhPassword
-            }
-        }
-    }
+			}
+		}
+	}
 }
 
 nexusStaging {
@@ -95,43 +95,48 @@ repositories {
     mavenCentral()
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
+	}
 }
 
 signing {
     if (!version.endsWith("SNAPSHOT")) {
         sign publishing.publications.mavenJava
-    }
+	}
 }
 
 javadoc {
     failOnError = false
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
-    }
+	}
 }
 
 processResources {
     filesMatching(['**/*.properties']) {
         filter(ReplaceTokens, tokens: [
-                'name': project.properties['description'],
-                'version': project.properties['version'],
-                'artifactId': project.properties['name'],
-                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ')
+		'name': project.properties['description'],
+		'version': project.properties['version'],
+		'artifactId': project.properties['name'],
+		'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ')
         ])
-    }
+	}
 }
 
 dependencies {
     implementation('org.cip4.lib.jdf:JDFLibJ:2.1.7.+') {
         exclude group: 'xml-apis'
-    }
-
-    implementation 'org.eclipse.jetty:jetty-servlet:10.0.15'
+	}
+    implementation ('xerces:xercesImpl:2.12.2'){
+		exclude group: 'xml-apis'
+	}
+	
+	implementation 'commons-lang:commons-lang:2.6'
+	implementation 'org.eclipse.jetty:jetty-servlet:10.0.15'
     implementation 'commons-fileupload:commons-fileupload:1.5'
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'org.apache.logging.log4j:log4j-jcl:2.21.1'
-
+	implementation 'javax.mail:mailapi:1.4.3'
+	
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
     testImplementation 'org.springframework:spring-test:5.3.30'
@@ -144,7 +149,7 @@ jacocoTestReport {
     reports {
         xml.required = true
         html.required = false
-    }
+	}
 }
 
 test {
@@ -157,22 +162,22 @@ test {
 jar {
     manifest {
         attributes(
-                "Implementation-Title": project.description,
-                "Implementation-Version": project.version,
-                "Implementation-Vendor-Id": project.group,
-                "Specification-Title": project.description,
-                "Specification-Version": project.version,
-                "Build-Jdk": JavaVersion.current(),
+		"Implementation-Title": project.description,
+		"Implementation-Version": project.version,
+		"Implementation-Vendor-Id": project.group,
+		"Specification-Title": project.description,
+		"Specification-Version": project.version,
+		"Build-Jdk": JavaVersion.current(),
         )
-    }
+	}
 }
 
 task fatJar(type: Jar) {
     manifest {
         attributes(
-                "Main-Class": "org.cip4.jdfutility.exe.CheckJDFServer"
-         )
-    }
+		"Main-Class": "org.cip4.jdfutility.exe.CheckJDFServer"
+		)
+	}
     archiveAppendix = "fat"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -182,10 +187,10 @@ task fatJar(type: Jar) {
 tasks.withType(Test) {
     testLogging {
         events TestLogEvent.FAILED,
-               TestLogEvent.SKIPPED
+		TestLogEvent.SKIPPED
         exceptionFormat TestExceptionFormat.FULL
         showExceptions true
         showCauses true
         showStackTraces true
-    }
+	}
 }
