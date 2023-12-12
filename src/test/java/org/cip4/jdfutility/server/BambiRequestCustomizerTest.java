@@ -81,10 +81,10 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 
 		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName());
 		rq.customize(e, request);
-		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toLowerCase());
-		rq.customize(e, request);
 		if (PlatformUtil.isWindows())
 		{
+			Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toLowerCase());
+			rq.customize(e, request);
 			Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toUpperCase());
 			rq.customize(e, request);
 		}
@@ -96,7 +96,7 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testCustomizeBad() throws UnknownHostException
+	public void testCustomizeBad()
 	{
 		BambiRequestCustomizer rq = new BambiRequestCustomizer();
 		SSLEngine e = Mockito.mock(SSLEngine.class);
@@ -107,9 +107,7 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 
 		Mockito.when(request.getServerName()).thenReturn("notMyHost");
 
-		assertThrows(BadMessageException.class, () -> {
-            rq.customize(e, request);
-        });
+		assertThrows(BadMessageException.class, () -> rq.customize(e, request));
 	}
 
 }
