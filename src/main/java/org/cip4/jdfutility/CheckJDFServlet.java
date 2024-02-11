@@ -536,7 +536,7 @@ public class CheckJDFServlet extends UtilityServlet
 		out.close();
 	}
 
-	private JDFValidator getChecker(boolean bUseSchema, boolean bIgnorePrivate, boolean prettyFormat, final String validationLevel, File devcapFile)
+	private JDFValidator getChecker(final boolean bUseSchema, final boolean bIgnorePrivate, final boolean prettyFormat, final String validationLevel, final File devcapFile)
 	{
 		final JDFValidator checker = new JDFValidator();
 
