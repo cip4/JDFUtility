@@ -83,9 +83,9 @@ class JDFSchemaUtilTest
 	@Test
 	public void testschema()
 	{
+		FileUtil.deleteAll(new File("tmp/schema"));
 		if (new UrlCheck("https://schema.cip4.org").pingRC(123) == 200)
 		{
-			FileUtil.deleteAll(new File("tmp/schema"));
 			for (int i = 0; i < 3; i++)
 			{
 				final File f12 = new File("tmp/schema/1.2");
@@ -101,6 +101,17 @@ class JDFSchemaUtilTest
 				final File f22a = JDFSchemaUtil.downloadschema(f22, EnumVersion.Version_2_2, 123456);
 				assertTrue(f22a.exists());
 			}
+		}
+		else
+		{
+			final File f12 = new File("tmp/schema/1.2");
+			final File f12a = JDFSchemaUtil.downloadschema(f12, EnumVersion.Version_1_2, 123456);
+			final File f19 = new File("tmp/schema/1.9/JDF.xsd");
+			final File f19a = JDFSchemaUtil.downloadschema(f19, EnumVersion.Version_1_9, 123456);
+			final File f21 = new File("tmp/schema/2.1/xjdf.xsd");
+			final File f21a = JDFSchemaUtil.downloadschema(f21, EnumVersion.Version_2_1, 123456);
+			final File f22 = new File("tmp/schema/2.2/xjdf.xsd");
+			final File f22a = JDFSchemaUtil.downloadschema(f22, EnumVersion.Version_2_2, 123456);
 		}
 	}
 
