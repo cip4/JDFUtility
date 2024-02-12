@@ -75,42 +75,43 @@ import java.io.File;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.net.UrlCheck;
+import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.junit.jupiter.api.Test;
 
-class JDFSchemaUtilTest
+class JDFSchemaUtilTest extends JDFUtilityTestBase
 {
 
 	@Test
 	public void testschema()
 	{
-		FileUtil.deleteAll(new File("tmp/schema"));
+		FileUtil.deleteAll(new File(sm_dirTestDataTemp + "tmp/schema"));
 		if (new UrlCheck("https://schema.cip4.org").pingRC(123) == 200)
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				final File f12 = new File("tmp/schema/1.2");
+				final File f12 = new File(sm_dirTestDataTemp + "tmp/schema/1.2");
 				final File f12a = JDFSchemaUtil.downloadschema(f12, EnumVersion.Version_1_2, 123456);
 				assertTrue(f12a.exists());
-				final File f19 = new File("tmp/schema/1.9/JDF.xsd");
+				final File f19 = new File(sm_dirTestDataTemp + "tmp/schema/1.9/JDF.xsd");
 				final File f19a = JDFSchemaUtil.downloadschema(f19, EnumVersion.Version_1_9, 123456);
 				assertTrue(f19a.exists());
-				final File f21 = new File("tmp/schema/2.1/xjdf.xsd");
+				final File f21 = new File(sm_dirTestDataTemp + "tmp/schema/2.1/xjdf.xsd");
 				final File f21a = JDFSchemaUtil.downloadschema(f21, EnumVersion.Version_2_1, 123456);
 				assertTrue(f21a.exists());
-				final File f22 = new File("tmp/schema/2.2/xjdf.xsd");
+				final File f22 = new File(sm_dirTestDataTemp + "tmp/schema/2.2/xjdf.xsd");
 				final File f22a = JDFSchemaUtil.downloadschema(f22, EnumVersion.Version_2_2, 123456);
 				assertTrue(f22a.exists());
 			}
 		}
 		else
 		{
-			final File f12 = new File("tmp/schema/1.2");
+			final File f12 = new File(sm_dirTestDataTemp + "tmp/schema/1.2");
 			final File f12a = JDFSchemaUtil.downloadschema(f12, EnumVersion.Version_1_2, 123456);
-			final File f19 = new File("tmp/schema/1.9/JDF.xsd");
+			final File f19 = new File(sm_dirTestDataTemp + "tmp/schema/1.9/JDF.xsd");
 			final File f19a = JDFSchemaUtil.downloadschema(f19, EnumVersion.Version_1_9, 123456);
-			final File f21 = new File("tmp/schema/2.1/xjdf.xsd");
+			final File f21 = new File(sm_dirTestDataTemp + "tmp/schema/2.1/xjdf.xsd");
 			final File f21a = JDFSchemaUtil.downloadschema(f21, EnumVersion.Version_2_1, 123456);
-			final File f22 = new File("tmp/schema/2.2/xjdf.xsd");
+			final File f22 = new File(sm_dirTestDataTemp + "tmp/schema/2.2/xjdf.xsd");
 			final File f22a = JDFSchemaUtil.downloadschema(f22, EnumVersion.Version_2_2, 123456);
 		}
 	}
