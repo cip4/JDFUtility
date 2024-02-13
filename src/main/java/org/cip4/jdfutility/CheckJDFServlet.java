@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -332,21 +332,21 @@ public class CheckJDFServlet extends UtilityServlet
 
 		JDFDoc updateSingle(EnumVersion version, final JDFDoc d0)
 		{
-			final KElement k = d0 == null ? null : d0.getRoot();
+			final KElement k0 = d0 == null ? null : d0.getRoot();
 
 			final JDFDoc d;
-			if (!XJDFHelper.isXJDF(k) && !XJDFHelper.isXJMF(k) && version != null && version.isXJDF())
+			if (!XJDFHelper.isXJDF(k0) && !XJDFHelper.isXJMF(k0) && version != null && version.isXJDF())
 			{
 				final XJDF20 jdfToXJDFConverter = new XJDF20();
-				final KElement converted = jdfToXJDFConverter.convert(k);
+				final KElement converted = jdfToXJDFConverter.convert(k0);
 				d = converted == null ? null : new JDFDoc(converted.getOwnerDocument());
 			}
 			else
 			{
-				if ((XJDFHelper.isXJDF(k) || XJDFHelper.isXJMF(k)) && version != null && !version.isXJDF())
+				if ((XJDFHelper.isXJDF(k0) || XJDFHelper.isXJMF(k0)) && version != null && !version.isXJDF())
 				{
 					final XJDFToJDFConverter xjdfToJDFConverter = new XJDFToJDFConverter(null);
-					d = xjdfToJDFConverter.convert(k);
+					d = xjdfToJDFConverter.convert(k0);
 				}
 				else
 				{
@@ -354,6 +354,8 @@ public class CheckJDFServlet extends UtilityServlet
 				}
 				if (d != null)
 				{
+					final KElement k = d.getRoot();
+
 					if (k instanceof JDFElement)
 					{
 						log.info("Updating to " + version + " ... ");
