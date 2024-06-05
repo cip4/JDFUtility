@@ -46,7 +46,6 @@ import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.server.JettyServer.JettySSLData;
-import org.cip4.jdfutility.server.JettyServer.MyResourceHandler;
 import org.junit.jupiter.api.Test;
 
 public class JettyServerTest extends JDFUtilityTestBase
@@ -106,7 +105,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setSSLPort(443);
-		JettySSLData sslData = ns.getSSLData();
+		final JettySSLData sslData = ns.getSSLData();
 		assertNotNull(sslData.toString());
 		sslData.setAllowFlakySSL(true);
 		assertTrue(sslData.isAllowFlakySSL());
@@ -124,7 +123,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setSSLPort(443);
-		JettySSLData sslData = ns.getSSLData();
+		final JettySSLData sslData = ns.getSSLData();
 		assertNotNull(sslData.getKeystore());
 
 	}
@@ -172,8 +171,19 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
-		MyResourceHandler rh = ns.new MyResourceHandler("foo");
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		assertNull(rh.getResource("nix"));
+	}
+
+	@Test
+	public void testResHandlerWL() throws InterruptedException
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
+		rh.addBase("boo");
+		assertNull(rh.getResource("foo/nix"));
+		assertNull(rh.getResource("foo/boo"));
 	}
 
 	@Test
@@ -181,7 +191,7 @@ public class JettyServerTest extends JDFUtilityTestBase
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
-		MyResourceHandler rh = ns.new MyResourceHandler("foo");
+		final MyResourceHandler rh = new MyResourceHandler("foo", "bar");
 		assertNotNull(rh.toString());
 	}
 
