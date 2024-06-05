@@ -52,7 +52,6 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.FileUtil;
-import org.cip4.jdflib.util.StringUtil;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -68,7 +67,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 /**
@@ -95,7 +93,7 @@ public abstract class JettyServer
 			return keystoreType;
 		}
 
-		public void setKeystoreType(String keystoretype)
+		public void setKeystoreType(final String keystoretype)
 		{
 			this.keystoreType = keystoretype;
 		}
@@ -117,7 +115,7 @@ public abstract class JettyServer
 			return password;
 		}
 
-		public void setPassword(String password)
+		public void setPassword(final String password)
 		{
 			this.password = password;
 		}
@@ -132,7 +130,7 @@ public abstract class JettyServer
 		 * 
 		 * @param allowFlakySSL
 		 */
-		public void setAllowFlakySSL(boolean allowFlakySSL)
+		public void setAllowFlakySSL(final boolean allowFlakySSL)
 		{
 			this.allowFlakySSL = allowFlakySSL;
 		}
@@ -158,12 +156,12 @@ public abstract class JettyServer
 				try
 				{
 					log.info("Reading " + f.getAbsolutePath());
-					BufferedInputStream bufferedInputStream = FileUtil.getBufferedInputStream(f);
+					final BufferedInputStream bufferedInputStream = FileUtil.getBufferedInputStream(f);
 					keyStore.load(bufferedInputStream, password.toCharArray());
 					bufferedInputStream.close();
 					return keyStore;
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					log.warn("Cannot load keystore at: " + f.getAbsolutePath(), e);
 				}
@@ -180,7 +178,7 @@ public abstract class JettyServer
 			return keystorePath;
 		}
 
-		public void setKeystorePath(String keystorePath)
+		public void setKeystorePath(final String keystorePath)
 		{
 			this.keystorePath = keystorePath;
 		}
@@ -269,7 +267,7 @@ public abstract class JettyServer
 	 * @return may be used for additional setup
 	 */
 	@Deprecated
-	public void setSSLPort(final int port, String dummy)
+	public void setSSLPort(final int port, final String dummy)
 	{
 		sslPort = port;
 	}
@@ -328,13 +326,13 @@ public abstract class JettyServer
 
 			final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
 
-			SecureRequestCustomizer customizer = getRequestCustomizer();
+			final SecureRequestCustomizer customizer = getRequestCustomizer();
 			customizer.setSniHostCheck(!sslData.allowFlakySSL);
 			customizer.setSniRequired(!sslData.allowFlakySSL);
 			customizer.setStsIncludeSubDomains(sslData.allowFlakySSL);
 			httpsConfig.addCustomizer(customizer);
 
-			SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 			sslContextFactory.setKeyStore(sslData.getKeystore());
 			sslContextFactory.setKeyStorePassword(sslData.getPassword());
 
@@ -350,7 +348,7 @@ public abstract class JettyServer
 		{
 			log.info("Updating standard port to: " + thePort);
 			final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(httpConfig);
-			ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
+			final ServerConnector connector = new ServerConnector(server, httpConnectionFactory);
 			connector.setPort(thePort);
 			server.addConnector(connector);
 		}
@@ -443,7 +441,7 @@ public abstract class JettyServer
 	 *
 	 * @return
 	 */
-	public String getBaseURL(boolean ssl)
+	public String getBaseURL(final boolean ssl)
 	{
 		try
 		{
@@ -466,57 +464,11 @@ public abstract class JettyServer
 	 */
 	public String getBaseURL()
 	{
-		String http = getBaseURL(false);
-		String ssl = getBaseURL(true);
+		final String http = getBaseURL(false);
+		final String ssl = getBaseURL(true);
 		if (http == null)
 			return ssl;
 		return http;
-	}
-
-	/**
-	 * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
-	 *
-	 * @author rainer prosi
-	 * @date Dec 10, 2010
-	 */
-	public class MyResourceHandler extends ResourceHandler
-	{
-
-		public MyResourceHandler(final String strip)
-		{
-			super();
-			this.strip = StringUtil.getNonEmpty(strip);
-		}
-
-		private final String strip;
-
-		@Override
-		public Resource getResource(String url)
-		{
-
-			if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
-			{
-				url = url.substring(strip.length());
-			}
-			try
-			{
-				if ("".equals(url) || "/".equals(url))
-				{
-					return super.getResource(getHome());
-				}
-				return super.getResource(url);
-			}
-			catch (Exception x)
-			{
-				return null;
-			}
-		}
-
-		@Override
-		public String toString()
-		{
-			return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getResourceBase() + "]";
-		}
 	}
 
 	/**
@@ -542,7 +494,7 @@ public abstract class JettyServer
 	 */
 	protected ResourceHandler createResourceHandler()
 	{
-		final ResourceHandler resourceHandler = new MyResourceHandler(context);
+		final ResourceHandler resourceHandler = new MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
 		return resourceHandler;
 	}

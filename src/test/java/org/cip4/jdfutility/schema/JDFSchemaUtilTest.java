@@ -95,6 +95,9 @@ class JDFSchemaUtilTest extends JDFUtilityTestBase
 				final File f19 = new File(sm_dirTestDataTemp + "tmp/schema/1.9/JDF.xsd");
 				final File f19a = JDFSchemaUtil.downloadschema(f19, EnumVersion.Version_1_9, 123456);
 				assertTrue(f19a.exists());
+				final File f20 = new File(sm_dirTestDataTemp + "tmp/schema/2.0/xjdf.xsd");
+				final File f20a = JDFSchemaUtil.downloadschema(f20, EnumVersion.Version_2_0, 123456);
+				assertTrue(f20a.exists());
 				final File f21 = new File(sm_dirTestDataTemp + "tmp/schema/2.1/xjdf.xsd");
 				final File f21a = JDFSchemaUtil.downloadschema(f21, EnumVersion.Version_2_1, 123456);
 				assertTrue(f21a.exists());
@@ -109,6 +112,8 @@ class JDFSchemaUtilTest extends JDFUtilityTestBase
 			final File f12a = JDFSchemaUtil.downloadschema(f12, EnumVersion.Version_1_2, 123456);
 			final File f19 = new File(sm_dirTestDataTemp + "tmp/schema/1.9/JDF.xsd");
 			final File f19a = JDFSchemaUtil.downloadschema(f19, EnumVersion.Version_1_9, 123456);
+			final File f20 = new File(sm_dirTestDataTemp + "tmp/schema/2.0/xjdf.xsd");
+			final File f20a = JDFSchemaUtil.downloadschema(f20, EnumVersion.Version_2_0, 123456);
 			final File f21 = new File(sm_dirTestDataTemp + "tmp/schema/2.1/xjdf.xsd");
 			final File f21a = JDFSchemaUtil.downloadschema(f21, EnumVersion.Version_2_1, 123456);
 			final File f22 = new File(sm_dirTestDataTemp + "tmp/schema/2.2/xjdf.xsd");
