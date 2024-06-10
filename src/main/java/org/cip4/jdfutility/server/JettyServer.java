@@ -265,6 +265,7 @@ public abstract class JettyServer
 	/**
 	 * @param port the ssl port
 	 * @return may be used for additional setup
+	 * @deprecated use the single argument version
 	 */
 	@Deprecated
 	public void setSSLPort(final int port, final String dummy)
@@ -494,9 +495,27 @@ public abstract class JettyServer
 	 */
 	protected ResourceHandler createResourceHandler()
 	{
-		final ResourceHandler resourceHandler = new MyResourceHandler(context, getHome());
+		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
 		return resourceHandler;
+	}
+
+	/**
+	 * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
+	 *
+	 * @author rainer prosi
+	 * @date Dec 10, 2010
+	 * @deprecated use superclass
+	 */
+	@Deprecated
+	public class MyResourceHandler extends org.cip4.jdfutility.server.MyResourceHandler
+	{
+
+		public MyResourceHandler(final String strip)
+		{
+			super(strip, null);
+		}
+
 	}
 
 	/**

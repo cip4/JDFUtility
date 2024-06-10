@@ -48,7 +48,7 @@ import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.server.JettyServer.JettySSLData;
 import org.junit.jupiter.api.Test;
 
-public class JettyServerTest extends JDFUtilityTestBase
+class JettyServerTest extends JDFUtilityTestBase
 {
 
 	static volatile int PORT = 33666;
