@@ -491,11 +491,24 @@ public abstract class JettyServer
 	}
 
 	/**
+	 * @author rainer prosi
+	 */
+	public class MyResourceHandler extends org.cip4.jdfutility.server.MyResourceHandler
+	{
+
+		public MyResourceHandler(final String strip)
+		{
+			super(strip, getHome());
+		}
+
+	}
+
+	/**
 	 * @return
 	 */
 	protected ResourceHandler createResourceHandler()
 	{
-		final ResourceHandler resourceHandler = new MyResourceHandler(context, getHome());
+		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
 		return resourceHandler;
 	}
