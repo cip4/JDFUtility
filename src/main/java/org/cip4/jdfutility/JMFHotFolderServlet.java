@@ -148,7 +148,7 @@ public class JMFHotFolderServlet extends HttpServlet
 		if (inc % 100 == 0)
 			System.out.println("jmf dump service " + index);
 
-		final String s = StringUtil.sprintf("m%08i.jmf", "" + inc);
+		final String s = StringUtil.sprintf("m%08d.jmf", "" + inc);
 		final File f = FileUtil.getFileInDirectory(baseDir, new File(s));
 		try
 		{

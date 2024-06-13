@@ -1,7 +1,5 @@
-/*
- *
+/**
  * The CIP4 Software License, Version 1.0
- *
  *
  * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
@@ -36,73 +34,83 @@
  *
  *
  */
-package org.cip4.jdfutility;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+package org.cip4.jdfutility.server;
 
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFElement.EnumVersion;
-import org.cip4.jdflib.extensions.XJDFHelper;
-import org.cip4.jdfutility.CheckJDFServlet.FixCall;
-import org.junit.jupiter.api.Test;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class FixJDFServletTest extends JDFUtilityTestBase
+import org.cip4.jdflib.util.StringUtil;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.Resource;
+
+/**
+ * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
+ *
+ * @author rainer prosi
+ * @date Dec 10, 2010
+ */
+public class MyResourceHandler extends ResourceHandler
 {
 
-	@Test
-	public void testXX()
+	private final String home;
+	private final Collection<File> whiteList;
+
+	public MyResourceHandler(final String strip, final String home)
 	{
-		final XJDFHelper h = new XJDFHelper(EnumVersion.Version_2_0, "J");
-		final CheckJDFServlet checkJDFServlet = new CheckJDFServlet();
-		final FixCall s = checkJDFServlet.new FixCall(checkJDFServlet, null, null);
-		final JDFDoc d1 = s.updateSingle(EnumVersion.Version_2_1, new JDFDoc(h.getRoot().getOwnerDocument()));
-		assertNotNull(XJDFHelper.getHelper(d1));
+		super();
+		this.strip = StringUtil.getNonEmpty(strip);
+		this.home = home;
+		whiteList = new ArrayList<>();
 	}
 
-	@Test
-	public void testXJ()
+	private final String strip;
+
+	@Override
+	public Resource getResource(String url)
 	{
-		final XJDFHelper h = new XJDFHelper(EnumVersion.Version_2_0, "J");
-		final CheckJDFServlet checkJDFServlet = new CheckJDFServlet();
-		final FixCall s = checkJDFServlet.new FixCall(checkJDFServlet, null, null);
-		final JDFDoc d1 = s.updateSingle(EnumVersion.Version_1_6, new JDFDoc(h.getRoot().getOwnerDocument()));
-		assertNull(XJDFHelper.getHelper(d1));
-		assertEquals(EnumVersion.Version_1_6, d1.getJDFRoot().getVersion(true));
+
+		if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
+		{
+			url = url.substring(strip.length());
+		}
+		try
+		{
+			if ("".equals(url) || "/".equals(url))
+			{
+				return super.getResource(home);
+			}
+			else if (!whiteList.isEmpty())
+			{
+				final String base = StringUtil.token(url, 0, "/");
+				if (!whiteList.contains(new File(base)))
+				{
+					return null;
+				}
+			}
+
+			return super.getResource(url);
+		}
+		catch (final Exception x)
+		{
+			return null;
+		}
 	}
 
-	@Test
-	public void testXJ3()
+	/**
+	 * add a base file to the whitelist. after adding one, all others are blocked
+	 * 
+	 * @param base
+	 */
+	public void addBase(final String base)
 	{
-		final XJDFHelper h = new XJDFHelper(EnumVersion.Version_2_0, "J");
-		final CheckJDFServlet checkJDFServlet = new CheckJDFServlet();
-		final FixCall s = checkJDFServlet.new FixCall(checkJDFServlet, null, null);
-		final JDFDoc d1 = s.updateSingle(EnumVersion.Version_1_3, new JDFDoc(h.getRoot().getOwnerDocument()));
-		assertNull(XJDFHelper.getHelper(d1));
-		assertEquals(EnumVersion.Version_1_3, d1.getJDFRoot().getVersion(true));
+		whiteList.add(new File(base));
 	}
 
-	@Test
-	public void testJJ()
+	@Override
+	public String toString()
 	{
-		final JDFDoc d0 = new JDFDoc(ElementName.JDF);
-		final CheckJDFServlet checkJDFServlet = new CheckJDFServlet();
-		final FixCall s = checkJDFServlet.new FixCall(checkJDFServlet, null, null);
-		final JDFDoc d1 = s.updateSingle(EnumVersion.Version_1_6, d0);
-		assertNull(XJDFHelper.getHelper(d1));
-		assertEquals(EnumVersion.Version_1_6, d1.getJDFRoot().getVersion(true));
+		return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getResourceBase() + "]";
 	}
-
-	@Test
-	public void testJX()
-	{
-		final JDFDoc d0 = new JDFDoc(ElementName.JDF);
-		final CheckJDFServlet checkJDFServlet = new CheckJDFServlet();
-		final FixCall s = checkJDFServlet.new FixCall(checkJDFServlet, null, null);
-		final JDFDoc d1 = s.updateSingle(EnumVersion.Version_2_1, d0);
-		assertNotNull(XJDFHelper.getHelper(d1));
-	}
-
 }
