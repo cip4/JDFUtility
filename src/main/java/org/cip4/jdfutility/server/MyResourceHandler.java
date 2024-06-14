@@ -37,12 +37,12 @@
 
 package org.cip4.jdfutility.server;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.cip4.jdflib.util.StringUtil;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.EmptyResource;
 import org.eclipse.jetty.util.resource.Resource;
 
 /**
@@ -55,14 +55,14 @@ public class MyResourceHandler extends ResourceHandler
 {
 
 	private final String home;
-	private final Collection<File> whiteList;
+	private final Collection<String> whiteList;
 
 	public MyResourceHandler(final String strip, final String home)
 	{
 		super();
 		this.strip = StringUtil.getNonEmpty(strip);
 		this.home = home;
-		whiteList = new ArrayList<>();
+		whiteList = new HashSet<>();
 	}
 
 	private final String strip;
@@ -84,9 +84,9 @@ public class MyResourceHandler extends ResourceHandler
 			else if (!whiteList.isEmpty())
 			{
 				final String base = StringUtil.token(url, 0, "/");
-				if (!whiteList.contains(new File(base)))
+				if (!whiteList.contains(base.toLowerCase()))
 				{
-					return null;
+					return EmptyResource.INSTANCE;
 				}
 			}
 
@@ -105,7 +105,7 @@ public class MyResourceHandler extends ResourceHandler
 	 */
 	public void addBase(final String base)
 	{
-		whiteList.add(new File(base));
+		whiteList.add(base.toLowerCase());
 	}
 
 	@Override
