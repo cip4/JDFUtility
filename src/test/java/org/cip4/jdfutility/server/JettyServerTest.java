@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2023 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -46,6 +46,7 @@ import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.server.JettyServer.JettySSLData;
+import org.eclipse.jetty.util.resource.EmptyResource;
 import org.junit.jupiter.api.Test;
 
 class JettyServerTest extends JDFUtilityTestBase
@@ -169,8 +170,6 @@ class JettyServerTest extends JDFUtilityTestBase
 	@Test
 	public void testResHandler() throws InterruptedException
 	{
-		final HTTPDump ns = new HTTPDump();
-		ns.setPort(getPort());
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		assertNull(rh.getResource("nix"));
 	}
@@ -178,19 +177,16 @@ class JettyServerTest extends JDFUtilityTestBase
 	@Test
 	public void testResHandlerWL() throws InterruptedException
 	{
-		final HTTPDump ns = new HTTPDump();
-		ns.setPort(getPort());
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		rh.addBase("boo");
-		assertNull(rh.getResource("foo/nix"));
-		assertNull(rh.getResource("foo/boo"));
+		assertEquals(EmptyResource.INSTANCE, rh.getResource("/foo/nix"));
+		assertEquals(EmptyResource.INSTANCE, rh.getResource("/foo/boo"));
+		assertEquals(null, rh.getResource("/boo"));
 	}
 
 	@Test
 	public void testResHandlerString() throws InterruptedException
 	{
-		final HTTPDump ns = new HTTPDump();
-		ns.setPort(getPort());
 		final MyResourceHandler rh = new MyResourceHandler("foo", "bar");
 		assertNotNull(rh.toString());
 	}
