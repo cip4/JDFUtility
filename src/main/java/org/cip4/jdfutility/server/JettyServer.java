@@ -265,6 +265,7 @@ public abstract class JettyServer
 	/**
 	 * @param port the ssl port
 	 * @return may be used for additional setup
+	 * @deprecated use the single argument version
 	 */
 	@Deprecated
 	public void setSSLPort(final int port, final String dummy)
@@ -490,12 +491,26 @@ public abstract class JettyServer
 	}
 
 	/**
+	 * @author rainer prosi
+	 */
+	public class MyResourceHandler extends org.cip4.jdfutility.server.MyResourceHandler
+	{
+
+		public MyResourceHandler(final String strip)
+		{
+			super(strip, getHome());
+		}
+
+	}
+
+	/**
 	 * @return
 	 */
 	protected ResourceHandler createResourceHandler()
 	{
-		final ResourceHandler resourceHandler = new MyResourceHandler(context, getHome());
+		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
+		resourceHandler.setDirAllowed(false);
 		return resourceHandler;
 	}
 
