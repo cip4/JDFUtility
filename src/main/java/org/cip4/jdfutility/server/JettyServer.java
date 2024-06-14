@@ -506,9 +506,9 @@ public abstract class JettyServer
 	/**
 	 * @return
 	 */
-	protected org.cip4.jdfutility.server.MyResourceHandler createResourceHandler()
+	protected ResourceHandler createResourceHandler()
 	{
-		final org.cip4.jdfutility.server.MyResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
+		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
 		resourceHandler.setDirAllowed(false);
 		return resourceHandler;
