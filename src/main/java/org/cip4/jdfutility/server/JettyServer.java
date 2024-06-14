@@ -510,6 +510,7 @@ public abstract class JettyServer
 	{
 		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
 		resourceHandler.setResourceBase(".");
+		resourceHandler.setDirAllowed(false);
 		return resourceHandler;
 	}
 
