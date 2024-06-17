@@ -30,6 +30,8 @@
 // package
 package org.cip4.jdflib.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,13 @@ public class JavaCoreStringUtil
 		public static List getEnumList()
 		{
 			return getEnumList(EnumVersion.class);
+		}
+
+		public static List<EnumVersion> getReverseList()
+		{
+			final List<EnumVersion> enumList = new ArrayList<>(getEnumList(EnumVersion.class));
+			Collections.reverse(enumList);
+			return enumList;
 		}
 
 		public static EnumVersion getLastVersion()

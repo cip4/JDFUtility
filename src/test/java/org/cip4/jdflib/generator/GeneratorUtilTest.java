@@ -10,8 +10,8 @@ class GeneratorUtilTest
 	@Test
 	void testVersionAtts()
 	{
-		assertEquals("1122222222l", GeneratorUtil.getVersionInfoAttributes("required", "1.2", null));
-		assertEquals("2222244444l", GeneratorUtil.getVersionInfoAttributes("required", null, "1.4"));
+		assertEquals(GeneratorUtil.getVersionInfoAttributes("required", "1.2", null), "1122222222l");
+		assertEquals(GeneratorUtil.getVersionInfoAttributes("required", null, "1.4"), "2222244444l");
 	}
 
 }

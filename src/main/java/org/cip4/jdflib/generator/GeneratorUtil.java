@@ -2346,7 +2346,7 @@ public class GeneratorUtil
 	public static String getVersionInfoAttributes(final String usage, final String firstVersion, final String lastVersion)
 	{
 		// we need a vector the iterator can be random and we need a spezific order
-		final List<EnumVersion> version = EnumVersion.getEnumList();
+		final List<EnumVersion> version = EnumVersion.getReverseList();
 
 		EnumVersion eFirstVer = EnumVersion.getEnum(firstVersion);
 		EnumVersion eLastVer = EnumVersion.getEnum(lastVersion);
@@ -2411,7 +2411,7 @@ public class GeneratorUtil
 	public static String getVersionInfoElements(final boolean isOptional, final String firstVersion, final String lastVersion, final String maxOccurs)
 	{
 		// we need a vector the iterator can be random and we need a spezific order
-		final List<EnumVersion> version = EnumVersion.getEnumList();
+		final List<EnumVersion> version = EnumVersion.getReverseList();
 
 		EnumVersion eLastVer = EnumVersion.getEnum(lastVersion);
 		EnumVersion eFirstVer = EnumVersion.getEnum(firstVersion);
