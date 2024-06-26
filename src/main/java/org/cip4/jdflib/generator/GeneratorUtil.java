@@ -25,6 +25,7 @@ package org.cip4.jdflib.generator;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.cip4.jdflib.core.AttributeInfo;
@@ -2340,20 +2341,12 @@ public class GeneratorUtil
 	 * @param String usage "optional" or "required"
 	 * @param String firstVersion i.e. "1.1" and lastVersion = ""
 	 * @param String lastVersion i.e. "1.2" and firstVersion = ""
-	 * @return a String of form 44333311
+	 * @return a String of form 44333311l
 	 */
 	public static String getVersionInfoAttributes(final String usage, final String firstVersion, final String lastVersion)
 	{
 		// we need a vector the iterator can be random and we need a spezific order
-		final Vector version = new Vector();
-		version.add(EnumVersion._1_7);
-		version.add(EnumVersion._1_6);
-		version.add(EnumVersion._1_5);
-		version.add(EnumVersion._1_4);
-		version.add(EnumVersion._1_3);
-		version.add(EnumVersion._1_2);
-		version.add(EnumVersion._1_1);
-		version.add(EnumVersion._1_0);
+		final List<EnumVersion> version = EnumVersion.getReverseList();
 
 		EnumVersion eFirstVer = EnumVersion.getEnum(firstVersion);
 		EnumVersion eLastVer = EnumVersion.getEnum(lastVersion);
@@ -2365,14 +2358,13 @@ public class GeneratorUtil
 
 		if (eLastVer == null)
 		{
-			eLastVer = EnumVersion._1_7;
+			eLastVer = EnumVersion.getLastVersion();
 		}
 
-		final StringBuffer verBuffer = new StringBuffer(10);
+		final StringBuffer verBuffer = new StringBuffer(20);
 
-		for (int i = 0; i < version.size(); i++)
+		for (final EnumVersion processedVersion : version)
 		{
-			final EnumVersion processedVersion = (EnumVersion) version.elementAt(i);
 
 			if (processedVersion.getValue() > eLastVer.getValue())
 			{
@@ -2394,6 +2386,7 @@ public class GeneratorUtil
 				verBuffer.append("1");
 			}
 		}
+		verBuffer.append("l");
 
 		return verBuffer.toString();
 	}
@@ -2418,15 +2411,7 @@ public class GeneratorUtil
 	public static String getVersionInfoElements(final boolean isOptional, final String firstVersion, final String lastVersion, final String maxOccurs)
 	{
 		// we need a vector the iterator can be random and we need a spezific order
-		final Vector version = new Vector();
-		version.add(EnumVersion._1_7);
-		version.add(EnumVersion._1_6);
-		version.add(EnumVersion._1_5);
-		version.add(EnumVersion._1_4);
-		version.add(EnumVersion._1_3);
-		version.add(EnumVersion._1_2);
-		version.add(EnumVersion._1_1);
-		version.add(EnumVersion._1_0);
+		final List<EnumVersion> version = EnumVersion.getReverseList();
 
 		EnumVersion eLastVer = EnumVersion.getEnum(lastVersion);
 		EnumVersion eFirstVer = EnumVersion.getEnum(firstVersion);
@@ -2438,15 +2423,13 @@ public class GeneratorUtil
 
 		if (eLastVer == null)
 		{
-			eLastVer = EnumVersion._1_7;
+			eLastVer = EnumVersion.getLastVersion();
 		}
 
 		final StringBuffer verBuffer = new StringBuffer(10);
 
-		for (int i = 0; i < version.size(); i++)
+		for (final EnumVersion processedVersion : version)
 		{
-			final EnumVersion processedVersion = (EnumVersion) version.elementAt(i);
-
 			if (processedVersion.getValue() > eLastVer.getValue())
 			{ // is deprecated
 				if (maxOccurs.equals("1"))
@@ -2488,7 +2471,7 @@ public class GeneratorUtil
 				verBuffer.append("1");
 			}
 		}
-
+		verBuffer.append("l");
 		return verBuffer.toString();
 	}
 
