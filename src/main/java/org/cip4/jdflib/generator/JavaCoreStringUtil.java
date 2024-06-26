@@ -30,6 +30,8 @@
 // package
 package org.cip4.jdflib.generator;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +90,18 @@ public class JavaCoreStringUtil
 			return getEnumList(EnumVersion.class);
 		}
 
+		public static List<EnumVersion> getReverseList()
+		{
+			final List<EnumVersion> enumList = new ArrayList<>(getEnumList(EnumVersion.class));
+			Collections.reverse(enumList);
+			return enumList;
+		}
+
+		public static EnumVersion getLastVersion()
+		{
+			return (EnumVersion) getEnumList().get(getEnumList().size() - 1);
+		}
+
 		public static Iterator iterator()
 		{
 			return iterator(EnumVersion.class);
@@ -113,6 +127,8 @@ public class JavaCoreStringUtil
 		public static final EnumVersion _1_5 = new EnumVersion("1.5");
 		public static final EnumVersion _1_6 = new EnumVersion("1.6");
 		public static final EnumVersion _1_7 = new EnumVersion("1.7");
+		public static final EnumVersion _1_8 = new EnumVersion("1.8");
+		public static final EnumVersion _1_9 = new EnumVersion("1.9");
 	}
 
 	public static String getStrJavaCoreFile(final SchemaComplexType schemaComplexType)
