@@ -20,7 +20,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import org.cip4.jdflib.core.DocumentJDFImpl;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.KElement;
 import org.cip4.jdflib.core.VElement;
@@ -34,7 +33,7 @@ public class SchemaDoc extends XMLDoc
 {
 	// class globals
 
-	public SchemaDoc(final DocumentJDFImpl doc)
+	public SchemaDoc(final XMLDoc doc)
 	{
 		super(doc);
 	}
@@ -65,15 +64,17 @@ public class SchemaDoc extends XMLDoc
 		{
 			if (((vAllComplexTypeSize - i) % 50) == 0)
 				System.out.println(vAllComplexTypeSize - i);
-
 			// Wrap the KElement "Assembly_AssemblySection_AssemblySection_lr"
 			// into the SchemaComplexType "Assembly" (leads to duplicates)
 			final KElement schemaElement = vAllComplexTypes.elementAt(i);
-			System.out.println(schemaElement.getAttribute_KElement("name", "", ""));
+			final String name = schemaElement.getAttribute_KElement("name", "", "");
+			System.out.println(i + " " + name);
 			complexType = new SchemaComplexType(schemaElement); // sct.strSchemaComplexTypeName
 
 			complexType = fillComplexType(schemaElement, complexType, vAllComplexTypes, vAllSimpleTypes, vAllElements, vComplexTypes, strType, isJava);
 
+			System.out.println(vComplexTypes.size() + " ->" + name);
+			System.out.println(complexType.m_vSchemaAttributes.size() + " a->" + name);
 			vComplexTypes.add(complexType);
 		}
 
@@ -93,8 +94,7 @@ public class SchemaDoc extends XMLDoc
 	 * @param schemaElement
 	 * @return
 	 */
-	private SchemaComplexType fillComplexType(final KElement schemaElement, final SchemaComplexType complexType, final VElement vAllComplexTypes, final VElement vAllSimpleTypes,
-			final VElement vAllElements, final Vector vComplexTypes, final String strType, final boolean isJava)
+	private SchemaComplexType fillComplexType(final KElement schemaElement, final SchemaComplexType complexType, final VElement vAllComplexTypes, final VElement vAllSimpleTypes, final VElement vAllElements, final Vector vComplexTypes, final String strType, final boolean isJava)
 	{
 		// sct.strSchemaComplexTypeName
 
@@ -275,8 +275,8 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every Element in this Vector
-	 * needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
+	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every
+	 * Element in this Vector needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
 	 * 
 	 * @param Vector nSchemaFragment - the SchemaFragment to generate
 	 */
@@ -299,8 +299,8 @@ public class SchemaDoc extends XMLDoc
 	}
 
 	/**
-	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every Element in this Vector
-	 * needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
+	 * If you just want to generate a few of the complextypes and not the whole schema, you can call this method The Vector input parameter need to fulfill a view demands. Every
+	 * Element in this Vector needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
 	 * 
 	 * @param Vector nSchemaFragment - the SchemaFragment to generate
 	 * @return void - nothing
@@ -315,7 +315,7 @@ public class SchemaDoc extends XMLDoc
 		{
 			nSchemaComplexType = (SchemaComplexType) nSchemaFragment.elementAt(i);
 
-			strCppFile = CppCoreStringUtil.getStrCppCoreFile(/*nSchemaComplexType*/);
+			strCppFile = CppCoreStringUtil.getStrCppCoreFile(/* nSchemaComplexType */);
 			writeToFile(Generator.m_strJdfCoreCpp, Generator.m_strJdfLostAndFound, nSchemaComplexType.getStrAutoCppCoreFileNameCPP(), strCppFile, bGenerateAll);
 
 			strHeaderFile = CppCoreStringUtil.getStrHeaderFile(nSchemaComplexType);
