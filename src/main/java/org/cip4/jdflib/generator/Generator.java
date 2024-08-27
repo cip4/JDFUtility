@@ -15,14 +15,12 @@ package org.cip4.jdflib.generator;
 // imports
 import java.util.Vector;
 
-import org.cip4.jdflib.core.DocumentJDFImpl;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFParser;
+import org.cip4.jdflib.core.XMLDoc;
 
 public class Generator
 {
 	private static String m_strJdfDevice = "c:/"; // the output device
-	private static String m_strJdfSchema = m_strJdfDevice + "Schema/Version_1_6/"; // the schema path
+	private static String m_strJdfSchema = m_strJdfDevice + "gitreps/cip4/JDFSchema/"; // the schema path
 	final public static String m_strJdfOutputJava = "c:/schema/JDFLibGeneratorOutput/Java/"; // the output path
 	final public static String m_strJdfOutputCpp = "c:/schema/JDFLibGeneratorOutput/Cpp/"; // the output path
 	public static String m_strJdfCoreJava = m_strJdfOutputJava + "/src/com/heidelberg/JDFLib/auto"; // the Core files output path for java files
@@ -33,9 +31,7 @@ public class Generator
 	// main entry point
 	public static void main(final String[] argV)
 	{
-		final JDFParser p = new JDFParser();
-		final JDFDoc parseFile = p.parseFile(m_strJdfSchema + m_strCoreFileName);
-		final DocumentJDFImpl doc = parseFile.getMemberDocument();
+		final XMLDoc doc = XMLDoc.parseFile(m_strJdfSchema + m_strCoreFileName);
 
 		final SchemaDoc javaCoreDoc = new SchemaDoc(doc);
 
