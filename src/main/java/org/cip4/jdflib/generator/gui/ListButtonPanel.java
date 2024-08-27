@@ -28,21 +28,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import org.cip4.jdflib.core.DocumentJDFImpl;
-import org.cip4.jdflib.core.ElementName;
-import org.cip4.jdflib.core.JDFDoc;
-import org.cip4.jdflib.core.JDFParser;
 import org.cip4.jdflib.core.KElement;
+import org.cip4.jdflib.core.VElement;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.generator.Generator;
 import org.cip4.jdflib.generator.SchemaComplexType;
 import org.cip4.jdflib.generator.SchemaDoc;
 import org.cip4.jdflib.generator.StringCollector;
-import org.w3c.dom.Node;
 
 /**
  * @author matternk
  * 
- * To change the template for this generated type comment go to Window - Preferences - Java - Code Generation - Code and Comments
+ *         To change the template for this generated type comment go to Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class ListButtonPanel extends JPanel implements ActionListener, MouseListener
 {
@@ -496,8 +493,7 @@ public class ListButtonPanel extends JPanel implements ActionListener, MouseList
 		{
 			setPriority(1);
 
-			final JDFDoc jdfDoc = new JDFDoc(ElementName.JDF);
-			final DocumentJDFImpl doc = jdfDoc.getMemberDocument();
+			final XMLDoc doc = new XMLDoc("Schema");
 
 			for (int i = 0; i < m_schemaFiles.length; i++)
 			{
@@ -515,46 +511,36 @@ public class ListButtonPanel extends JPanel implements ActionListener, MouseList
 		 * @param schemaFile
 		 * @param doc
 		 */
-		private void parseSchemaFromFileToDoc(final File schemaFile, final DocumentJDFImpl doc)
+		private void parseSchemaFromFileToDoc(final File schemaFile, final XMLDoc doc)
 		{
-			if (schemaFile != null)
+			final String schemaFilePath = schemaFile.getAbsolutePath();
+
+			final DefaultTableModel dtm = getComplexTypeList().getMainFrame().getStatusPanel().getDefaultTableModel();
+			dtm.insertRow(0, new Object[] { "Parsing " + schemaFilePath, "Working..." });
+			final int iIndex1 = dtm.getRowCount();
+
+			final KElement n = KElement.parseFile(schemaFilePath);
+			final VElement vElem = n.getChildElementVector(null, null, null, true, 0, false);
+			for (final KElement e : vElem)
 			{
-				final String schemaFilePath = schemaFile.getAbsolutePath();
+				doc.getRoot().copyElement(e, null);
+			}
 
-				final DefaultTableModel dtm = getComplexTypeList().getMainFrame().getStatusPanel().getDefaultTableModel();
-				dtm.insertRow(0, new Object[] { "Parsing " + schemaFilePath, "Working..." });
-				final int iIndex1 = dtm.getRowCount();
-
-				final JDFParser p = new JDFParser();
-				p.parseFile(schemaFilePath);
-				final JDFDoc buffdoc = new JDFDoc(p.getDocument());
-
-				m_docs.add(buffdoc);
-
-				final KElement n = buffdoc.getRoot();
-				final Vector vElem = n.getChildElementVector(null, null, null, true, 0, false);
-				for (int j = 0; j < vElem.size(); j++)
-				{
-					final Node nodi = doc.importNode((Node) vElem.elementAt(j), true);
-					doc.getDocumentElement().appendChild(nodi);
-				}
-
-				final int iIndex2 = dtm.getRowCount();
-				try
-				{
-					dtm.setValueAt("Done", iIndex2 - iIndex1, 1);
-				}
-				catch (final ArrayIndexOutOfBoundsException e)
-				{
-					e.hashCode(); // to remove e never used warning
-				}
+			final int iIndex2 = dtm.getRowCount();
+			try
+			{
+				dtm.setValueAt("Done", iIndex2 - iIndex1, 1);
+			}
+			catch (final ArrayIndexOutOfBoundsException e)
+			{
+				e.hashCode(); // to remove e never used warning
 			}
 		}
 
 		/**
 		 * @param doc
 		 */
-		private void parseSchemaFromDocToSchemaComplexType(final DocumentJDFImpl doc)
+		private void parseSchemaFromDocToSchemaComplexType(final XMLDoc doc)
 		{
 			final SchemaDoc schemaDoc = new SchemaDoc(doc);
 

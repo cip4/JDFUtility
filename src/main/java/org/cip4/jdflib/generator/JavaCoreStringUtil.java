@@ -1366,7 +1366,8 @@ public class JavaCoreStringUtil
 			else
 			{
 				strReturnType = m_nSchemaElement.getStrReturnType();
-				if ("1".equals(m_nSchemaElement.getStrMaxOccurs()))
+				// we always provide the single element version
+				// if ("1".equals(m_nSchemaElement.getStrMaxOccurs()))
 				{
 					// get
 					if ("FileSpec".equals(strComplexTypeName) && ("JDFDisposition".equals(strReturnType) || "JDFContainer".equals(strReturnType)))
@@ -1438,7 +1439,7 @@ public class JavaCoreStringUtil
 							.append(strElementName.toUpperCase()).append(", null, 0);").append(strLineEnd);
 					strbufResult.append(strDepth1).append("}").append(strLineEnd).append(strLineEnd);
 				}
-				else
+				if (!"1".equals(m_nSchemaElement.getStrMaxOccurs()))
 				{
 					// getCreate
 					strbufResult.append(strDepth1).append("/** (26) getCreate").append(strElementName).append(strLineEnd);
