@@ -131,7 +131,7 @@ dependencies {
     implementation 'commons-fileupload:commons-fileupload:1.5'
    
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
-    implementation 'org.apache.logging.log4j:log4j-jcl:2.23.1'
+    implementation 'org.apache.logging.log4j:log4j-jcl:2.24.3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.2'
