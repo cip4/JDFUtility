@@ -133,7 +133,7 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-jcl:2.24.3'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.2'
     testImplementation 'org.springframework:spring-test:5.3.39'
     testImplementation 'org.springframework:spring-web:5.3.39'
