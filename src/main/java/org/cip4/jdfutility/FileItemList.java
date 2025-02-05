@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2013 The International Cooperation for the Integration of 
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of 
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
  * reserved.
  *
@@ -72,10 +72,10 @@ package org.cip4.jdfutility;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -86,6 +86,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
+import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StreamUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
@@ -98,22 +99,22 @@ public class FileItemList
 {
 
 	final private List<FileItem> fileItems;
-	private JDFAttributeMap mapCache;
-	private JDFAttributeMap reqParameters;
+	private final JDFAttributeMap mapCache;
+	private final JDFAttributeMap reqParameters;
 
 	/**
-	 *  
+	 * 
 	 * @param request
 	 * @param filesize
 	 * @return
 	 */
-	public static FileItemList getFileItemList(HttpServletRequest request, long filesize)
+	public static FileItemList getFileItemList(final HttpServletRequest request, final long filesize)
 	{
 		try
 		{
 			return new FileItemList(request, filesize);
 		}
-		catch (ServletException e)
+		catch (final ServletException e)
 		{
 			return null;
 		}
@@ -125,30 +126,25 @@ public class FileItemList
 	 * @param filesize
 	 * @throws ServletException
 	 */
-	@SuppressWarnings("unchecked")
-	public FileItemList(HttpServletRequest request, long filesize) throws ServletException
+	public FileItemList(final HttpServletRequest request, final long filesize) throws ServletException
 	{
-		mapCache = null;
+		mapCache = new JDFAttributeMap();
+		reqParameters = new JDFAttributeMap();
+		fileItems = new ArrayList<FileItem>();
 		// Create a factory for disk-based file items
 		final FileItemFactory factory = new DiskFileItemFactory();
 
 		// Create a new file upload handler
 		final ServletFileUpload upload = new ServletFileUpload(factory);
-		if (request == null)
+		if (request != null)
 		{
-			fileItems = null;
-			reqParameters = null;
-		}
-		else
-		{
-			reqParameters = new JDFAttributeMap();
-			Map<String, String[]> parameterMap = request.getParameterMap();
+			final Map<String, String[]> parameterMap = request.getParameterMap();
 			if (parameterMap != null)
 			{
-				Set<String> keySet = parameterMap.keySet();
-				for (String key : keySet)
+				final Set<String> keySet = parameterMap.keySet();
+				for (final String key : keySet)
 				{
-					String[] vals = parameterMap.get(key);
+					final String[] vals = parameterMap.get(key);
 					if (vals != null && vals.length > 0)
 					{
 						reqParameters.put(key, vals[0]);
@@ -161,43 +157,36 @@ public class FileItemList
 				{
 					if (filesize > 0)
 						upload.setSizeMax(filesize);
-					fileItems = upload.parseRequest(request);
+					ContainerUtil.addAll(fileItems, upload.parseRequest(request));
 				}
 				catch (final FileUploadException fue)
 				{
 					throw new ServletException("Could not parse multipart request.", fue);
 				}
 			}
-			else
-			{
-				fileItems = null;
-			}
 		}
 	}
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @return
-	 *  
+	 * 
 	 */
 	public JDFAttributeMap getFieldsFromForm()
 	{
-		if (mapCache == null)
+		if (ContainerUtil.isEmpty(mapCache))
 		{
-			mapCache = new JDFAttributeMap();
-			List<FileItem> fileList = getFileList(false, true);
-			if (fileList != null)
+			final List<FileItem> fileList = getFileList(false, true);
+			for (final FileItem fi : fileList)
 			{
-				for (FileItem fi : fileList)
+				final String itemString = StringUtil.getNonEmpty(fi.getString());
+				if (itemString != null)
 				{
-					String itemString = StringUtil.getNonEmpty(fi.getString());
-					if (itemString != null)
-					{
-						mapCache.put(fi.getFieldName(), itemString);
-					}
+					mapCache.put(fi.getFieldName(), itemString);
 				}
 			}
+
 			mapCache.putAll(reqParameters);
 		}
 		return mapCache;
@@ -206,55 +195,58 @@ public class FileItemList
 	/**
 	 * 
 	 * get a form value
+	 * 
 	 * @param key
 	 * @return
 	 */
-	public String getField(String key)
+	public String getField(final String key)
 	{
 		getFieldsFromForm();
-		return mapCache.get(key);
+		return mapCache.getIgnoreCase(key);
 	}
 
 	/**
 	 * 
 	 * get a form value
+	 * 
 	 * @param key
 	 * @param def
 	 * @return
 	 */
-	public int getIntField(String key, int def)
+	public int getIntField(final String key, final int def)
 	{
 		getFieldsFromForm();
-		return mapCache.getInt(key, def);
+		return StringUtil.parseInt(mapCache.getIgnoreCase(key), def);
 	}
 
 	/**
 	 * 
 	 * get a form value
+	 * 
 	 * @param key
 	 * @param def
 	 * @return
 	 */
-	public boolean getBoolField(String key, boolean def)
+	public boolean getBoolField(final String key, final boolean def)
 	{
 		getFieldsFromForm();
-		return mapCache.getBool(key, def);
+		return StringUtil.parseBoolean(mapCache.getIgnoreCase(key), def);
 	}
 
 	/**
-	 * @param bFile if true return files 
+	 * @param bFile if true return files
 	 * @param bForm if true return form fields
 	 * @return
-	 *  
+	 * 
 	 */
-	public List<FileItem> getFileList(boolean bFile, boolean bForm)
+	public List<FileItem> getFileList(final boolean bFile, final boolean bForm)
 	{
-		List<FileItem> retList = new Vector<FileItem>();
-		if ((bFile || bForm) && fileItems != null)
+		final List<FileItem> retList = new ArrayList<FileItem>();
+		if (bFile || bForm)
 		{
-			for (FileItem f : fileItems)
+			for (final FileItem f : fileItems)
 			{
-				boolean formField = f.isFormField();
+				final boolean formField = f.isFormField();
 				if (formField && bForm || !formField && bFile)
 				{
 					retList.add(f);
@@ -267,47 +259,42 @@ public class FileItemList
 	/**
 	 * 
 	 * get the iTh file
+	 * 
 	 * @param i may be<0 to count from end
 	 * @return
 	 */
 	public FileItem getFile(int i)
 	{
-		List<FileItem> fileList = getFileList(true, false);
-		if (fileList != null)
+		final List<FileItem> fileList = getFileList(true, false);
+		if (i < 0)
 		{
-			if (i < 0)
-			{
-				i += fileList.size();
-			}
-			if (i < 0 || i >= fileList.size())
-			{
-				return null;
-			}
-			else
-			{
-				return fileList.get(i);
-			}
+			i += fileList.size();
 		}
-		return null;
+		if (i < 0 || i >= fileList.size())
+		{
+			return null;
+		}
+		else
+		{
+			return fileList.get(i);
+		}
 	}
 
 	/**
 	 * 
 	 * get the file attached to formName
-	 * @param formName 
+	 * 
+	 * @param formName
 	 * @return
 	 */
-	public FileItem getFile(String formName)
+	public FileItem getFile(final String formName)
 	{
-		List<FileItem> fileList = getFileList(true, false);
-		if (fileList != null)
+		final List<FileItem> fileList = getFileList(true, false);
+		for (final FileItem f : fileList)
 		{
-			for (FileItem f : fileList)
+			if (f.getFieldName().equalsIgnoreCase(formName))
 			{
-				if (f.getFieldName().equals(formName))
-				{
-					return f;
-				}
+				return f;
 			}
 		}
 		return null;
@@ -316,34 +303,36 @@ public class FileItemList
 	/**
 	 * 
 	 * get the input stream for formName
-	 * @param formName 
+	 * 
+	 * @param formName
 	 * @return
 	 */
-	public InputStream getFileInputStream(String formName)
+	public InputStream getFileInputStream(final String formName)
 	{
-		FileItem fi = getFile(formName);
+		final FileItem fi = getFile(formName);
 		return getInputStream(fi);
 	}
 
 	/**
 	 * 
 	 * get the input stream for formName
+	 * 
 	 * @param i may be<0 to count from end
 	 * @return
 	 */
-	public InputStream getFileInputStream(int i)
+	public InputStream getFileInputStream(final int i)
 	{
-		FileItem fi = getFile(i);
+		final FileItem fi = getFile(i);
 		return getInputStream(fi);
 	}
 
 	/**
 	 * 
-	 *  
+	 * 
 	 * @param fi
 	 * @return
 	 */
-	public static InputStream getInputStream(FileItem fi)
+	public static InputStream getInputStream(final FileItem fi)
 	{
 		if (fi != null)
 		{
@@ -352,7 +341,7 @@ public class FileItemList
 			{
 				inputStream = fi.getInputStream();
 			}
-			catch (IOException e)
+			catch (final IOException e)
 			{
 				inputStream = null;
 			}
@@ -367,7 +356,7 @@ public class FileItemList
 	@Override
 	public String toString()
 	{
-		return "FileItemList [mapCache=" + mapCache + ", fileItems=" + fileItems + "]";
+		return "FileItemList [mapCache=" + mapCache.getKeyList().getString() + ", fileItems=" + fileItems + "]";
 	}
 
 }
