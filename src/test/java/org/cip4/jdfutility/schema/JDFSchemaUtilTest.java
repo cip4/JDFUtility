@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2020 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -68,6 +68,7 @@
  */
 package org.cip4.jdfutility.schema;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -119,6 +120,12 @@ class JDFSchemaUtilTest extends JDFUtilityTestBase
 			final File f22 = new File(sm_dirTestDataTemp + "tmp/schema/2.2/xjdf.xsd");
 			final File f22a = JDFSchemaUtil.downloadschema(f22, EnumVersion.Version_2_2, 123456);
 		}
+	}
+
+	@Test
+	public void testresSchema()
+	{
+		assertNotNull(JDFSchemaUtil.getLocalXJDFSchemaDoc());
 	}
 
 }

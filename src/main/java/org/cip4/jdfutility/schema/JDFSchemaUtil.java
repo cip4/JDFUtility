@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of
  * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
@@ -72,6 +72,7 @@ import java.io.File;
 
 import org.cip4.jdflib.core.JDFElement;
 import org.cip4.jdflib.core.JDFElement.EnumVersion;
+import org.cip4.jdflib.core.XMLDoc;
 import org.cip4.jdflib.extensions.XJDFHelper;
 import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.URLReader;
@@ -79,6 +80,8 @@ import org.cip4.jdflib.util.zip.ZipReader;
 
 public class JDFSchemaUtil
 {
+	private static final String XJDF_SCHEMA_XSD = "/xjdfschema/xjdf.xsd";
+
 	/**
 	 * 
 	 * @param f
@@ -118,4 +121,10 @@ public class JDFSchemaUtil
 		}
 		return f.exists() ? f : null;
 	}
+
+	public static XMLDoc getLocalXJDFSchemaDoc()
+	{
+		return XMLDoc.parseStream(JDFSchemaUtil.class.getResourceAsStream(XJDF_SCHEMA_XSD));
+	}
+
 }
