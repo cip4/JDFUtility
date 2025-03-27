@@ -3,7 +3,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -186,7 +186,7 @@ public class CheckJDFServlet extends UtilityServlet
 		 */
 		protected void doFix(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 		{
-			final List<FileItem> fileItems = new FileItemList(request, 20l * 1024 * 1024).getFileList(true, true);
+			final List<FileItem> fileItems = FileItemList.getMemoryFileItemList(request, 20l * 1024 * 1024).getFileList(true, true);
 			FileItem fileItem = null;
 			EnumVersion version = null;
 			int nFiles = 0;
@@ -406,7 +406,7 @@ public class CheckJDFServlet extends UtilityServlet
 	protected void processMultipartRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List<FileItem> fileItems = new FileItemList(req, 43l * 1024l * 1024l).getFileList(true, true);
+		final List<FileItem> fileItems = FileItemList.getMemoryFileItemList(req, 66l * 1024l * 1024l).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items

@@ -75,28 +75,33 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Part;
 
+import org.cip4.jdflib.util.ContainerUtil;
 import org.junit.jupiter.api.Test;
 
 class FileItemListTest extends JDFUtilityTestBase
 {
 
 	@Test
-	void testString() throws ServletException
+	void testString() throws Exception
 	{
 		assertNotNull(new FileItemList(getRequestMock(), 42).toString());
 	}
 
 	@Test
-	void testGetBool() throws ServletException
+	void testGetBool() throws Exception
 	{
 		assertFalse(new FileItemList(getRequestMock(), 42).getBoolField("a", false));
 		assertTrue(new FileItemList(getRequestMock(), 42).getBoolField("a1", false));
@@ -104,7 +109,7 @@ class FileItemListTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	void testGetInt() throws ServletException
+	void testGetInt() throws Exception
 	{
 		assertEquals(0, new FileItemList(getRequestMock(), 42).getIntField("a", 0));
 		assertEquals(1, new FileItemList(getRequestMock(), 42).getIntField("a2", 0));
@@ -112,7 +117,7 @@ class FileItemListTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	void testGetField() throws ServletException
+	void testGetField() throws Exception
 	{
 		assertEquals(null, new FileItemList(getRequestMock(), 42).getField("a"));
 		assertEquals("abc", new FileItemList(getRequestMock(), 42).getField("a3"));
@@ -120,20 +125,26 @@ class FileItemListTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	void testGetFile() throws ServletException
+	void testGetFile() throws Exception
 	{
 		assertNull(new FileItemList(getRequestMock(), 42).getFile(0));
 		assertNull(new FileItemList(getRequestMock(), 42).getFile("foo"));
 	}
 
 	@Test
-	void testGetFileStream() throws ServletException
+	void testGetFileStream() throws Exception
 	{
 		assertNull(new FileItemList(getRequestMock(), 42).getFileInputStream(0));
 		assertNull(new FileItemList(getRequestMock(), 42).getFileInputStream("foo"));
 	}
 
-	HttpServletRequest getRequestMock()
+	@Test
+	void testGetMem() throws Exception
+	{
+		assertNull(FileItemList.getMemoryFileItemList(getRequestMock(), 999).getFileInputStream(0));
+	}
+
+	HttpServletRequest getRequestMock() throws IOException, ServletException
 	{
 		final HttpServletRequest mock = mock(HttpServletRequest.class);
 		final Map<String, String[]> pm = new HashMap<String, String[]>();
@@ -141,6 +152,10 @@ class FileItemListTest extends JDFUtilityTestBase
 		pm.put("A2", new String[] { "1" });
 		pm.put("A3", new String[] { "abc" });
 		when(mock.getParameterMap()).thenReturn(pm);
+
+		final Part part1 = mock(Part.class);
+		when(mock.getPart(any())).thenReturn(part1);
+		when(mock.getParts()).thenReturn(ContainerUtil.add(new ArrayList<Part>(), part1));
 		return mock;
 	}
 
