@@ -142,6 +142,7 @@ class FileItemListTest extends JDFUtilityTestBase
 	void testGetMem() throws Exception
 	{
 		assertNull(FileItemList.getMemoryFileItemList(getRequestMock(), 999).getFileInputStream(0));
+		assertNull(FileItemList.getFileItemList(getRequestMock(), 999).getFileInputStream(0));
 	}
 
 	HttpServletRequest getRequestMock() throws IOException, ServletException
