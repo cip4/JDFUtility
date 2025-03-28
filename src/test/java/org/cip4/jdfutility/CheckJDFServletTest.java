@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2021 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -36,9 +36,18 @@
  */
 package org.cip4.jdfutility;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.cip4.jdfutility.CheckJDFServlet.FixCall;
+import org.junit.jupiter.api.Test;
 
 public class CheckJDFServletTest extends JDFUtilityTestBase
 {
@@ -51,6 +60,22 @@ public class CheckJDFServletTest extends JDFUtilityTestBase
 	{
 		final CheckJDFServlet s = new CheckJDFServlet();
 		assertNotNull(s);
+	}
+
+	/**
+	 * @throws Exception
+	 *
+	 */
+	@Test
+	public void testDoFix() throws Exception
+	{
+		final CheckJDFServlet s = new CheckJDFServlet();
+		final HttpServletResponse mockResp = mock(HttpServletResponse.class);
+
+		when(mockResp.getWriter()).thenReturn(new PrintWriter(new ByteArrayOutputStream()));
+		final FixCall fc = s.new FixCall(s, mock(HttpServletRequest.class), mockResp);
+		fc.doFix(mock(HttpServletRequest.class), mockResp);
+		assertNotNull(fc);
 	}
 
 	/**
