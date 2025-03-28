@@ -74,6 +74,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -158,6 +159,16 @@ class FileItemListTest extends JDFUtilityTestBase
 		when(mock.getPart(any())).thenReturn(part1);
 		when(mock.getParts()).thenReturn(ContainerUtil.add(new ArrayList<Part>(), part1));
 		return mock;
+	}
+
+	@Test
+	void testGetFactory() throws Exception
+	{
+		final FileItemList l = new FileItemList(getRequestMock(), 42);
+		assertThrows(IllegalArgumentException.class, () -> l.getFactory(true, 0));
+		l.getFactory(false, 0);
+		l.getFactory(false, 99999);
+		l.getFactory(true, 99999);
 	}
 
 }
