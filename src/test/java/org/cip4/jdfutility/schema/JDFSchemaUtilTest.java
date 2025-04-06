@@ -83,7 +83,7 @@ class JDFSchemaUtilTest extends JDFUtilityTestBase
 {
 
 	@Test
-	public void testschema()
+	void testschema()
 	{
 		FileUtil.deleteAll(new File(sm_dirTestDataTemp + "tmp/schema"));
 		if (new UrlCheck("https://schema.cip4.org").pingRC(123) == 200)
@@ -123,7 +123,7 @@ class JDFSchemaUtilTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testresSchema()
+	void testresSchema()
 	{
 		assertNotNull(JDFSchemaUtil.getLocalXJDFSchemaDoc());
 	}

@@ -103,16 +103,17 @@ public class FileItemList
 	private final JDFAttributeMap reqParameters;
 
 	/**
+	 * returns a pure in memory FileItemList
 	 * 
 	 * @param request
 	 * @param filesize
 	 * @return
 	 */
-	public static FileItemList getFileItemList(final HttpServletRequest request, final long filesize)
+	public static FileItemList getMemoryFileItemList(final HttpServletRequest request, final long filesize)
 	{
 		try
 		{
-			return new FileItemList(request, filesize);
+			return new FileItemList(request, filesize, true);
 		}
 		catch (final ServletException e)
 		{
@@ -124,15 +125,38 @@ public class FileItemList
 	 * 
 	 * @param request
 	 * @param filesize
+	 * @return
+	 */
+	public static FileItemList getFileItemList(final HttpServletRequest request, final long filesize)
+	{
+		try
+		{
+			return new FileItemList(request, filesize, false);
+		}
+		catch (final ServletException e)
+		{
+			return null;
+		}
+	}
+
+	public FileItemList(final HttpServletRequest request, final long filesize) throws ServletException
+	{
+		this(request, filesize, false);
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param filesize
 	 * @throws ServletException
 	 */
-	public FileItemList(final HttpServletRequest request, final long filesize) throws ServletException
+	FileItemList(final HttpServletRequest request, final long filesize, final boolean inMemory) throws ServletException
 	{
 		mapCache = new JDFAttributeMap();
 		reqParameters = new JDFAttributeMap();
 		fileItems = new ArrayList<FileItem>();
 		// Create a factory for disk-based file items
-		final FileItemFactory factory = new DiskFileItemFactory();
+		final FileItemFactory factory = getFactory(inMemory, filesize);
 
 		// Create a new file upload handler
 		final ServletFileUpload upload = new ServletFileUpload(factory);
@@ -165,6 +189,20 @@ public class FileItemList
 				}
 			}
 		}
+	}
+
+	FileItemFactory getFactory(final boolean inMemory, final long filesize)
+	{
+		if (inMemory && filesize <= 1)
+		{
+			throw new IllegalArgumentException("cannot create in memory factory with low size " + filesize);
+		}
+		final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+		if (inMemory)
+		{
+			diskFileItemFactory.setSizeThreshold((int) filesize);
+		}
+		return diskFileItemFactory;
 	}
 
 	/**
