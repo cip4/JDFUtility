@@ -37,13 +37,14 @@
 
 package org.cip4.jdfutility.server;
 
-import java.util.Collection;
 import java.util.HashSet;
 
 import org.cip4.jdflib.util.StringUtil;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.EmptyResource;
-import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.Callback;
 
 /**
  * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
@@ -55,7 +56,7 @@ public class MyResourceHandler extends ResourceHandler
 {
 
 	private final String home;
-	private final Collection<String> whiteList;
+	private final java.util.Collection<String> whiteList;
 
 	public MyResourceHandler(final String strip, final String home)
 	{
@@ -67,35 +68,27 @@ public class MyResourceHandler extends ResourceHandler
 
 	private final String strip;
 
-	@Override
-	public Resource getResource(String url)
+	String update(String url)
 	{
 
 		if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
 		{
-			url = url.substring(strip.length());
+			url = StringUtil.removeToken(url, 0, "/");
 		}
-		try
+		if ("".equals(url) || "/".equals(url))
 		{
-			if ("".equals(url) || "/".equals(url))
+			return home;
+		}
+		else if (!whiteList.isEmpty())
+		{
+			final String base = StringUtil.token(url, 0, "/");
+			if (!whiteList.contains(base.toLowerCase()))
 			{
-				return super.getResource(home);
+				return null;
 			}
-			else if (!whiteList.isEmpty())
-			{
-				final String base = StringUtil.token(url, 0, "/");
-				if (!whiteList.contains(base.toLowerCase()))
-				{
-					return EmptyResource.INSTANCE;
-				}
-			}
+		}
 
-			return super.getResource(url);
-		}
-		catch (final Exception x)
-		{
-			return null;
-		}
+		return url;
 	}
 
 	/**
@@ -111,6 +104,20 @@ public class MyResourceHandler extends ResourceHandler
 	@Override
 	public String toString()
 	{
-		return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getResourceBase() + "]";
+		return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getBaseResource();
+	}
+
+	@Override
+	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
+	{
+		final HttpURI uri = request.getHttpURI();
+		final String uriString = update(uri.asString());
+		if (uriString == null)
+		{
+			return super.handle(request, response, callback);
+		}
+		final HttpURI newUri = HttpURI.from(uriString);
+		final Request updated = Request.serveAs(request, newUri);
+		return super.handle(updated, response, callback);
 	}
 }

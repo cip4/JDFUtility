@@ -74,8 +74,8 @@ import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdfutility.DumpJDFServlet;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.jdfutility.server.JettyServer;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 
 /**
  * standalone app for bambi using an embedded jetty server
@@ -103,10 +103,10 @@ public final class HTTPDump extends JettyServer
 	public static void main(final String[] args) throws Exception
 	{
 		final HTTPDump dump = new HTTPDump();
-		MyArgs myargs = new MyArgs(args, "s", "p", null);
+		final MyArgs myargs = new MyArgs(args, "s", "p", null);
 		if (myargs.boolParameter('s'))
 		{
-			int p = StringUtil.parseInt(myargs.parameterString('p'), 443);
+			final int p = StringUtil.parseInt(myargs.parameterString('p'), 443);
 			dump.setSSLPort(p);
 		}
 		final HTTPFrame frame = new HTTPFrame(dump);

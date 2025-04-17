@@ -76,12 +76,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,6 +84,11 @@ import org.cip4.jdflib.core.VString;
 import org.cip4.jdflib.util.FastFiFo;
 import org.cip4.jdflib.util.JDFDate;
 import org.cip4.jdflib.util.StringUtil;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * base servlet class
@@ -265,7 +265,7 @@ public abstract class UtilityServlet extends HttpServlet
 		return servletInfo;
 	}
 
-	protected File createTmpFile(final FileItem fileItem, final String baseDir, final String ext) throws FileNotFoundException, IOException
+	protected File createTmpFile(final DiskFileItem fileItem, final String baseDir, final String ext) throws FileNotFoundException, IOException
 	{
 		final InputStream s = fileItem.getInputStream();
 		final File zipFile = JDFServletUtil.getTmpFile(baseDir, fileItem, ext + "_", "." + ext);
@@ -300,7 +300,7 @@ public abstract class UtilityServlet extends HttpServlet
 	}
 
 	/**
-	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see jakarta.servlet.http.HttpServlet#service(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
 	 * @throws ServletException
 	 * @throws IOException
 	 */

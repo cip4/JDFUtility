@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -39,14 +39,12 @@ package org.cip4.jdfutility.server;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.server.JettyServer.JettySSLData;
-import org.eclipse.jetty.util.resource.EmptyResource;
 import org.junit.jupiter.api.Test;
 
 class JettyServerTest extends JDFUtilityTestBase
@@ -171,7 +169,8 @@ class JettyServerTest extends JDFUtilityTestBase
 	public void testResHandler() throws InterruptedException
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
-		assertNull(rh.getResource("nix"));
+		assertEquals("nix", rh.update("nix"));
+		assertEquals("dummy", rh.update(""));
 	}
 
 	@Test
@@ -179,9 +178,9 @@ class JettyServerTest extends JDFUtilityTestBase
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		rh.addBase("boo");
-		assertEquals(EmptyResource.INSTANCE, rh.getResource("/foo/nix"));
-		assertEquals(EmptyResource.INSTANCE, rh.getResource("/foo/boo"));
-		assertEquals(null, rh.getResource("/boo"));
+		assertEquals(null, rh.update("foo/nix"));
+		assertEquals("boo", rh.update("foo/boo"));
+		assertEquals("boo", rh.update("boo"));
 	}
 
 	@Test

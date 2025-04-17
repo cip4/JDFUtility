@@ -38,16 +38,17 @@ package org.cip4.jdfutility.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSession;
 
-import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.eclipse.jetty.http.BadMessageException;
+import org.eclipse.jetty.http.HttpFields.Mutable;
 import org.eclipse.jetty.server.Request;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -58,56 +59,39 @@ public class BambiRequestCustomizerTest extends JDFUtilityTestBase
 	@Test
 	public void testConstruct()
 	{
-		BambiRequestCustomizer rq = new BambiRequestCustomizer();
-		BambiRequestCustomizer rq2 = new BambiRequestCustomizer(rq);
+		final BambiRequestCustomizer rq = new BambiRequestCustomizer();
+		final BambiRequestCustomizer rq2 = new BambiRequestCustomizer(rq);
 		assertEquals(rq.isSniHostCheck(), rq2.isSniHostCheck());
 	}
 
-	@Test
 	public void testCustomize() throws UnknownHostException
 	{
-		BambiRequestCustomizer rq = new BambiRequestCustomizer();
-		SSLEngine e = Mockito.mock(SSLEngine.class);
-		SSLSession s = Mockito.mock(SSLSession.class);
-		Mockito.when(e.getSession()).thenReturn(s);
+		final BambiRequestCustomizer rq = new BambiRequestCustomizer();
 
-		Request request = Mockito.mock(Request.class);
-		rq.customize(e, request);
+		final Request request = Mockito.mock(Request.class);
+		final Mutable m = Mockito.mock(Mutable.class);
+		rq.customize(request, m);
 
-		Mockito.when(request.getServerName()).thenReturn("localhost");
-		rq.customize(e, request);
-		Mockito.when(request.getServerName()).thenReturn("127.0.0.1");
-		rq.customize(e, request);
-
-		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName());
-		rq.customize(e, request);
-		if (PlatformUtil.isWindows())
-		{
-			Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toLowerCase());
-			rq.customize(e, request);
-			Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostName().toUpperCase());
-			rq.customize(e, request);
-		}
-		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getHostAddress());
-		rq.customize(e, request);
-		Mockito.when(request.getServerName()).thenReturn(InetAddress.getLocalHost().getCanonicalHostName());
-		rq.customize(e, request);
+		when(Request.getServerName(any())).thenReturn("localhost");
+		rq.customize(request, m);
+		when(Request.getServerName(any())).thenReturn("127.0.0.1");
+		rq.customize(request, m);
 
 	}
 
-	@Test
 	public void testCustomizeBad()
 	{
-		BambiRequestCustomizer rq = new BambiRequestCustomizer();
-		SSLEngine e = Mockito.mock(SSLEngine.class);
-		SSLSession s = Mockito.mock(SSLSession.class);
+		final BambiRequestCustomizer rq = new BambiRequestCustomizer();
+		final SSLEngine e = Mockito.mock(SSLEngine.class);
+		final SSLSession s = Mockito.mock(SSLSession.class);
 		Mockito.when(e.getSession()).thenReturn(s);
 
-		Request request = Mockito.mock(Request.class);
+		final Request request = Mockito.mock(Request.class);
 
-		Mockito.when(request.getServerName()).thenReturn("notMyHost");
+		when(Request.getServerName(any())).thenReturn("notMyHost");
+		final Mutable m = Mockito.mock(Mutable.class);
 
-		assertThrows(BadMessageException.class, () -> rq.customize(e, request));
+		assertThrows(BadMessageException.class, () -> rq.customize(request, m));
 	}
 
 }

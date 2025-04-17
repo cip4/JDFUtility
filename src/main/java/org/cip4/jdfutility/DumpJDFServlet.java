@@ -55,10 +55,10 @@ import java.util.HashMap;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.KElement;
@@ -467,7 +467,7 @@ public class DumpJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
 	 * @return

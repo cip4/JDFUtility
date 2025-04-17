@@ -46,12 +46,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.cip4.jdflib.core.AttributeName;
 import org.cip4.jdflib.core.JDFAudit;
@@ -73,6 +69,10 @@ import org.cip4.jdflib.util.FileUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 import org.cip4.jdflib.validate.JDFValidator;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * This servlet parses any file and returns any XMP packet found in the file.
@@ -140,7 +140,7 @@ public class CheckJDFServlet extends UtilityServlet
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
-			final boolean mp = ServletFileUpload.isMultipartContent(request);
+			final boolean mp = JakartaServletFileUpload.isMultipartContent(request);
 			if (mp)
 			{
 				processMultipartRequest(request, response);
@@ -169,7 +169,7 @@ public class CheckJDFServlet extends UtilityServlet
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
-			if (ServletFileUpload.isMultipartContent(request))
+			if (JakartaServletFileUpload.isMultipartContent(request))
 			{
 				doFix(request, response);
 			}
@@ -186,12 +186,12 @@ public class CheckJDFServlet extends UtilityServlet
 		 */
 		protected void doFix(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 		{
-			final List<FileItem> fileItems = FileItemList.getMemoryFileItemList(request, 20l * 1024 * 1024).getFileList(true, true);
-			FileItem fileItem = null;
+			final List<DiskFileItem> fileItems = FileItemList.getMemoryFileItemList(request, 20l * 1024 * 1024).getFileList(true, true);
+			DiskFileItem fileItem = null;
 			EnumVersion version = null;
 			int nFiles = 0;
 			String versionField = "";
-			for (final FileItem item : fileItems)
+			for (final DiskFileItem item : fileItems)
 			{
 				if (item.isFormField())
 				{
@@ -406,11 +406,11 @@ public class CheckJDFServlet extends UtilityServlet
 	protected void processMultipartRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
 	{
 		// Parse the multipart request
-		final List<FileItem> fileItems = FileItemList.getMemoryFileItemList(req, 66l * 1024l * 1024l).getFileList(true, true);
+		final List<DiskFileItem> fileItems = FileItemList.getMemoryFileItemList(req, 66l * 1024l * 1024l).getFileList(true, true);
 
 		// Get the first file item
 		// To do: Process all file items
-		FileItem fileItem = null;
+		DiskFileItem fileItem = null;
 		boolean bUseSchema = false;
 		boolean bIgnorePrivate = false;
 		boolean prettyFormat = false;
@@ -419,7 +419,7 @@ public class CheckJDFServlet extends UtilityServlet
 		final String validationLevel = EnumValidationLevel.Complete.getName();
 		String devcapName = null;
 		File devcapFile = null;
-		for (final FileItem item : fileItems)
+		for (final DiskFileItem item : fileItems)
 		{
 			final String fieldName = item.getFieldName();
 
@@ -543,7 +543,6 @@ public class CheckJDFServlet extends UtilityServlet
 		final JDFValidator checker = new JDFValidator();
 
 		checker.setPrint(false);
-		checker.bQuiet = true;
 		checker.setIgnorePrivate(bIgnorePrivate);
 		checker.level = EnumValidationLevel.Complete;
 		try
@@ -582,7 +581,7 @@ public class CheckJDFServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
 	 * @return

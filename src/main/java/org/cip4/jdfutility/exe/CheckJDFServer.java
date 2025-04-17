@@ -72,8 +72,8 @@ import org.cip4.jdflib.util.MyArgs;
 import org.cip4.jdfutility.CheckJDFServlet;
 import org.cip4.jdfutility.logging.LogConfigurator;
 import org.cip4.jdfutility.server.JettyServer;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
 
 /**
  * standalone app for bambi using an embedded jetty server

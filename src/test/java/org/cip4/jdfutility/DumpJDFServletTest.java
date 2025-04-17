@@ -44,7 +44,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.cip4.jdflib.util.UrlUtil;
 import org.junit.jupiter.api.Test;
