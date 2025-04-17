@@ -40,15 +40,10 @@ package org.cip4.jdfutility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload2.core.DiskFileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.PlatformUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
@@ -132,7 +127,7 @@ public class JDFServletUtil extends Object
 	 * @param extension
 	 * @return
 	 */
-	public static File getTmpFile(final String dirName, final FileItem fileItem, final String prefix, final String extension)
+	public static File getTmpFile(final String dirName, final DiskFileItem fileItem, final String prefix, final String extension)
 	{
 		if (fileItem == null)
 		{
@@ -140,19 +135,6 @@ public class JDFServletUtil extends Object
 		}
 		final String tmpName = fileItem.getName();
 		return getTmpFile(dirName, tmpName, prefix, extension);
-	}
-
-	/**
-	 * @param request
-	 * @return
-	 * @throws ServletException
-	 * @deprecated - use 4 parameter version
-	 */
-	@Deprecated
-	public static List<FileItem> getFileList(final HttpServletRequest request) throws ServletException
-	{
-		final FileItemList fil = new FileItemList(request, 20l * 1024 * 1024);
-		return fil.getFileList(true, true);
 	}
 
 	/**
@@ -180,18 +162,6 @@ public class JDFServletUtil extends Object
 			}
 		}
 		Runtime.getRuntime().gc(); // clean up memory
-	}
-
-	/**
-	 *
-	 * @return
-	 * @deprecated use {@link PlatformUtil}.isWindows()
-	 *
-	 */
-	@Deprecated
-	public static boolean isWindows()
-	{
-		return PlatformUtil.isWindows();
 	}
 
 }

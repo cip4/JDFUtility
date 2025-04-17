@@ -41,11 +41,11 @@ import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.net.ssl.SSLEngine;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jetty.http.BadMessageException;
+import org.eclipse.jetty.http.HttpFields;
+import org.eclipse.jetty.http.HttpFields.Mutable;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 
@@ -54,7 +54,7 @@ public class BambiRequestCustomizer extends SecureRequestCustomizer
 	static final Log log = LogFactory.getLog(BambiRequestCustomizer.class);
 	final static Set<String> logged = new HashSet<>();
 
-	public BambiRequestCustomizer(BambiRequestCustomizer rc)
+	public BambiRequestCustomizer(final BambiRequestCustomizer rc)
 	{
 		super(rc.isSniRequired(), rc.isSniHostCheck(), rc.getStsMaxAge(), rc.isStsIncludeSubDomains());
 	}
@@ -65,52 +65,52 @@ public class BambiRequestCustomizer extends SecureRequestCustomizer
 	}
 
 	@Override
-	protected void customize(SSLEngine sslEngine, Request request)
+	public Request customize(final Request request, final HttpFields.Mutable responseHeaders)
 	{
 		BadMessageException failed = null;
 		try
 		{
-			delegate(sslEngine, request);
-			return;
+			delegate(request, responseHeaders);
+			return request;
 		}
-		catch (BadMessageException x)
+		catch (final BadMessageException x)
 		{
 			failed = x;
 		}
 		if (failed != null)
 		{
-			String server = request.getServerName();
+			final String server = Request.getServerName(request);
 
 			try
 			{
-				InetAddress[] adds = InetAddress.getAllByName(server);
-				for (InetAddress add : adds)
+				final InetAddress[] adds = InetAddress.getAllByName(server);
+				for (final InetAddress add : adds)
 				{
 					if (InetAddress.getLocalHost().equals(add) || "localhost".equalsIgnoreCase(add.getHostName()) || add.isLoopbackAddress())
 					{
-						String message = "bypassing sni for " + server;
+						final String message = "bypassing sni for " + server;
 						if (logged.add(message))
 						{
 							log.warn(message);
 						}
-						BambiRequestCustomizer delegate = new BambiRequestCustomizer(this);
+						final BambiRequestCustomizer delegate = new BambiRequestCustomizer(this);
 						delegate.setSniHostCheck(false);
 						delegate.setSniRequired(false);
-						delegate.delegate(sslEngine, request);
-						return;
+						delegate.delegate(request, responseHeaders);
+						return request;
 					}
 				}
 			}
-			catch (UnknownHostException e)
+			catch (final UnknownHostException e)
 			{
 			}
 		}
 		throw failed;
 	}
 
-	void delegate(SSLEngine sslEngine, Request request)
+	void delegate(final Request request, final Mutable responseHeaders)
 	{
-		super.customize(sslEngine, request);
+		super.customize(request, responseHeaders);
 	}
 
 }

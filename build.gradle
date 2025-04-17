@@ -18,7 +18,7 @@ java {
     withJavadocJar()
     withSourcesJar()
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -123,20 +123,21 @@ processResources {
 }
 
 dependencies {
-    implementation('org.cip4.lib.jdf:JDFLibJ:2.1.8.+') {
+    implementation('org.cip4.lib.jdf:JDFLibJ:2.+') {
         exclude group: 'xml-apis'
     }
 
-    implementation 'org.eclipse.jetty:jetty-servlet:10.0.15'
-    implementation 'commons-fileupload:commons-fileupload:1.5'
-   
+    implementation 'org.eclipse.jetty:jetty-server:12.0.19'
+implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.19'
+implementation 'org.apache.commons:commons-fileupload2-jakarta-servlet6:2.+'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'  
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-jcl:2.24.3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
-    testImplementation 'org.springframework:spring-test:5.3.39'
-    testImplementation 'org.springframework:spring-web:5.3.39'
+    testImplementation 'org.springframework:spring-test:6.2.+'
+    testImplementation 'org.springframework:spring-web:6.2.+'
     testImplementation 'org.mockito:mockito-core:5.17.0'
 }
 

@@ -38,35 +38,31 @@ package org.cip4.jdfutility.server;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.FileUtil;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.Handler.Abstract;
+import org.eclipse.jetty.server.Handler.Sequence;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.HandlerCollection;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 /**
@@ -306,8 +302,8 @@ public abstract class JettyServer
 		log.info("creating new server: " + toString());
 		server = new Server();
 		updateHTTP();
-		final HandlerList handlers = createHandlerList();
-		final HandlerCollection handlerbase = createBaseCollection(handlers);
+		final Sequence handlers = createHandlerList();
+		final Sequence handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
 		server.start();
 		log.info("completed starting new server: " + toString());
@@ -369,9 +365,9 @@ public abstract class JettyServer
 	/**
 	 * @return
 	 */
-	protected HandlerList createHandlerList()
+	protected Sequence createHandlerList()
 	{
-		final HandlerList handlers = new HandlerList();
+		final Sequence handlers = new Sequence();
 		// the resource handler is always first
 		final ResourceHandler resourceHandler = createResourceHandler();
 		handlers.addHandler(resourceHandler);
@@ -379,7 +375,6 @@ public abstract class JettyServer
 		addMoreHandlers(handlers);
 
 		final ServletContextHandler contextHandler = createServletHandler();
-		contextHandler.getContextPath();
 
 		handlers.addHandler(contextHandler);
 		handlers.addHandler(new RedirectHandler());
@@ -392,9 +387,9 @@ public abstract class JettyServer
 	 * @param handlers
 	 * @return
 	 */
-	protected HandlerCollection createBaseCollection(final HandlerList handlers)
+	protected Sequence createBaseCollection(final Sequence handlers)
 	{
-		final HandlerCollection handlerbase = new HandlerCollection();
+		final Sequence handlerbase = new Sequence();
 		handlerbase.addHandler(handlers);
 		addHttpLogger(handlerbase);
 		return handlerbase;
@@ -405,7 +400,7 @@ public abstract class JettyServer
 	 *
 	 * @param handlers
 	 */
-	protected void addMoreHandlers(final HandlerList handlers)
+	protected void addMoreHandlers(final Sequence handlers)
 	{
 		// nop
 	}
@@ -415,14 +410,12 @@ public abstract class JettyServer
 	 *
 	 * @param handlerbase
 	 */
-	protected void addHttpLogger(final HandlerCollection handlerbase)
+	protected void addHttpLogger(final Sequence handlerbase)
 	{
 		final RequestLog requestLog = createRequestLog();
 		if (requestLog != null)
 		{
-			final RequestLogHandler requestLogHandler = new RequestLogHandler();
-			requestLogHandler.setRequestLog(requestLog);
-			handlerbase.addHandler(requestLogHandler);
+			server.setRequestLog(requestLog);
 			log.info("adding http log handler");
 		}
 	}
@@ -475,18 +468,14 @@ public abstract class JettyServer
 	/**
 	 * @author rainer prosi
 	 */
-	private class RedirectHandler extends AbstractHandler
+	private class RedirectHandler extends Abstract
 	{
-		/**
-		 * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest,
-		 *      javax.servlet.http.HttpServletResponse)
-		 */
+
 		@Override
-		public void handle(final String pathInContext, final Request arg1, final HttpServletRequest request, final HttpServletResponse response)
-				throws IOException, ServletException
+		public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
 		{
-			response.sendRedirect(getHome());
-			arg1.setHandled(true);
+			Response.sendRedirect(request, response, callback, getHome());
+			return true;
 		}
 	}
 
@@ -509,8 +498,9 @@ public abstract class JettyServer
 	protected ResourceHandler createResourceHandler()
 	{
 		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
-		resourceHandler.setResourceBase(".");
+		resourceHandler.setBaseResourceAsString(".");
 		resourceHandler.setDirAllowed(false);
+		resourceHandler.setWelcomeFiles(List.of("index.html"));
 		return resourceHandler;
 	}
 

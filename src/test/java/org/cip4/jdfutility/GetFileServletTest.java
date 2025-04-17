@@ -44,7 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.cip4.jdflib.core.JDFCoreConstants;
 import org.junit.jupiter.api.Test;

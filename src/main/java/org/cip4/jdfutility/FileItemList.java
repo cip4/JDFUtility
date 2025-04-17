@@ -77,19 +77,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory.Builder;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StreamUtil;
 import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -98,7 +98,7 @@ import org.cip4.jdflib.util.UrlUtil;
 public class FileItemList
 {
 
-	final private List<FileItem> fileItems;
+	final private List<DiskFileItem> fileItems;
 	private final JDFAttributeMap mapCache;
 	private final JDFAttributeMap reqParameters;
 
@@ -154,12 +154,13 @@ public class FileItemList
 	{
 		mapCache = new JDFAttributeMap();
 		reqParameters = new JDFAttributeMap();
-		fileItems = new ArrayList<FileItem>();
+		fileItems = new ArrayList<DiskFileItem>();
 		// Create a factory for disk-based file items
-		final FileItemFactory factory = getFactory(inMemory, filesize);
+		final DiskFileItemFactory factory = getFactory(inMemory, filesize);
 
 		// Create a new file upload handler
-		final ServletFileUpload upload = new ServletFileUpload(factory);
+		final JakartaServletFileUpload<DiskFileItem, DiskFileItemFactory> upload = new JakartaServletFileUpload<DiskFileItem, DiskFileItemFactory>();
+		upload.setFileItemFactory(factory);
 		if (request != null)
 		{
 			final Map<String, String[]> parameterMap = request.getParameterMap();
@@ -191,18 +192,18 @@ public class FileItemList
 		}
 	}
 
-	FileItemFactory getFactory(final boolean inMemory, final long filesize)
+	DiskFileItemFactory getFactory(final boolean inMemory, final long filesize)
 	{
 		if (inMemory && filesize <= 1)
 		{
 			throw new IllegalArgumentException("cannot create in memory factory with low size " + filesize);
 		}
-		final DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+		final Builder b = DiskFileItemFactory.builder();
 		if (inMemory)
 		{
-			diskFileItemFactory.setSizeThreshold((int) filesize);
+			b.setBufferSize((int) filesize);
 		}
-		return diskFileItemFactory;
+		return b.get();
 	}
 
 	/**
@@ -215,8 +216,8 @@ public class FileItemList
 	{
 		if (ContainerUtil.isEmpty(mapCache))
 		{
-			final List<FileItem> fileList = getFileList(false, true);
-			for (final FileItem fi : fileList)
+			final List<DiskFileItem> fileList = getFileList(false, true);
+			for (final DiskFileItem fi : fileList)
 			{
 				final String itemString = StringUtil.getNonEmpty(fi.getString());
 				if (itemString != null)
@@ -277,12 +278,12 @@ public class FileItemList
 	 * @return
 	 * 
 	 */
-	public List<FileItem> getFileList(final boolean bFile, final boolean bForm)
+	public List<DiskFileItem> getFileList(final boolean bFile, final boolean bForm)
 	{
-		final List<FileItem> retList = new ArrayList<FileItem>();
+		final List<DiskFileItem> retList = new ArrayList<DiskFileItem>();
 		if (bFile || bForm)
 		{
-			for (final FileItem f : fileItems)
+			for (final DiskFileItem f : fileItems)
 			{
 				final boolean formField = f.isFormField();
 				if (formField && bForm || !formField && bFile)
@@ -301,9 +302,9 @@ public class FileItemList
 	 * @param i may be<0 to count from end
 	 * @return
 	 */
-	public FileItem getFile(int i)
+	public DiskFileItem getFile(int i)
 	{
-		final List<FileItem> fileList = getFileList(true, false);
+		final List<DiskFileItem> fileList = getFileList(true, false);
 		if (i < 0)
 		{
 			i += fileList.size();
@@ -325,10 +326,10 @@ public class FileItemList
 	 * @param formName
 	 * @return
 	 */
-	public FileItem getFile(final String formName)
+	public DiskFileItem getFile(final String formName)
 	{
-		final List<FileItem> fileList = getFileList(true, false);
-		for (final FileItem f : fileList)
+		final List<DiskFileItem> fileList = getFileList(true, false);
+		for (final DiskFileItem f : fileList)
 		{
 			if (f.getFieldName().equalsIgnoreCase(formName))
 			{
@@ -347,7 +348,7 @@ public class FileItemList
 	 */
 	public InputStream getFileInputStream(final String formName)
 	{
-		final FileItem fi = getFile(formName);
+		final DiskFileItem fi = getFile(formName);
 		return getInputStream(fi);
 	}
 
@@ -360,7 +361,7 @@ public class FileItemList
 	 */
 	public InputStream getFileInputStream(final int i)
 	{
-		final FileItem fi = getFile(i);
+		final DiskFileItem fi = getFile(i);
 		return getInputStream(fi);
 	}
 
@@ -370,7 +371,7 @@ public class FileItemList
 	 * @param fi
 	 * @return
 	 */
-	public static InputStream getInputStream(final FileItem fi)
+	public static InputStream getInputStream(final DiskFileItem fi)
 	{
 		if (fi != null)
 		{

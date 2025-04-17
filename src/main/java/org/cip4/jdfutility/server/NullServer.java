@@ -70,10 +70,11 @@ package org.cip4.jdfutility.server;
 
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdflib.util.thread.MyMutex;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 
 /**
  * null service for automatically not running a service
+ * 
  * @author rainer prosi
  * @date Jan 20, 2012
  */

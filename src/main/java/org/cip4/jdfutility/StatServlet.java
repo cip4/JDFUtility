@@ -72,9 +72,9 @@ package org.cip4.jdfutility;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 
@@ -126,7 +126,7 @@ public class StatServlet extends UtilityServlet
 	}
 
 	/**
-	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
 	 * @param request
 	 * @param response
 	 * @return
