@@ -305,6 +305,7 @@ public abstract class JettyServer
 		final Sequence handlers = createHandlerList();
 		final Sequence handlerbase = createBaseCollection(handlers);
 		server.setHandler(handlerbase);
+		server.setDefaultHandler(new RedirectHandler());
 		server.start();
 		log.info("completed starting new server: " + toString());
 	}

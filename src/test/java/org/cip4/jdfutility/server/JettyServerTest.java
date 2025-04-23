@@ -170,7 +170,10 @@ class JettyServerTest extends JDFUtilityTestBase
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		assertEquals("nix", rh.update("nix"));
+		assertEquals("nix", rh.update("foo/nix"));
+		assertEquals("http://localhost/bar/nix", rh.update("http://localhost/bar/foo/nix"));
 		assertEquals("dummy", rh.update(""));
+		assertEquals("dummy", rh.update("/"));
 	}
 
 	@Test
@@ -181,6 +184,9 @@ class JettyServerTest extends JDFUtilityTestBase
 		assertEquals(null, rh.update("foo/nix"));
 		assertEquals("boo", rh.update("foo/boo"));
 		assertEquals("boo", rh.update("boo"));
+		assertEquals("http://localhost/boo/nix", rh.update("http://localhost/foo/boo/nix"));
+		assertEquals("http://localhost/BOO/nix", rh.update("http://localhost/foo/BOO/nix"));
+		assertEquals("http://localhost/BOO/nix", rh.update("http://localhost/FOO/BOO/nix"));
 	}
 
 	@Test
