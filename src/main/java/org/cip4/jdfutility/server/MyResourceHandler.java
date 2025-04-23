@@ -61,7 +61,7 @@ public class MyResourceHandler extends ResourceHandler
 	public MyResourceHandler(final String strip, final String home)
 	{
 		super();
-		this.strip = StringUtil.getNonEmpty(strip);
+		this.strip = strip == null ? null : StringUtil.token(StringUtil.getNonEmpty(strip.toLowerCase()), 0, "/");
 		this.home = home;
 		whiteList = new HashSet<>();
 	}
@@ -70,11 +70,14 @@ public class MyResourceHandler extends ResourceHandler
 
 	String update(String url)
 	{
-
-		if (strip != null && url.startsWith(strip) && (url.length() == strip.length() || url.charAt(strip.length()) == '/'))
+		final String urlLow = url.toLowerCase();
+		int pos = StringUtil.posOfToken(urlLow, strip, "/", 0);
+		if (pos >= 0)
 		{
-			url = StringUtil.removeToken(url, 0, "/");
+			pos = urlLow.indexOf(strip);
+			url = url.substring(0, pos) + url.substring(pos + StringUtil.length(strip) + 1);
 		}
+
 		if ("".equals(url) || "/".equals(url))
 		{
 			return home;
@@ -82,7 +85,8 @@ public class MyResourceHandler extends ResourceHandler
 		else if (!whiteList.isEmpty())
 		{
 			final String base = StringUtil.token(url, 0, "/");
-			if (!whiteList.contains(base.toLowerCase()))
+			final String base2 = StringUtil.token(url, 2, "/"); // http://host:port/root
+			if (!whiteList.contains(base.toLowerCase()) && (base2 == null || !whiteList.contains(base2.toLowerCase())))
 			{
 				return null;
 			}
