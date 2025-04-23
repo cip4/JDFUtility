@@ -114,6 +114,9 @@ public class MyResourceHandler extends ResourceHandler
 	@Override
 	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
 	{
+		final String context = request.getContext().getContextPath();
+		if (StringUtil.isEmpty(context))
+			return false;
 		final HttpURI uri = request.getHttpURI();
 		final String uriString = update(uri.asString());
 		if (uriString == null)
