@@ -53,8 +53,8 @@ import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashMap;
 
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
