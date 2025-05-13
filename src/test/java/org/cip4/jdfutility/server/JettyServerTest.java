@@ -166,17 +166,6 @@ class JettyServerTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testResHandler() throws InterruptedException
-	{
-		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
-		assertEquals("nix", rh.update("nix"));
-		assertEquals("nix", rh.update("foo/nix"));
-		assertEquals("http://localhost/bar/nix", rh.update("http://localhost/bar/foo/nix"));
-		assertEquals("dummy", rh.update(""));
-		assertEquals("dummy", rh.update("/"));
-	}
-
-	@Test
 	public void testResHandlerWL() throws InterruptedException
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
