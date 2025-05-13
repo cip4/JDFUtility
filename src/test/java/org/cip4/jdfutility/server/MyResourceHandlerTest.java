@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2023 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -37,95 +37,74 @@
 package org.cip4.jdfutility.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockStatic;
-
-import java.net.UnknownHostException;
-
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSession;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.cip4.jdfutility.JDFUtilityTestBase;
-import org.eclipse.jetty.http.BadMessageException;
-import org.eclipse.jetty.http.HttpFields.Mutable;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.server.Context;
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
-public class BambiRequestCustomizerTest extends JDFUtilityTestBase
+class MyResourceHandlerTest extends JDFUtilityTestBase
 {
 
 	@Test
-	public void testConstruct()
+	void testConstruct()
 	{
-		final BambiRequestCustomizer rq = new BambiRequestCustomizer();
-		final BambiRequestCustomizer rq2 = new BambiRequestCustomizer(rq);
-		assertEquals(rq.isSniHostCheck(), rq2.isSniHostCheck());
-	}
-
-	class TestCustomizer extends BambiRequestCustomizer
-	{
-
-		private final boolean boom;
-
-		private TestCustomizer(final boolean boom)
-		{
-			super();
-			this.boom = boom;
-		}
-
-		private TestCustomizer(final TestCustomizer rc)
-		{
-			super(rc);
-			boom = rc.boom;
-		}
-
-		@Override
-		void delegate(final Request request, final Mutable responseHeaders)
-		{
-			if (boom)
-				throw new BadMessageException();
-		}
-
+		final MyResourceHandler h = new MyResourceHandler("abc", sm_dirTestData);
+		assertNotNull(h);
 	}
 
 	@Test
-	public void testCustomize() throws UnknownHostException
+	public void testResHandler() throws Exception
 	{
-		final BambiRequestCustomizer rq = new TestCustomizer(false);
-
-		final Request request = Mockito.mock(Request.class);
-		final Mutable m = Mockito.mock(Mutable.class);
-		rq.customize(request, m);
-
-		final MockedStatic<Request> rs = mockStatic(Request.class);
-		rs.when(() -> Request.getServerName(any())).thenReturn("localhost");
-		rq.customize(request, m);
-		rs.when(() -> Request.getServerName(any())).thenReturn("127.0.0.1");
-		rq.customize(request, m);
-		rs.close();
-
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
+		assertEquals("nix", rh.update("nix"));
+		assertEquals("nix", rh.update("foo/nix"));
+		assertEquals("http://localhost/bar/nix", rh.update("http://localhost/bar/foo/nix"));
+		assertEquals("dummy", rh.update(""));
+		assertEquals("dummy", rh.update("/"));
 	}
 
 	@Test
-	public void testCustomizeBad()
+	public void testHandle() throws Exception
 	{
-		final BambiRequestCustomizer rq = new TestCustomizer(true);
-		final SSLEngine e = Mockito.mock(SSLEngine.class);
-		final SSLSession s = Mockito.mock(SSLSession.class);
-		Mockito.when(e.getSession()).thenReturn(s);
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
+		final Request r = mock(Request.class);
+		final Context c = mock(Context.class);
+		when(r.getContext()).thenReturn(c);
+		final Response resp = mock(Response.class);
+		assertFalse(rh.handle(r, resp, null));
+	}
 
-		final Request request = Mockito.mock(Request.class);
+	@Test
+	public void testHandleDown() throws Exception
+	{
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
+		final Request r = mock(Request.class);
+		final Context c = mock(Context.class);
+		when(r.getContext()).thenReturn(c);
+		when(r.getHttpURI()).thenReturn(HttpURI.build("abcd"));
+		when(c.getContextPath()).thenReturn("abc");
+		final Response resp = mock(Response.class);
+		assertFalse(rh.handle(r, resp, null));
+	}
 
-		final MockedStatic<Request> rs = mockStatic(Request.class);
-		rs.when(() -> Request.getServerName(any())).thenReturn("badhost");
-		final Mutable m = Mockito.mock(Mutable.class);
-
-		assertThrows(BadMessageException.class, () -> rq.customize(request, m));
-		rs.close();
-
+	@Test
+	public void testHandleDown2() throws Exception
+	{
+		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
+		final Request r = mock(Request.class);
+		final Context c = mock(Context.class);
+		when(r.getContext()).thenReturn(c);
+		when(r.getHttpURI()).thenReturn(HttpURI.build("foo/abcd"));
+		when(c.getContextPath()).thenReturn("abc");
+		final Response resp = mock(Response.class);
+		assertFalse(rh.handle(r, resp, null));
 	}
 
 }
