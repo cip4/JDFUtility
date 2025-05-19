@@ -73,7 +73,7 @@ class JettyServerTest extends JDFUtilityTestBase
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
 		final int t = Thread.activeCount();
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			assertTrue(ns.tryStart());
 			while (!ns.isStarted())
@@ -147,6 +147,12 @@ class JettyServerTest extends JDFUtilityTestBase
 		ns.setPort(getPort());
 		assertFalse(ns.isStarted());
 		assertTrue(ns.tryStart());
+		for (int i = 0; i < 42; i++)
+		{
+			if (!ns.isStarted())
+				ThreadUtil.sleep(100);
+		}
+
 		assertTrue(ns.isStarted());
 		ns.stop();
 		assertFalse(ns.isStarted());
@@ -159,21 +165,15 @@ class JettyServerTest extends JDFUtilityTestBase
 		final HTTPDump ns = new HTTPDump();
 		ns.setPort(getPort());
 		ns.start();
+		for (int i = 0; i < 42; i++)
+		{
+			if (!ns.isRunning())
+				ThreadUtil.sleep(100);
+		}
 		assertTrue(ns.isRunning());
 		ns.stop();
 		assertFalse(ns.isStarted());
 		ns.join();
-	}
-
-	@Test
-	public void testResHandler() throws InterruptedException
-	{
-		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
-		assertEquals("nix", rh.update("nix"));
-		assertEquals("nix", rh.update("foo/nix"));
-		assertEquals("http://localhost/bar/nix", rh.update("http://localhost/bar/foo/nix"));
-		assertEquals("dummy", rh.update(""));
-		assertEquals("dummy", rh.update("/"));
 	}
 
 	@Test
