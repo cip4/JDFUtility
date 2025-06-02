@@ -115,7 +115,7 @@ public class MyResourceHandler extends ResourceHandler
 	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
 	{
 		final HttpURI uri = request.getHttpURI();
-		final String uriString = update(uri.asString());
+		final String uriString = uri == null ? null : update(uri.asString());
 		if (uriString == null)
 		{
 			return super.handle(request, response, callback);
