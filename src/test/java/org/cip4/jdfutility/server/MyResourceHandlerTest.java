@@ -77,6 +77,7 @@ class MyResourceHandlerTest extends JDFUtilityTestBase
 		final Request r = mock(Request.class);
 		final Context c = mock(Context.class);
 		when(r.getContext()).thenReturn(c);
+		when(r.getHttpURI()).thenReturn(HttpURI.build(""));
 		final Response resp = mock(Response.class);
 		assertFalse(rh.handle(r, resp, null));
 	}
