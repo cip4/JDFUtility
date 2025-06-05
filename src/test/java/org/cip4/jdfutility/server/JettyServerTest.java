@@ -181,9 +181,9 @@ class JettyServerTest extends JDFUtilityTestBase
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
 		rh.addBase("boo");
-		assertEquals(null, rh.update("foo/nix"));
-		assertEquals("boo", rh.update("foo/boo"));
-		assertEquals("boo", rh.update("boo"));
+		assertEquals(null, rh.update("http://host/foo/nix"));
+		assertEquals("http://host/boo", rh.update("http://host/foo/boo"));
+		assertEquals("dummy", rh.update("boo"));
 		assertEquals("http://localhost/boo/nix", rh.update("http://localhost/foo/boo/nix"));
 		assertEquals("http://localhost/BOO/nix", rh.update("http://localhost/foo/BOO/nix"));
 		assertEquals("http://localhost/BOO/nix", rh.update("http://localhost/FOO/BOO/nix"));

@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2025 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -70,7 +70,7 @@ public class MyResourceHandler extends ResourceHandler
 
 	String update(String url)
 	{
-		final String urlLow = url.toLowerCase();
+		final String urlLow = url == null ? null : url.toLowerCase();
 		int pos = StringUtil.posOfToken(urlLow, strip, "/", 0);
 		if (pos >= 0)
 		{
@@ -78,7 +78,7 @@ public class MyResourceHandler extends ResourceHandler
 			url = url.substring(0, pos) + url.substring(pos + StringUtil.length(strip) + 1);
 		}
 
-		if ("".equals(url) || "/".equals(url))
+		if (StringUtil.isEmpty(url) || "/".equals(url) || StringUtil.token(url, 2, "/") == null)
 		{
 			return home;
 		}
@@ -114,16 +114,14 @@ public class MyResourceHandler extends ResourceHandler
 	@Override
 	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
 	{
-		final String context = request.getContext().getContextPath();
-		if (StringUtil.isEmpty(context))
-			return false;
 		final HttpURI uri = request.getHttpURI();
-		final String uriString = update(uri.asString());
-		if (uriString == null)
+		final String uriString = uri.asString();
+		final String newUriString = update(uriString);
+		if (newUriString == null || StringUtil.equals(uriString, newUriString))
 		{
 			return super.handle(request, response, callback);
 		}
-		final HttpURI newUri = HttpURI.from(uriString);
+		final HttpURI newUri = HttpURI.from(newUriString);
 		final Request updated = Request.serveAs(request, newUri);
 		return super.handle(updated, response, callback);
 	}
