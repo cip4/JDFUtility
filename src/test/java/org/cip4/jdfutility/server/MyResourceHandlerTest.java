@@ -63,11 +63,11 @@ class MyResourceHandlerTest extends JDFUtilityTestBase
 	public void testResHandler() throws Exception
 	{
 		final MyResourceHandler rh = new MyResourceHandler("foo", "dummy");
-		assertEquals("nix", rh.update("nix"));
-		assertEquals("nix", rh.update("foo/nix"));
+		assertEquals("http://localhost/nix", rh.update("http://localhost/nix"));
 		assertEquals("http://localhost/bar/nix", rh.update("http://localhost/bar/foo/nix"));
 		assertEquals("dummy", rh.update(""));
 		assertEquals("dummy", rh.update("/"));
+		assertEquals("dummy", rh.update("http://localhost"));
 	}
 
 	@Test

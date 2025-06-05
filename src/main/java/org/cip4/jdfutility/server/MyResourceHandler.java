@@ -78,7 +78,7 @@ public class MyResourceHandler extends ResourceHandler
 			url = url.substring(0, pos) + url.substring(pos + StringUtil.length(strip) + 1);
 		}
 
-		if (StringUtil.isEmpty(url) || "/".equals(url))
+		if (StringUtil.isEmpty(url) || "/".equals(url) || StringUtil.token(url, 2, "/") == null)
 		{
 			return home;
 		}
