@@ -91,8 +91,8 @@ public class MyResourceHandler extends ResourceHandler
 		}
 		else if (!whiteList.isEmpty())
 		{
-			final String base = StringUtil.token(url, 0, JDFConstants.SLASH);
-			final String base2 = StringUtil.token(url, 2, JDFConstants.SLASH); // http://host:port/root
+			final String base = StringUtil.token(urlOut, 0, JDFConstants.SLASH);
+			final String base2 = StringUtil.token(urlOut, 2, JDFConstants.SLASH); // http://host:port/root
 			if (!whiteList.contains(base.toLowerCase()) && (base2 == null || !whiteList.contains(base2.toLowerCase())))
 			{
 				return null;
