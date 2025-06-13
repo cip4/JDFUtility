@@ -660,6 +660,14 @@ public abstract class JettyServer
 	}
 
 	/**
+	 * @return
+	 */
+	public Server getJettyServer()
+	{
+		return server;
+	}
+
+	/**
 	 *
 	 */
 	public static void shutdown()
