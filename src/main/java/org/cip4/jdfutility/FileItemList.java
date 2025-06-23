@@ -219,10 +219,17 @@ public class FileItemList
 			final List<DiskFileItem> fileList = getFileList(false, true);
 			for (final DiskFileItem fi : fileList)
 			{
-				final String itemString = StringUtil.getNonEmpty(fi.getString());
-				if (itemString != null)
+				try
 				{
-					mapCache.put(fi.getFieldName(), itemString);
+					final String itemString = StringUtil.getNonEmpty(fi.getString());
+					if (itemString != null)
+					{
+						mapCache.put(fi.getFieldName(), itemString);
+					}
+				}
+				catch (final Exception e)
+				{
+					// nop
 				}
 			}
 
