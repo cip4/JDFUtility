@@ -39,6 +39,7 @@ package org.cip4.jdfutility.server;
 
 import java.util.HashSet;
 
+import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.util.StringUtil;
 import org.eclipse.jetty.http.HttpURI;
 import org.eclipse.jetty.server.Request;
@@ -61,38 +62,44 @@ public class MyResourceHandler extends ResourceHandler
 	public MyResourceHandler(final String strip, final String home)
 	{
 		super();
-		this.strip = strip == null ? null : StringUtil.token(StringUtil.getNonEmpty(strip.toLowerCase()), 0, "/");
+		this.strip = strip == null ? null : StringUtil.token(StringUtil.getNonEmpty(strip.toLowerCase()), 0, JDFConstants.SLASH);
 		this.home = home;
 		whiteList = new HashSet<>();
 	}
 
 	private final String strip;
 
-	String update(String url)
+	String update(final String url)
 	{
 		final String urlLow = url == null ? null : url.toLowerCase();
-		int pos = StringUtil.posOfToken(urlLow, strip, "/", 0);
+		String urlOut = url;
+		int pos = StringUtil.posOfToken(urlLow, strip, JDFConstants.SLASH, 0);
 		if (pos >= 0)
 		{
 			pos = urlLow.indexOf(strip);
-			url = url.substring(0, pos) + url.substring(pos + StringUtil.length(strip) + 1);
+			urlOut = url.substring(0, pos);
+			final int endPos = pos + strip.length() + 1;
+			if (endPos < urlLow.length())
+			{
+				urlOut += url.substring(endPos);
+			}
 		}
 
-		if (StringUtil.isEmpty(url) || "/".equals(url) || StringUtil.token(url, 2, "/") == null)
+		if (StringUtil.isEmpty(urlOut) || JDFConstants.SLASH.equals(urlOut) || StringUtil.token(urlOut, 2, JDFConstants.SLASH) == null)
 		{
 			return home;
 		}
 		else if (!whiteList.isEmpty())
 		{
-			final String base = StringUtil.token(url, 0, "/");
-			final String base2 = StringUtil.token(url, 2, "/"); // http://host:port/root
+			final String base = StringUtil.token(urlOut, 0, JDFConstants.SLASH);
+			final String base2 = StringUtil.token(urlOut, 2, JDFConstants.SLASH); // http://host:port/root
 			if (!whiteList.contains(base.toLowerCase()) && (base2 == null || !whiteList.contains(base2.toLowerCase())))
 			{
 				return null;
 			}
 		}
 
-		return url;
+		return urlOut;
 	}
 
 	/**
@@ -108,7 +115,7 @@ public class MyResourceHandler extends ResourceHandler
 	@Override
 	public String toString()
 	{
-		return "MyResourceHandler [strip=" + strip + ", getResourceBase()=" + getBaseResource();
+		return "MyResourceHandler [strip=" + strip + ", base=" + getBaseResource();
 	}
 
 	@Override
