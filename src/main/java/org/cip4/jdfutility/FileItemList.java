@@ -82,6 +82,7 @@ import org.apache.commons.fileupload2.core.DiskFileItemFactory;
 import org.apache.commons.fileupload2.core.DiskFileItemFactory.Builder;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import org.apache.commons.io.FileCleaningTracker;
 import org.cip4.jdflib.datatypes.JDFAttributeMap;
 import org.cip4.jdflib.util.ContainerUtil;
 import org.cip4.jdflib.util.StreamUtil;
@@ -101,6 +102,18 @@ public class FileItemList
 	final private List<DiskFileItem> fileItems;
 	private final JDFAttributeMap mapCache;
 	private final JDFAttributeMap reqParameters;
+
+	private static FileCleaningTracker tracker = null;
+
+	protected static FileCleaningTracker getTracker()
+	{
+		return tracker;
+	}
+
+	protected static void setTracker(final FileCleaningTracker tracker)
+	{
+		FileItemList.tracker = tracker;
+	}
 
 	/**
 	 * returns a pure in memory FileItemList
@@ -202,6 +215,7 @@ public class FileItemList
 		if (inMemory)
 		{
 			b.setBufferSize((int) filesize);
+			b.setFileCleaningTracker(tracker);
 		}
 		return b.get();
 	}
