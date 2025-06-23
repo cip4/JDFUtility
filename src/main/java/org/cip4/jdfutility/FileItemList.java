@@ -105,12 +105,12 @@ public class FileItemList
 
 	private static FileCleaningTracker tracker = null;
 
-	protected static FileCleaningTracker getTracker()
+	public static FileCleaningTracker getTracker()
 	{
 		return tracker;
 	}
 
-	protected static void setTracker(final FileCleaningTracker tracker)
+	public static void setTracker(final FileCleaningTracker tracker)
 	{
 		FileItemList.tracker = tracker;
 	}
