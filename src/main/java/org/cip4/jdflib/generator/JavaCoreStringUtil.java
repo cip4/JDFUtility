@@ -40,6 +40,7 @@ import java.util.Vector;
 import org.apache.commons.lang.enums.ValuedEnum;
 import org.cip4.jdflib.core.JDFConstants;
 import org.cip4.jdflib.core.JDFCoreConstants;
+import org.cip4.jdflib.util.StringUtil;
 
 // imports
 
@@ -270,6 +271,10 @@ public class JavaCoreStringUtil
 				else if ("MaxVersion".equals(attributeName))
 				{
 					enumType = "EnumVersion";
+				}
+				else if ("Surface".equals(attributeName))
+				{
+					enumType = "EnumFace";
 				}
 				else if ("UpdatedStatus".equals(attributeName) || "MinStatus".equals(attributeName) || "MinLateStatus".equals(attributeName))
 				{
@@ -554,116 +559,160 @@ public class JavaCoreStringUtil
 	 * @param complexTypeName
 	 * @param strbufResult
 	 */
-	private static void appendEnumTypes(final Vector vAttributes, final String complexTypeName, final StringBuffer strbufResult)
+	private static void appendEnumTypes(final Vector vAttributes, final String complexTypeName, final StringBuffer strbufResult0)
 	{
 		for (int i = 0; i < vAttributes.size(); i++)
 		{
 			final SchemaAttribute schemaAttribute = (SchemaAttribute) vAttributes.elementAt(i);
-			final String attributeName = schemaAttribute.getStrAttributeName();
+			String attributeName = schemaAttribute.getStrAttributeName();
 
 			if (useEnumAttribute(schemaAttribute.getIsEnum(), attributeName, complexTypeName, true))
 			{
-				String attributeTypeName = "Enum" + attributeName;
-				if ("Status".equals(attributeName))
+				for (final boolean useJava : new boolean[] { true, false })
 				{
-					// just some specials for QueueStatus and QueueEntryStatus. The
-					// attribute has to be handled like "Status"
-					// but to be called as "QueueStatus" and "QueueEntryStatus"
-					attributeTypeName = getTypeName(complexTypeName);
-				}
-
-				strbufResult.append(strDepth2).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth2).append("* Enumeration strings for ").append(attributeTypeName.substring(4)).append(strLineEnd);
-				strbufResult.append(strDepth2).append("*/").append(strLineEnd).append(strLineEnd);
-				strbufResult.append(strDepth2).append("@SuppressWarnings(\"rawtypes\")").append(strLineEnd);
-
-				strbufResult.append(strDepth2).append("public static class ").append(attributeTypeName).append(" extends ValuedEnum").append(strLineEnd);
-				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    private static final long serialVersionUID = 1L;").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    private static int m_startValue = 0;").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth2).append("    protected ").append(attributeTypeName).append("(String name)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        super(name, m_startValue++);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @param enumName the string to convert").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @return the enum").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(String enumName)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumName);")
-						.append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @param enumValue the integer to convert").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @return the enum").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(int enumValue)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName).append(".class, enumValue);")
-						.append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @return the map of enums").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    public static Map getEnumMap()").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return getEnumMap(").append(attributeTypeName).append(".class);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @return the list of enums").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    public static List getEnumList()").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return getEnumList(").append(attributeTypeName).append(".class);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				strbufResult.append(strDepth1).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" * @return the iterator").append(strLineEnd);
-				strbufResult.append(strDepth1).append(" */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    public static Iterator iterator()").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    {").append(strLineEnd);
-				strbufResult.append(strDepth2).append("        return iterator(").append(attributeTypeName).append(".class);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
-
-				final Vector vEnumValues = schemaAttribute.getEnumValues();
-				for (int j = 0; j < vEnumValues.size(); j++)
-				{
-					final String enumValue = (String) vEnumValues.elementAt(j);
-
-					strbufResult.append(strDepth3).append("/**  */").append(strLineEnd);
-					strbufResult.append(strDepth3).append("public static final ").append(attributeTypeName).append(" ");
-
-					// check if the enum starts with a digit instead of a char.
-					// If so, append an underscore at start
-					if (m_strIsOff.indexOf(enumValue.charAt(0)) != -1)
+					final StringBuffer strbufResult = new StringBuffer();
+					String attributeTypeName = (useJava ? "E" : "Enum") + attributeName;
+					if ("Status".equals(attributeName))
 					{
-						strbufResult.append(strDepth2).append(attributeTypeName.substring(4)).append("_");
+						// just some specials for QueueStatus and QueueEntryStatus. The
+						// attribute has to be handled like "Status"
+						// but to be called as "QueueStatus" and "QueueEntryStatus"
+						attributeTypeName = getTypeName(complexTypeName);
+						if (useJava)
+						{
+							attributeTypeName = StringUtil.replaceString(attributeTypeName, "Enum", "E");
+							attributeName = StringUtil.replaceString(attributeName, "Enum", "E");
+						}
+					}
+					else if ("Surface".equals(attributeName))
+					{
+						attributeTypeName = (useJava ? "EFace" : "EnumFace");
 					}
 
-					String enumName = enumValue;
-					if (enumName.indexOf(JDFConstants.DOT) >= 0 || enumName.indexOf(JDFConstants.HYPHEN) >= 0)
+					if (useJava)
 					{
-						// The enumName has to be a valid Java identifier, so change dot and hyphen to underscore
+						strbufResult.append(strDepth2).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth2).append("* Enumeration strings for ").append(attributeTypeName.substring(1)).append(strLineEnd);
+						strbufResult.append(strDepth2).append("*/").append(strLineEnd).append(strLineEnd);
+						strbufResult.append(strDepth2).append("public enum ").append(attributeTypeName).append(" {").append(strLineEnd);
+					}
+					else
+					{
+						strbufResult.append(strDepth2).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth2).append("* Enumeration strings for ").append(attributeTypeName.substring(4)).append(strLineEnd);
+						strbufResult.append(strDepth2).append("*/").append(strLineEnd).append(strLineEnd);
+						strbufResult.append(strDepth2).append("@SuppressWarnings(\"rawtypes\")").append(strLineEnd);
+
+						strbufResult.append(strDepth2).append("public static class ").append(attributeTypeName).append(" extends ValuedEnum").append(strLineEnd);
+						strbufResult.append(strDepth2).append("{").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    private static final long serialVersionUID = 1L;").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    private static int m_startValue = 0;").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth2).append("    protected ").append(attributeTypeName).append("(String name)").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        super(name, m_startValue++);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @param enumName the string to convert").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @return the enum").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(String enumName)").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName)
+								.append(".class, enumName);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @param enumValue the integer to convert").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @return the enum").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    public static ").append(attributeTypeName).append(" getEnum(int enumValue)").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        return (").append(attributeTypeName).append(") getEnum(").append(attributeTypeName)
+								.append(".class, enumValue);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @return the map of enums").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    public static Map getEnumMap()").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        return getEnumMap(").append(attributeTypeName).append(".class);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @return the list of enums").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    public static List getEnumList()").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        return getEnumList(").append(attributeTypeName).append(".class);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+
+						strbufResult.append(strDepth1).append("/**").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" * @return the iterator").append(strLineEnd);
+						strbufResult.append(strDepth1).append(" */").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    public static Iterator iterator()").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    {").append(strLineEnd);
+						strbufResult.append(strDepth2).append("        return iterator(").append(attributeTypeName).append(".class);").append(strLineEnd);
+						strbufResult.append(strDepth2).append("    }").append(strLineEnd).append(strLineEnd);
+					}
+					final Vector vEnumValues = schemaAttribute.getEnumValues();
+					for (int j = 0; j < vEnumValues.size(); j++)
+					{
+						final String enumValue = (String) vEnumValues.elementAt(j);
+						String enumName = enumValue;
 						enumName = enumName.replace('.', '_');
 						enumName = enumName.replace('-', '_');
+
+						if ("boolean".equals(enumName) || "double".equals(enumName))
+							enumName = enumName + "_"; // lex GeneralID JDF 1.4
+
+						if (useJava)
+						{
+							if (m_strIsOff.indexOf(enumValue.charAt(0)) != -1)
+							{
+								enumName = attributeTypeName.substring(1) + "_" + enumName;
+							}
+							if (j > 0)
+								strbufResult.append(',');
+							strbufResult.append(enumName);
+
+						}
+						else
+						{
+							if (m_strIsOff.indexOf(enumValue.charAt(0)) != -1)
+							{
+								enumName = attributeTypeName.substring(4) + "_" + enumName;
+							}
+
+							strbufResult.append(strDepth3).append("/**  */").append(strLineEnd);
+							strbufResult.append(strDepth3).append("public static final ").append(attributeTypeName).append(" ");
+
+							// check if the enum starts with a digit instead of a char.
+							// If so, append an underscore at start
+
+							strbufResult.append(enumName);
+
+							strbufResult.append(" = new ").append(attributeTypeName);
+							strbufResult.append("(\"").append(enumValue).append("\");").append(strLineEnd);
+						}
 					}
+					if (useJava)
+					{
+						strbufResult.append(";").append(strDepth2).append("public static ").append(attributeTypeName).append(" getEnum(String val){").append(strLineEnd);
+						String def = schemaAttribute.getStrDefault();
+						def = StringUtil.isEmpty(def) ? "null" : attributeTypeName + '.' + def;
+						strbufResult.append(strDepth2).append("return JavaEnumUtil.getEnumIgnoreCase(").append(attributeTypeName).append(".class, val, ").append(def)
+								.append(");}}");
 
-					if ("boolean".equals(enumName) || "double".equals(enumName))
-						enumName = enumName + "_"; // lex GeneralID JDF 1.4
-
-					strbufResult.append(enumName);
-
-					strbufResult.append(" = new ").append(attributeTypeName);
-					strbufResult.append("(\"").append(enumValue).append("\");").append(strLineEnd);
+					}
+					else
+					{
+						strbufResult.append(strDepth2).append("}      ").append(strLineEnd).append(strLineEnd).append(strLineEnd).append(strLineEnd);
+					}
+					strbufResult0.append(strbufResult);
 				}
-
-				strbufResult.append(strDepth2).append("}      ").append(strLineEnd).append(strLineEnd).append(strLineEnd).append(strLineEnd);
 			}
 		}
 	}
@@ -753,6 +802,14 @@ public class JavaCoreStringUtil
 				{
 					modifiedAttributeTypeName = "EnumVersion";
 				}
+				else if ("Surface".equals(attributeName) && "SurfaceMark".equals(complexTypeName))
+				{
+					modifiedAttributeTypeName = "EnumFace";
+				}
+				else if ("StatusList".equals(attributeName))
+				{
+					modifiedAttributeTypeName = "EnumQueueEntryStatus";
+				}
 				else if ("UpdatedStatus".equals(attributeName))
 				{
 					modifiedAttributeTypeName = "JDFResource.EnumResStatus";
@@ -809,7 +866,9 @@ public class JavaCoreStringUtil
 				if (schemaAttribute.getIsEnum())
 				{
 					appendAttributeGetterAndSetterForEnum(strbufResult, complexTypeName, schemaAttribute, attributeName, modifiedAttributeName, modifiedAttributeTypeName,
-							returnType);
+							returnType, true);
+					appendAttributeGetterAndSetterForEnum(strbufResult, complexTypeName, schemaAttribute, attributeName, modifiedAttributeName, modifiedAttributeTypeName,
+							returnType, false);
 				}
 				else
 				{
@@ -819,8 +878,9 @@ public class JavaCoreStringUtil
 		}
 	}
 
-	private static void appendAttributeGetterAndSetterForEnum(final StringBuffer strbufResult, final String complexTypeName, final SchemaAttribute schemaAttribute, final String attributeName, final String modifiedAttributeName, final String modifiedAttributeTypeName, final String returnType)
+	private static void appendAttributeGetterAndSetterForEnum(final StringBuffer strbufResult, final String complexTypeName, final SchemaAttribute schemaAttribute, final String attributeName, final String modifiedAttributeName, String modifiedAttributeTypeName, final String returnType, final boolean javaEnum)
 	{
+		modifiedAttributeTypeName = javaEnum ? StringUtil.replaceString(modifiedAttributeTypeName, "Enum", "E") : modifiedAttributeTypeName;
 		// set
 		if (!"Status".equals(attributeName) || "Queue".equals(complexTypeName) || "QueueEntry".equals(complexTypeName) || "ResourceCmdParams".equals(complexTypeName)
 				|| "ResourceInfo".equals(complexTypeName))
@@ -832,35 +892,56 @@ public class JavaCoreStringUtil
 
 			if ("QueueEntry".equals(complexTypeName) && "Priority".equals(attributeName))
 			{
-				strbufResult.append(strDepth2).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth2).append("  * (3) set attribute ").append(modifiedAttributeName).append(strLineEnd);
-				strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
-				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(int priority)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setIntAttribute(\"Priority\", priority, null);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
+				if (!javaEnum)
+				{
+					strbufResult.append(strDepth2).append("/**").append(strLineEnd);
+					strbufResult.append(strDepth2).append("  * (3) set attribute ").append(modifiedAttributeName).append(strLineEnd);
+					strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
+					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
+					strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(int priority)").append(strLineEnd);
+					strbufResult.append(strDepth2).append("{").append(strLineEnd);
+					strbufResult.append(strDepth3).append("setIntAttribute(\"Priority\", priority, null);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
+				}
 			}
 			else if ("QueueEntryPosParams".equals(complexTypeName) && "Position".equals(attributeName))
 			{
-				strbufResult.append(strDepth2).append("/**").append(strLineEnd);
-				strbufResult.append(strDepth2).append("  * (4) set attribute ").append(modifiedAttributeName).append(strLineEnd);
-				strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
-				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(int position)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setIntAttribute(\"Position\", position, null);").append(strLineEnd);
-				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
+				if (!javaEnum)
+				{
+					strbufResult.append(strDepth2).append("/**").append(strLineEnd);
+					strbufResult.append(strDepth2).append("  * (4) set attribute ").append(modifiedAttributeName).append(strLineEnd);
+					strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
+					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
+					strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(int position)").append(strLineEnd);
+					strbufResult.append(strDepth2).append("{").append(strLineEnd);
+					strbufResult.append(strDepth3).append("setIntAttribute(\"Position\", position, null);").append(strLineEnd);
+					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
+				}
 			}
 			else if (schemaAttribute.getIsEnumList())
 			{
 				strbufResult.append(strDepth2).append("/**").append(strLineEnd);
 				strbufResult.append(strDepth2).append("  * (5.2) set attribute ").append(modifiedAttributeName).append(strLineEnd);
-				strbufResult.append(strDepth2).append("  * @param v vector of the enumeration values").append(strLineEnd);
+				strbufResult.append(strDepth2).append("  * @param v List of the enumeration values").append(strLineEnd);
+				if (!javaEnum)
+				{
+					strbufResult.append(strDepth2).append("@deprecated use java.lang.enum").append(strLineEnd);
+				}
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append("Vector<? extends ValuedEnum> v)").append(strLineEnd);
-				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setEnumerationsAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", v, null);").append(strLineEnd);
+				if (javaEnum)
+				{
+					strbufResult.append(strDepth2).append("public void setE").append(modifiedAttributeName).append("(").append("List<" + modifiedAttributeTypeName + "> v)")
+							.append(strLineEnd);
+					strbufResult.append(strDepth2).append("{").append(strLineEnd);
+					strbufResult.append(strDepth3).append("setEnumsAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", v, null);").append(strLineEnd);
+				}
+				else
+				{
+					strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append("List<" + modifiedAttributeTypeName + "> v)")
+							.append(strLineEnd);
+					strbufResult.append(strDepth2).append("{").append(strLineEnd);
+					strbufResult.append(strDepth3).append("setEnumerationsAttribute(AttributeName.").append(attributeName.toUpperCase()).append(", v, null);").append(strLineEnd);
+				}
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 			else
@@ -868,12 +949,24 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("/**").append(strLineEnd);
 				strbufResult.append(strDepth2).append("  * (5) set attribute ").append(attributeName).append(strLineEnd);
 				strbufResult.append(strDepth2).append("  * @param enumVar the enumVar to set the attribute to").append(strLineEnd);
+				if (!javaEnum)
+				{
+					strbufResult.append(strDepth2).append("@deprecated use java.lang.enum").append(strLineEnd);
+				}
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
 				strbufResult.append(strDepth2).append("public void set").append(modifiedAttributeName).append("(").append(modifiedAttributeTypeName).append(" enumVar)")
 						.append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
-				strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase())
-						.append(", enumVar==null ? null : enumVar.getName(), null);").append(strLineEnd);
+				if (javaEnum)
+				{
+					strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase())
+							.append(", enumVar==null ? null : enumVar.name(), null);").append(strLineEnd);
+				}
+				else
+				{
+					strbufResult.append(strDepth3).append("setAttribute(AttributeName.").append(attributeName.toUpperCase())
+							.append(", enumVar==null ? null : enumVar.getName(), null);").append(strLineEnd);
+				}
 				strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 			}
 
@@ -884,7 +977,9 @@ public class JavaCoreStringUtil
 				strbufResult.append(strDepth2).append("  * (6) get ").append(modifiedAttributeTypeName).append(" attribute ").append(modifiedAttributeName).append(strLineEnd);
 				strbufResult.append(strDepth2).append("  * @return ").append(modifiedAttributeTypeName).append(" the value of the attribute").append(strLineEnd);
 				strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-				strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(" get").append(modifiedAttributeName).append("JDF()").append(strLineEnd);
+				final String suffix = javaEnum ? "()" : "JDF()";
+				final String prefix = javaEnum ? " getE" : " get";
+				strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(prefix).append(modifiedAttributeName).append(suffix).append(strLineEnd);
 				strbufResult.append(strDepth2).append("{").append(strLineEnd);
 
 				if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
@@ -956,17 +1051,28 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth2).append("  * (9.2) get ").append(modifiedAttributeName).append(" attribute ").append(modifiedAttributeName).append(strLineEnd);
 					strbufResult.append(strDepth2).append("  * @return Vector of the enumerations").append(strLineEnd);
 					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-					strbufResult.append(strDepth2).append("public Vector<? extends ValuedEnum> get").append(modifiedAttributeName).append("()").append(strLineEnd);
-					strbufResult.append(strDepth2).append("{").append(strLineEnd);
-
-					String defaultValue = schemaAttribute.getStrDefault();
-					if (defaultValue.equals(JDFCoreConstants.EMPTYSTRING))
+					if (javaEnum)
 					{
-						defaultValue = "getEnum(0)";
+						strbufResult.append(strDepth2).append("public List<" + modifiedAttributeTypeName + "> getEnums").append(modifiedAttributeName).append("()")
+								.append(strLineEnd);
+						strbufResult.append(strDepth2).append("{").append(strLineEnd);
+						strbufResult.append(strDepth3).append("return getEnumerationsAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ")
+								.append(modifiedAttributeTypeName).append(".class);").append(strLineEnd);
 					}
+					else
+					{
+						strbufResult.append(strDepth2).append("public Vector<" + modifiedAttributeTypeName + "> get").append(modifiedAttributeName).append("()").append(strLineEnd);
+						strbufResult.append(strDepth2).append("{").append(strLineEnd);
 
-					strbufResult.append(strDepth3).append("return getEnumerationsAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ")
-							.append(modifiedAttributeTypeName).append(".").append(defaultValue).append(", false);").append(strLineEnd);
+						String defaultValue = schemaAttribute.getStrDefault();
+						if (defaultValue.equals(JDFCoreConstants.EMPTYSTRING))
+						{
+							defaultValue = "getEnum(0)";
+						}
+
+						strbufResult.append(strDepth3).append("return getEnumerationsAttribute(AttributeName.").append(modifiedAttributeName.toUpperCase()).append(", null, ")
+								.append(modifiedAttributeTypeName).append(".").append(defaultValue).append(", false);").append(strLineEnd);
+					}
 					strbufResult.append(strDepth2).append("}").append(strLineEnd).append(strLineEnd);
 				}
 				else
@@ -975,7 +1081,8 @@ public class JavaCoreStringUtil
 					strbufResult.append(strDepth2).append("  * (9) get attribute ").append(attributeName).append(strLineEnd);
 					strbufResult.append(strDepth2).append("  * @return the value of the attribute").append(strLineEnd);
 					strbufResult.append(strDepth2).append("  */").append(strLineEnd);
-					strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(" get").append(modifiedAttributeName).append("()").append(strLineEnd);
+					final String getterName = (javaEnum ? "E" : "") + modifiedAttributeName;
+					strbufResult.append(strDepth2).append("public ").append(modifiedAttributeTypeName).append(" get").append(getterName).append("()").append(strLineEnd);
 					strbufResult.append(strDepth2).append("{").append(strLineEnd);
 
 					if (!schemaAttribute.getStrDefault().equals(JDFCoreConstants.EMPTYSTRING))
