@@ -43,17 +43,17 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.util.StreamUtil;
+import org.cip4.jdflib.util.UrlUtil;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.StreamUtil;
-import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * @author rainer
@@ -128,16 +128,15 @@ public class GetFileServlet extends HttpServlet
 		final OutputStream os = response.getOutputStream();
 		final String localName = request.getPathInfo();
 		Path localPath = null;
-		try {
+		try
+		{
 			localPath = baseDir.toPath().resolve(localName).normalize();
-		} catch (InvalidPathException ignored) {
+		}
+		catch (final InvalidPathException ignored)
+		{
 		}
 
-		if (
-				localPath != null
-				&& localPath.startsWith(baseDir.toPath().normalize())
-				&& Files.exists(localPath)
-		)
+		if (localPath != null && localPath.startsWith(baseDir.toPath().normalize()) && Files.exists(localPath))
 		{
 			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
 			Files.copy(localPath, os);

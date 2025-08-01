@@ -123,7 +123,7 @@ processResources {
 }
 
 dependencies {
-    implementation('org.cip4.lib.jdf:JDFLibJ:2.+') {
+    api('org.cip4.lib.jdf:JDFLibJ:2.+') {
         exclude group: 'xml-apis'
     }
 
@@ -133,7 +133,8 @@ implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.21'
 implementation 'org.apache.commons:commons-fileupload2-jakarta-servlet6:2.+'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'  
     implementation 	'com.sun.mail:jakarta.mail:2.0.1'
-
+   implementation 'org.apache.commons:commons-lang3:3.18.0'
+ 
     
     implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
     implementation 'org.apache.logging.log4j:log4j-jcl:2.24.3'
