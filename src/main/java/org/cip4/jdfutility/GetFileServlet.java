@@ -43,7 +43,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StreamUtil;
@@ -146,7 +145,7 @@ public class GetFileServlet extends HttpServlet
 			response.setContentType(UrlUtil.TEXT_HTML);
 			response.setStatus(404);
 			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
-			os.write(StringEscapeUtils.escapeHtml(localName).getBytes());
+			os.write(UrlUtil.escape(localName, false).getBytes());
 			os.write("</HTML>".getBytes());
 		}
 		StreamUtil.close(os);
