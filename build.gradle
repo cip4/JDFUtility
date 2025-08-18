@@ -142,7 +142,7 @@ implementation 'org.apache.commons:commons-fileupload2-jakarta-servlet6:2.+'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.11.4'
     testImplementation 'org.springframework:spring-test:6.2.+'
     testImplementation 'org.springframework:spring-web:6.2.+'
-    testImplementation 'org.mockito:mockito-core:5.17.0'
+    testImplementation 'org.mockito:mockito-core:5.19.0'
 }
 
 jacocoTestReport {
