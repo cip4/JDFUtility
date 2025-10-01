@@ -91,6 +91,7 @@ public class CheckJDFServlet extends UtilityServlet
 	{
 		super();
 		extractResources();
+		FileItemList.setTracker(null);
 	}
 
 	void extractResources()
