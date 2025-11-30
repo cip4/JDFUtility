@@ -1,23 +1,17 @@
 name: Snapshot
 
-# This build process is triggered in case changes are being pushed to the master branch.
-# This process takes the latest master changes, build and test the new version and finally publish the artifacts
-# to the Central Maven SNAPSHOT Repository.
-
 on:
   push:
     branches: [ master]
 
 jobs:
-  call-snapshot:
+  call-tool-snapshot:
     name: 🏭
-    uses: cip4/.github/.github/workflows/library-snapshot.yml@master
+    uses: cip4/.github/.github/workflows/tool-snapshot.yml@master
     with:
-      java-version: 11
+      apple-bundle-id: org.cip4.jdfutility
       codecov-enabled: true
-    secrets:
-      SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-      SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-      SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
-      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      docker-build: true
+      java-version: 17
+      java-distribution: 'temurin'
+    secrets: inherit
