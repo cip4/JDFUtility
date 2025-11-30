@@ -377,7 +377,7 @@ public class OrganizeImports
      *         based, 0 is first line) at 2, the line number of the public class definition (0
      *         based, 0 is first line)
      */
-    protected ArrayList removeImportsFromFile (String str)
+    protected ArrayList<Object> removeImportsFromFile (String str)
     {
         boolean publicClassNotFound = true;
         boolean endOfFileNotReached = true;
@@ -432,10 +432,10 @@ public class OrganizeImports
             }
         }
 
-        ArrayList retArr = new ArrayList();
+        ArrayList<Object> retArr = new ArrayList<>();
         retArr.add(strBuff.toString());
-        retArr.add(new Integer(indexOfFirstImport));
-        retArr.add(new Integer(indexOfPublicClass));
+        retArr.add(indexOfFirstImport);
+        retArr.add(indexOfPublicClass);
 
         return retArr;
     }
