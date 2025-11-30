@@ -5,9 +5,9 @@ on:
     branches: [ master]
 
 jobs:
-  call-tool-snapshot:
+  call-library-snapshot:
     name: 🏭
-    uses: cip4/.github/.github/workflows/tool-snapshot.yml@master
+    uses: cip4/.github/.github/workflows/library-snapshot.yml@master
     with:
       apple-bundle-id: org.cip4.jdfutility
       codecov-enabled: true
