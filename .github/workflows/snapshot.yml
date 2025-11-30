@@ -9,7 +9,6 @@ jobs:
     name: 🏭
     uses: cip4/.github/.github/workflows/library-snapshot.yml@master
     with:
-      apple-bundle-id: org.cip4.jdfutility
       codecov-enabled: true
       docker-build: true
       java-version: 17
