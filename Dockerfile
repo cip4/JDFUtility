@@ -3,7 +3,7 @@ ARG BUILD_NUMBER=n.a.
 ARG GIT_REV=n.a.
 
 # compile and test bambi
-FROM amazoncorretto:11-alpine-jdk as java-builder
+FROM amazoncorretto:17-alpine-jdk AS java-builder
 
 ARG VERSION
 ARG BUILD_NUMBER
@@ -22,7 +22,7 @@ RUN dos2unix gradlew
 RUN ./gradlew -i build fatJar -PprojectVersion=${VERSION} -PbuildNumber=${BUILD_NUMBER} --no-daemon
 
 # create final image
-FROM amazoncorretto:11-alpine-jdk
+FROM amazoncorretto:17-alpine-jdk
 
 ARG VERSION
 ARG BUILD_NUMBER
