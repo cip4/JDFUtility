@@ -89,10 +89,8 @@ public abstract class JettyConsole
 	final Log log;
 
 	/**
-	 * 
-	 * @param server
-	 * @param args 
-	 */
+	 *
+     */
 	public JettyConsole(JettyServer server, MyArgs args)
 	{
 		super();
@@ -140,8 +138,7 @@ public abstract class JettyConsole
 
 	/**
 	 * init ze sörver
-	 * @param args
-	 */
+     */
 	protected void init(MyArgs args)
 	{
 		server.setPort(args.intParameter('p', 8080, 10));

@@ -508,9 +508,7 @@ public class ListButtonPanel extends JPanel implements ActionListener, MouseList
 		}
 
 		/**
-		 * @param schemaFile
-		 * @param doc
-		 */
+         */
 		private void parseSchemaFromFileToDoc(final File schemaFile, final XMLDoc doc)
 		{
 			final String schemaFilePath = schemaFile.getAbsolutePath();
@@ -538,8 +536,7 @@ public class ListButtonPanel extends JPanel implements ActionListener, MouseList
 		}
 
 		/**
-		 * @param doc
-		 */
+         */
 		private void parseSchemaFromDocToSchemaComplexType(final XMLDoc doc)
 		{
 			final SchemaDoc schemaDoc = new SchemaDoc(doc);

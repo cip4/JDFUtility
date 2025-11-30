@@ -80,7 +80,6 @@ import org.cip4.jdfutility.logging.LogConfigurator;
  * starter / stopper class when using a windows service see DummyService for an example implementation
  * 
  * @author rainer prosi
- * @date Oct 26, 2011
  */
 public abstract class JettyService
 {
@@ -120,10 +119,8 @@ public abstract class JettyService
 
 	/**
 	 * this gets the actual server instance
-	 * 
-	 * @param args
-	 * @return
-	 */
+	 *
+     */
 	public abstract JettyServer getServer(String[] args);
 
 	/**
@@ -143,9 +140,8 @@ public abstract class JettyService
 
 	/**
 	 * main ... this main obviously won't work but is an example main. see BambiService for a working implementation
-	 * 
-	 * @param args
-	 */
+	 *
+     */
 	public static void main(final String[] args)
 	{
 		LogConfigurator.configureLog(".", "jetty.log");
@@ -155,9 +151,8 @@ public abstract class JettyService
 
 	/**
 	 * start
-	 * 
-	 * @param args
-	 */
+	 *
+     */
 	public static final void start(final String[] args)
 	{
 		theService.doStart(args);
@@ -165,9 +160,8 @@ public abstract class JettyService
 
 	/**
 	 * main ...
-	 * 
-	 * @param args
-	 */
+	 *
+     */
 	public static final void stop(final String[] args)
 	{
 		theService.doStop(args);
@@ -182,9 +176,7 @@ public abstract class JettyService
 	}
 
 	/**
-	 * @param args
-	 * @return
-	 */
+     */
 	public int doMain(final String[] args)
 	{
 		log.info("main() called, # args: " + args.length);
@@ -220,9 +212,7 @@ public abstract class JettyService
 	/**
 	 * start the actual server
 	 *
-	 * @param args
-	 * @return
-	 */
+     */
 	protected int doStart(final String[] args)
 	{
 		final JettyServer server = JettyServer.getServer();
@@ -247,9 +237,7 @@ public abstract class JettyService
 	}
 
 	/**
-	 * @param args
-	 * @return
-	 */
+     */
 	protected JettyServer getLicensedServer(String[] args)
 	{
 		if (args == null)
@@ -267,10 +255,8 @@ public abstract class JettyService
 
 	/**
 	 * overwrite this if you want a different unlicensed server implementation. null is also an option in case you want to fail miserably
-	 * 
-	 * @param args
-	 * @return
-	 */
+	 *
+     */
 	protected JettyServer getNullServer(final String[] args)
 	{
 		return new VString(args).contains("-nonull") ? null : new NullServer();
@@ -280,9 +266,7 @@ public abstract class JettyService
 	 * you can overwrite this for a license check and return a null server in case licensing fails this implementation simply checks for the
 	 * non-existence of an environment variable JettyNoStart
 	 *
-	 * @param args
-	 * @return
-	 */
+     */
 	protected boolean isLicensed(final String[] args)
 	{
 		final boolean isLicensed = System.getenv("JettyNoStart") == null;
@@ -304,10 +288,8 @@ public abstract class JettyService
 
 	/**
 	 * stop the actual server - note: calls exit so MUST be called last
-	 * 
-	 * @param args
-	 * @return
-	 */
+	 *
+     */
 	protected int doStop(final String[] args)
 	{
 		final JettyServer server = JettyServer.getServer();

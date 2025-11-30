@@ -134,9 +134,8 @@ public class SpawnJDF
 	}
 
 	/**
-	 * 
-	 * @param argv
-	 */
+	 *
+     */
 	public static void main(final String argv[])
 	{
 		// -i bookintent.jdf -o spawned.jdf -p 4
@@ -265,10 +264,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param node
-	 * @param rootIn 
-	 * @return
-	 */
+     */
 	private static KElement makeNewJDF(final JDFNode node, final JDFNode rootIn)
 	{
 		final JDFDoc newDoc = new JDFDoc("XJDF");
@@ -281,9 +277,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param node
-	 * @param newRoot
-	 */
+     */
 	private static void setElements(final JDFNode node, final KElement newRoot)
 	{
 		setAudits(newRoot, node);
@@ -312,9 +306,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param newRoot
-	 * @param node
-	 */
+     */
 	private static void setAudits(final KElement newRoot, final JDFNode node)
 	{
 		final JDFAuditPool ap = node.getAuditPool();
@@ -346,10 +338,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param node
-	 * @param rootIn
-	 * @return 
-	 */
+     */
 	private static String setProduct(final JDFNode node, final JDFNode rootIn)
 	{
 		if (rootIn == null)
@@ -374,9 +363,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param product
-	 * @param rootIn
-	 */
+     */
 	private static void setProductResources(final KElement product, final JDFNode rootIn)
 	{
 		final VElement prodLinks = rootIn.getResourceLinks(null);
@@ -414,10 +401,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param newRoot 
-	 * @param rootIn 
-	 * @param resLinks 
-	 * 
+     *
 	 */
 	private static void setResources(final KElement newRoot, final JDFNode rootIn, final VElement resLinks)
 	{
@@ -436,10 +420,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param newRoot
-	 * @param rl
-	 * @param linkRoot
-	 */
+     */
 	private static void setResource(final KElement newRoot, final JDFResourceLink rl, final JDFResource linkRoot)
 	{
 		final String className = getClassName(linkRoot);
@@ -472,10 +453,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param leaf
-	 * @param rl 
-	 * @param newLeaf
-	 */
+     */
 	private static void setLeafAttributes(final JDFResource leaf, final JDFResourceLink rl, final KElement newLeaf)
 	{
 		final JDFAttributeMap partMap = leaf.getPartMap();
@@ -511,9 +489,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param r
-	 * @return 
-	 */
+     */
 	private static String getClassName(final JDFResource r)
 	{
 		if (r == null)
@@ -538,10 +514,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param resourceSet 
-	 * @param rl
-	 * @param linkRoot 
-	 */
+     */
 	private static void setLinkAttributes(final KElement resourceSet, final KElement rl, final JDFResource linkRoot)
 	{
 		resourceSet.setAttribute("Name", linkRoot.getNodeName());
@@ -566,9 +539,7 @@ public class SpawnJDF
 	}
 
 	/**
-	 * @param node
-	 * @param newRoot
-	 */
+     */
 	private static void setRootAttributes(final JDFNode node, final KElement newRoot)
 	{
 		newRoot.setAttributes(node);

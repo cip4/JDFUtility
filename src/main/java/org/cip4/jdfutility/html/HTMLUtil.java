@@ -83,9 +83,8 @@ public class HTMLUtil
 {
 	/**
 	 * return an empty xhtml root element
-	 *  
-	 * @return
-	 */
+	 *
+     */
 	public static KElement createHTMLRoot()
 	{
 		return new XMLDoc("html", "http://www.w3.org/1999/xhtml").getRoot();
@@ -95,8 +94,7 @@ public class HTMLUtil
 	 * 
 	 * set a css
 	 * @param css the url to the css
-	 * @param root
-	 */
+     */
 	public static void setCSS(KElement root, final String css)
 	{
 		root.setXPathAttribute("link/@rel", "stylesheet");
@@ -105,10 +103,8 @@ public class HTMLUtil
 	}
 
 	/**
-	 * 
-	 * @param parent 
-	 * @param line 
-	 */
+	 *
+     */
 	public static void appendLine(KElement parent, String line)
 	{
 		if (line != null)
@@ -117,10 +113,8 @@ public class HTMLUtil
 	}
 
 	/**
-	 * 
-	 * @param parent 
-	 * @param url 
-	 */
+	 *
+     */
 	public static void appendImage(KElement parent, String url)
 	{
 		KElement img = parent.appendElement("img");
@@ -130,9 +124,6 @@ public class HTMLUtil
 
 	/**
 	 * append an anchor element
-	 * @param parent
-	 * @param url
-	 * @param text if null, simply copy url, else display text
 	 * @return the anchor element
 	 */
 	public static KElement appendAnchor(KElement parent, String url, String text)
@@ -148,9 +139,6 @@ public class HTMLUtil
 
 	/**
 	 * append an anchor element
-	 * @param parent
-	 * @param depth header level (1-6)
-	 * @param text  
 	 * @return the h1 - h6 element
 	 */
 	public static KElement appendHeader(KElement parent, int depth, String text)
@@ -216,9 +204,7 @@ public class HTMLUtil
 
 	/**
 	 * set the title
-	 * @param root
-	 * @param title
-	 */
+     */
 	public static void setTitle(KElement root, String title)
 	{
 		root.getCreateXPathElement("head/title").setText(title);

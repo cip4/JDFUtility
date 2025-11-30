@@ -125,10 +125,8 @@ public class SchemaComplexType implements Serializable
 	/**
 	 *  Kind of an initializor for every complexType
 	 *
-	 * @param
-	 *
-	 * @return
-	 */
+     *
+     */
 	public void setStrSchemaComplexType()
 	{
 		setStrFileName();
@@ -151,10 +149,8 @@ public class SchemaComplexType implements Serializable
 
 	/**
 	 *
-	 * @param
-	 *
-	 * @return
-	 */
+     *
+     */
 	public String getStrAutoCoreFileName()
 	{
 		return strAutoJavaCoreFileName;
@@ -167,10 +163,8 @@ public class SchemaComplexType implements Serializable
 
 	/**
 	 *
-	 * @param
-	 *
-	 * @return
-	 */
+     *
+     */
 	public String getStrFileName()
 	{
 		return strFileName;
@@ -236,13 +230,6 @@ public class SchemaComplexType implements Serializable
 		return strAutoCppMessageFileNameH;
 	}
 
-	/**
-	 * private
-	 *
-	 * @param
-	 *
-	 * @retun
-	 */
 	private void setStrFileName()
 	{
 		strFileName = "JDF" + m_SchemaComplexTypeName + ".java";
@@ -250,11 +237,7 @@ public class SchemaComplexType implements Serializable
 
 	/**
 	 * private method to set the AutoFileName when the SchemaComplexTypeName ist set
-	 *
-	 * @param void - nothing
-	 *
-	 * @return void - nothing
-	 */
+     */
 	private void setStrAutoJavaCoreFileName()
 	{
 		strAutoJavaCoreFileName = "JDFAuto" + m_SchemaComplexTypeName + ".java";

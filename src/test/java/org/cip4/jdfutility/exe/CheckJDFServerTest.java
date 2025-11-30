@@ -46,8 +46,7 @@ import org.junit.jupiter.api.Test;
 public class CheckJDFServerTest extends JDFUtilityTestBase
 {
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testMain() throws Exception
@@ -56,8 +55,7 @@ public class CheckJDFServerTest extends JDFUtilityTestBase
 	}
 
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testPingSchema() throws Exception

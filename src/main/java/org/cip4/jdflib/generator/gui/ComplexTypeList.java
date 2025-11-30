@@ -272,8 +272,7 @@ public class ComplexTypeList extends JPanel implements ListSelectionListener, Mo
 	}
 
 	/**
-	 * @param toGenerateFile
-	 */
+     */
 	public void loadFileList(final File toGenerateFile)
 	{
 		if (toGenerateFile.canRead())

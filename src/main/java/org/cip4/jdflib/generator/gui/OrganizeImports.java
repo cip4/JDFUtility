@@ -74,7 +74,6 @@ public class OrganizeImports
      * 
      * @param strPath
      *            complete path "C:\test.java" for example
-     * @return true if done
      */
     public void organizeImports (ArrayList strPaths, ListButtonPanel mother)
     {

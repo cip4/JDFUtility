@@ -69,7 +69,6 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
  * standalone jetty server wrapper
  *
  * @author rainer prosi
- * @date Dec 9, 2010
  */
 public abstract class JettyServer
 {
@@ -123,9 +122,8 @@ public abstract class JettyServer
 
 		/**
 		 * if true, set security levels insanely low - useful for debugging - DO NOT USE IN PRODUCTION
-		 * 
-		 * @param allowFlakySSL
-		 */
+		 *
+         */
 		public void setAllowFlakySSL(final boolean allowFlakySSL)
 		{
 			this.allowFlakySSL = allowFlakySSL;
@@ -188,8 +186,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * @return
-	 */
+     */
 	public static String getDefaultKeyStorePath()
 	{
 
@@ -214,9 +211,7 @@ public abstract class JettyServer
 	protected final JettySSLData sslData;
 
 	/**
-	 * @param context
-	 * @param port
-	 */
+     */
 	public JettyServer(String context, final int port)
 	{
 		super();
@@ -251,8 +246,7 @@ public abstract class JettyServer
 
 	/**
 	 * @param port the ssl port
-	 * @return may be used for additional setup
-	 */
+     */
 	public void setSSLPort(final int port)
 	{
 		sslPort = port;
@@ -260,7 +254,6 @@ public abstract class JettyServer
 
 	/**
 	 * @param port the ssl port
-	 * @return may be used for additional setup
 	 * @deprecated use the single argument version
 	 */
 	@Deprecated
@@ -290,9 +283,7 @@ public abstract class JettyServer
 	/**
 	 * the doing routine to run a jetty server it is generally a bad idea to overwrite this routine - it is not final to allow an empty null server
 	 *
-	 * @throws Exception
-	 * @throws InterruptedException
-	 */
+     */
 	public void runServer() throws Exception
 	{
 		if (server != null)
@@ -355,17 +346,15 @@ public abstract class JettyServer
 
 	/**
 	 * hook for more or less secure customizers
-	 * 
-	 * @return
-	 */
+	 *
+     */
 	protected BambiRequestCustomizer getRequestCustomizer()
 	{
 		return new BambiRequestCustomizer();
 	}
 
 	/**
-	 * @return
-	 */
+     */
 	protected Sequence createHandlerList()
 	{
 		final Sequence handlers = new Sequence();
@@ -385,9 +374,7 @@ public abstract class JettyServer
 	/**
 	 * create the base handler collection that contains all handlers to be processed multiple times
 	 *
-	 * @param handlers
-	 * @return
-	 */
+     */
 	protected Sequence createBaseCollection(final Sequence handlers)
 	{
 		final Sequence handlerbase = new Sequence();
@@ -399,8 +386,7 @@ public abstract class JettyServer
 	/**
 	 * hook to add more handlers if required
 	 *
-	 * @param handlers
-	 */
+     */
 	protected void addMoreHandlers(final Sequence handlers)
 	{
 		// nop
@@ -409,8 +395,7 @@ public abstract class JettyServer
 	/**
 	 * hook to add http loggers or other post handling handlers, if required
 	 *
-	 * @param handlerbase
-	 */
+     */
 	protected void addHttpLogger(final Sequence handlerbase)
 	{
 		final RequestLog requestLog = createRequestLog();
@@ -424,8 +409,7 @@ public abstract class JettyServer
 	/**
 	 * create a request log - the default method does not
 	 *
-	 * @return
-	 */
+     */
 	protected RequestLog createRequestLog()
 	{
 		return null;
@@ -434,8 +418,7 @@ public abstract class JettyServer
 	/**
 	 * get the base url of this server
 	 *
-	 * @return
-	 */
+     */
 	public String getBaseURL(final boolean ssl)
 	{
 		try
@@ -455,8 +438,7 @@ public abstract class JettyServer
 	/**
 	 * get the base urls of this server
 	 *
-	 * @return
-	 */
+     */
 	public String getBaseURL()
 	{
 		final String http = getBaseURL(false);
@@ -494,8 +476,7 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * @return
-	 */
+     */
 	protected ResourceHandler createResourceHandler()
 	{
 		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
@@ -511,13 +492,11 @@ public abstract class JettyServer
 	protected abstract String getHome();
 
 	/**
-	 * @return
-	 */
+     */
 	protected abstract int getDefaultPort();
 
 	/**
-	 * @return
-	 */
+     */
 	protected abstract ServletContextHandler createServletHandler();
 
 	/**
@@ -599,8 +578,7 @@ public abstract class JettyServer
 	/**
 	 * get the port number the port is always a singleton in a jetty environment
 	 *
-	 * @return
-	 */
+     */
 	public int getPort()
 	{
 		return thePort;
@@ -608,8 +586,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isRunning()
-	 * @return
-	 */
+     */
 	public boolean isRunning()
 	{
 		return server != null && server.isRunning();
@@ -617,8 +594,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStarted()
-	 * @return
-	 */
+     */
 	public boolean isStarted()
 	{
 		return server != null && server.isStarted();
@@ -626,8 +602,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStarting()
-	 * @return
-	 */
+     */
 	public boolean isStarting()
 	{
 		return server != null && server.isStarting();
@@ -635,8 +610,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStopped()
-	 * @return
-	 */
+     */
 	public boolean isStopped()
 	{
 		return server == null || server.isStopped();
@@ -644,16 +618,14 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStopping()
-	 * @return
-	 */
+     */
 	public boolean isStopping()
 	{
 		return server != null && server.isStopping();
 	}
 
 	/**
-	 * @return
-	 */
+     */
 	public static JettyServer getServer()
 	{
 		return theServer;
@@ -691,23 +663,20 @@ public abstract class JettyServer
 	/**
 	 * get the server type as a string
 	 *
-	 * @return
-	 */
+     */
 	public String getServerType()
 	{
 		return getClass().getSimpleName();
 	}
 
 	/**
-	 * @param server
-	 */
+     */
 	public static void setServer(final JettyServer server)
 	{
 		theServer = server;
 	}
 
 	/**
-	 * @return
 	 * @see org.eclipse.jetty.util.component.AbstractLifeCycle#isFailed()
 	 */
 	public boolean isFailed()
@@ -716,7 +685,6 @@ public abstract class JettyServer
 	}
 
 	/**
-	 * @throws InterruptedException
 	 * @see org.eclipse.jetty.server.Server#join()
 	 */
 	public void join() throws InterruptedException

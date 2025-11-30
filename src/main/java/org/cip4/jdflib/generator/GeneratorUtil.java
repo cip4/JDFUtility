@@ -48,7 +48,7 @@ public class GeneratorUtil
 	 * generator expandable this method was added and is already in use in method "getAllValidElements". If there is an element which you don't want to be added in the autoclass
 	 * add it here.
 	 *
-	 * @param String strElementName - Name of the Element to validate
+	 * @param elementName - Name of the Element to validate
 	 *
 	 * @return boolean - true if the Element is valid : NOTE returns TRUE always at the moment!
 	 */
@@ -111,7 +111,7 @@ public class GeneratorUtil
 	 * Every complex type in the schema has elements and attributes. Some of the attributes defined in the Schema are already defined in the lib because they are attributes of a
 	 * base resource. These attributes do not need new getter and setter methods. This Function validates the attribute in an easy way if its already definded in the lib or not.
 	 *
-	 * @param String strAttributeName - Name of the Attribute to "test"
+	 * @param strAttributeName - Name of the Attribute to "test"
 	 *
 	 * @return boolean - true if the attribute is a valid attribute of this complex type
 	 */
@@ -234,9 +234,6 @@ public class GeneratorUtil
 	 * @param schemaElement TODO
 	 * @param vComplexTypes TODO
 	 * @param vSimpleType TODO
-	 * @param parents
-	 * @param vAppInfoElements
-	 * @param SchemaComplexType complexType - The ComplexType the attributes to process for
 	 * @return SchemaComplexType - The attribute done SchemaComplextype
 	 */
 	public static SchemaComplexType getAllValidAttributes(final KElement schemaElement, final Vector vComplexTypes, final VElement vSimpleType, final String[] parents, final VElement vAppInfoElements, final SchemaComplexType complexType)
@@ -396,9 +393,6 @@ public class GeneratorUtil
 	 * JDFResource file but are also listed in the Schema and the Example ComplexType. To provide the element to be listed twice, it has to "validated". This validation isn't more
 	 * then a question (is this elements already processed in JDFResource or somewhere else?). If not, its added to the "ComplexType" unique elements list.
 	 *
-	 * @param parents
-	 * @param vAppInfoElements
-	 * @param SchemaComplexType nComplexType - The ComplexType the elements to process for
 	 * @return SchemaComplexType - The completed element (SchemaComplexType)
 	 */
 	public static SchemaComplexType getAllValidElements(final String[] parents, final VElement vAppInfoElements, final SchemaComplexType complexType)
@@ -510,8 +504,6 @@ public class GeneratorUtil
 	 * name A 'Message' indicated through '_m' at the end of it's name A 'WhatEver' indicated through nothing at the end of it's name So a ComplexType can have a '__' a '_r' and a
 	 * '_rp'. At the end, there is only ONE file for this CompleyType. This means All Elements and Attributes for this spezific ComplexType need to take out of these three Vector
 	 * elements. To make this task a little easier, all names will be shorten ('_r', '_rp', '___' and '_m', '_rp').
-	 *
-	 * @param SchemaComplexType nComplexType
 	 *
 	 * @return SchemaComplexType - The done element (SchemaComplextype)
 	 */
@@ -761,7 +753,7 @@ public class GeneratorUtil
 	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So
 	 * this method expects a group as input-paramter and will return you all attributes in the group (also with recursive call if there were attribute groups in the group)
 	 *
-	 * @param VElement - vector with groups (of attributes) to resolve into members
+	 * @param vAttributesGroup - vector with groups (of attributes) to resolve into members
 	 *
 	 * @return VElement - vector of all attributes
 	 */
@@ -799,7 +791,7 @@ public class GeneratorUtil
 	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTyps To generate the file you need the Attributes out of these references. So
 	 * this Mehtod expects a group as input-paramter and will return you all Attributes in the group (also with recursive call if there were Attribute groups in the group)
 	 *
-	 * @param VElement - vector with groups (of elements) to resolve into members
+	 * @param vElementsGroup - vector with groups (of elements) to resolve into members
 	 *
 	 * @return VElement - vector of all elements
 	 */
@@ -838,7 +830,7 @@ public class GeneratorUtil
 	 * Most Attributes are tied together to groups. These groups are just referenced inside the ComplexTypes. To generate the file you need the Attributes out of these references.
 	 * So this Method expects a group as input-paramter and will return you all Attributes in the group (also with recursive call if there where Attribute groups in the group)
 	 *
-	 * @param KElement - the Group to resolve into its members
+	 * @param nSimpleType - the Group to resolve into its members
 	 *
 	 * @return VElement - Vector of all Attributes (Strings)
 	 */
@@ -966,8 +958,8 @@ public class GeneratorUtil
 	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same elements and element groups. If you would add all elements they refer
 	 * you had many of them twice or even more often. To prevent this, all elements will be added unique to a ComplexType.
 	 *
-	 * @params SchemaComplexType nNewComplexType - the vector to add all attributes to
-	 * @params SchemaComplexType nOldComplexType - the source of the attributes
+	 * @param nNewComplexType - the vector to add all attributes to
+	 * @param nOldComplexType - the source of the attributes
 	 *
 	 * @return SchemaComplexType - a complex type where all attributes from "nOldComplexType" are unique
 	 */
@@ -1008,8 +1000,8 @@ public class GeneratorUtil
 	 * Many "complexType"'s inside the vector are multiple times present and sometimes they refer to the same attribute groups. If you would add all attributes together you had
 	 * many of them twice or even more often. To prevent this, all attribute will be added unique to a ComplexType
 	 *
-	 * @params SchemaComplexType nNewComplexType - the vector to add all attributes to
-	 * @params SchemaComplexType nOldComplexType - the source of the attributes
+	 * @param nNewComplexType - the vector to add all attributes to
+	 * @param nOldComplexType - the source of the attributes
 	 *
 	 * @return SchemaComplexType - a complex type where all attributes from "nOldComplexType" are unique
 	 */
@@ -1060,7 +1052,7 @@ public class GeneratorUtil
 	 *
 	 * This Attribute "StapleShape is optinla in use and is an enumeration with 5 possible values
 	 *
-	 * @param SchemaAttrbute nSchemaAttribute - The Attribute to check if it is a enum
+	 * @param nSchemaAttribute nSchemaAttribute - The Attribute to check if it is a enum
 	 *
 	 * @return boolean - true if it is a enumaeration
 	 */
@@ -1168,9 +1160,7 @@ public class GeneratorUtil
 	 * the "rest" information will be set in this file. This method is also a placeholder for further enhancements. If more information will be added to the schema, it can be
 	 * solved here.
 	 *
-	 * @param parents
-	 * @param vAppInfoElements
-	 */
+     */
 	public static SchemaComplexType getRestInfo(final String[] parents, final VElement vAppInfoElements, final SchemaComplexType complexType)
 	{
 		SchemaComplexType complexTypeLocal = complexType;
@@ -1289,10 +1279,9 @@ public class GeneratorUtil
 	/**
 	 * This Method defines the return type for every Attribute or Element in the Schema. It is hard coded now but should use JDFTypes.xsd (10.7.2007)
 	 *
-	 * @param String strName - Name of the Element (only used to construct the return type for enumeration spans
-	 * @param String strType - Type of Attribute or Element
-	 * @param boolean isAttribute - true if the calling class is SchemaAttribute false for SchemaElement
-	 * @param boolean isJava - true if the return type is used in java. False for C++
+	 * @param strName - Name of the Element (only used to construct the return type for enumeration spans
+	 * @param strType - Type of Attribute or Element
+	 * @param isJava - true if the return type is used in java. False for C++
 	 */
 	private static String getReturnType(final String strName, final String strType, final boolean isJava)
 	{ // note!!! The Return type will be overwritten if the Attribute is an Enum
@@ -2063,11 +2052,7 @@ public class GeneratorUtil
 	}
 
 	/**
-	 * @param parents
-	 * @param vAppInfoElements
-	 * @param schemaElement
-	 * @param complexType TODO
-	 */
+     */
 	private static void elementHandleMinMaxOccurs(final String[] parents, final VElement vAppInfoElements, final SchemaElement schemaElement, final SchemaComplexType complexType)
 	{
 		String parentsPath = "";
@@ -2338,9 +2323,9 @@ public class GeneratorUtil
 	 *
 	 * 44444432 means "was required in 1.0, was optional in 1.1, is deprecated in 1.2 44333311 means "was first introduced as optional in 1.2, was deprecated in 1.6
 	 *
-	 * @param String usage "optional" or "required"
-	 * @param String firstVersion i.e. "1.1" and lastVersion = ""
-	 * @param String lastVersion i.e. "1.2" and firstVersion = ""
+	 * @param usage "optional" or "required"
+	 * @param firstVersion i.e. "1.1" and lastVersion = ""
+	 * @param lastVersion i.e. "1.2" and firstVersion = ""
 	 * @return a String of form 44333311l
 	 */
 	public static String getVersionInfoAttributes(final String usage, final String firstVersion, final String lastVersion)
@@ -2398,12 +2383,6 @@ public class GeneratorUtil
 	 * Optional = 6 - E? Single Deprecated = 7 Dummy = 8
 	 *
 	 * 00000432 means "was required in 1.0, was optional in 1.1, is deprecated in 1.2 and no informations for further versions are available"
-	 *
-	 * @param isOptional
-	 * @param firstVersion
-	 * @param lastVersion
-	 * @param maxOccurs
-	 * @param schemaComplexType
 	 *
 	 * @return a String of form 11111333 boolean isOptional, String firstVersion, String lastVersion, String maxOccurs element.getIsOptionalElement(), element.getFirstVersion(),
 	 *         element.getLastVersion(), element.getStrMaxOccurs()

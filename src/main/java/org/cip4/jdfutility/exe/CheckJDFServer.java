@@ -79,7 +79,6 @@ import org.eclipse.jetty.ee10.servlet.ServletHolder;
  * standalone app for bambi using an embedded jetty server
  * 
  * @author rainer prosi
- * @date Dec 9, 2010
  */
 public final class CheckJDFServer extends JettyServer
 {
@@ -95,9 +94,7 @@ public final class CheckJDFServer extends JettyServer
 	}
 
 	/**
-	 * @param args
-	 * @throws Exception
-	 */
+     */
 	public static void main(final String[] args) throws Exception
 	{
 		final MyArgs ma = new MyArgs(args, "C", null, null);
