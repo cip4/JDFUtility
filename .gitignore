@@ -2,3 +2,5 @@
 .gradle
 *.iml
 build
+index.*
+checkjdf.xsl
