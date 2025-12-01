@@ -25,6 +25,10 @@ java {
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
+ext {
+    jdflibjVersion = '2.+'
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -116,13 +120,24 @@ javadoc {
     }
 }
 
+afterEvaluate {
+    def jdflibj = configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+        it.moduleVersion.id.group == 'org.cip4.lib.jdf' && it.moduleVersion.id.name == 'JDFLibJ'
+    }
+    if (jdflibj) {
+        ext.jdflibjResolvedVersion = jdflibj.moduleVersion.id.version
+    }
+}
+
 processResources {
-    filesMatching(['**/*.properties']) {
+    def version = project.hasProperty('jdflibjResolvedVersion') ? project.jdflibjResolvedVersion : jdflibjVersion
+    filesMatching(['**/*.properties', '**/index.html']) {
         filter(ReplaceTokens, tokens: [
                 'name': project.properties['description'],
                 'version': project.properties['version'],
                 'artifactId': project.properties['name'],
-                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ')
+                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ'),
+                'jdflibj.version': version
         ])
     }
 }
