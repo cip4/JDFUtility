@@ -138,9 +138,8 @@ public class CheckJDF extends JDFValidator
 	/**
 	 * main Schema validation + internal checkJDF Test + Test against
 	 * DeviceCapability File (if specified)
-	 * 
-	 * @param argv
-	 */
+	 *
+     */
 	public static void main(String argv[])
 	{
 		CheckJDF checker = new CheckJDF();

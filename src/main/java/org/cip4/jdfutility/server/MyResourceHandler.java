@@ -51,7 +51,6 @@ import org.eclipse.jetty.util.Callback;
  * simple resource (file) handler that tweeks the url to match the context, thus allowing servlets to emulate a war file without actually requiring the war file
  *
  * @author rainer prosi
- * @date Dec 10, 2010
  */
 public class MyResourceHandler extends ResourceHandler
 {
@@ -104,9 +103,8 @@ public class MyResourceHandler extends ResourceHandler
 
 	/**
 	 * add a base file to the whitelist. after adding one, all others are blocked
-	 * 
-	 * @param base
-	 */
+	 *
+     */
 	public void addBase(final String base)
 	{
 		whiteList.add(base.toLowerCase());

@@ -86,14 +86,7 @@ public class SchemaDoc extends XMLDoc
 	/**
 	 * @param schemaElement TODO
 	 * @param vAllComplexTypes TODO
-	 * @param vAllSimpleTypes
-	 * @param vAllElements
-	 * @param vComplexTypes
-	 * @param strType
-	 * @param isJava
-	 * @param schemaElement
-	 * @return
-	 */
+     */
 	private SchemaComplexType fillComplexType(final KElement schemaElement, final SchemaComplexType complexType, final VElement vAllComplexTypes, final VElement vAllSimpleTypes, final VElement vAllElements, final Vector vComplexTypes, final String strType, final boolean isJava)
 	{
 		// sct.strSchemaComplexTypeName
@@ -303,8 +296,7 @@ public class SchemaDoc extends XMLDoc
 	 * Element in this Vector needs to be from the 'SchemaComplexType' type. The generator needs the Info stored in those typs to generate the specific files.
 	 * 
 	 * @param Vector nSchemaFragment - the SchemaFragment to generate
-	 * @return void - nothing
-	 */
+     */
 	public static void toCoreCpp(final Vector nSchemaFragment, final boolean bGenerateAll)
 	{
 		String strCppFile = JDFConstants.EMPTYSTRING;
@@ -338,10 +330,8 @@ public class SchemaDoc extends XMLDoc
 	/**
 	 * after all information was been collected the autofile will be written to hard drive. This method will write a file to the hard drive and overwrite any exisiting file.
 	 *
-	 * @param
-	 * 
-	 * @return
-	 */
+     *
+     */
 	public static boolean write2file(final String strPath, final String fName, final boolean overwriteFile, final String content)
 	{
 		String strPathLocal = strPath;

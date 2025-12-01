@@ -73,8 +73,7 @@ public class SchemaElement implements Serializable
 	 * element, use this method
 	 *
 	 * @param String ElementName - the name of the element
-	 * @return void - nothing
-	 */
+     */
 	public void setStrElementName(final String elementName)
 	{
 		if (elementName.startsWith("jdf:"))
@@ -102,8 +101,7 @@ public class SchemaElement implements Serializable
 	 *
 	 * @param String ElementType - the Type of the element
 	 *
-	 * @return void - nothing
-	 */
+     */
 	public void setStrElementType(final String elementType)
 	{
 		if (elementType.startsWith("jdf:"))
@@ -122,8 +120,7 @@ public class SchemaElement implements Serializable
 	 *
 	 * @param String minOccurs - the minimum occurance of the element
 	 *
-	 * @return void - nothing
-	 */
+     */
 	public void setStrMinOccurs(final String minOccurs)
 	{
 		m_minOccurs = minOccurs;

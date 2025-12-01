@@ -76,16 +76,14 @@ import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
  * null service for automatically not running a service
  * 
  * @author rainer prosi
- * @date Jan 20, 2012
  */
 public class NullServer extends JettyServer
 {
 	private class NullThread extends Thread
 	{
 		/**
-		 * 
-		 * @param arg0
-		 */
+		 *
+         */
 		public NullThread()
 		{
 			super("nullthread");

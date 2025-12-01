@@ -39,11 +39,12 @@ package org.cip4.jdfutility;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StreamUtil;
@@ -61,11 +62,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class GetFileServlet extends HttpServlet
 {
 
-	private static Log log = LogFactory.getLog(GetFileServlet.class.getName());
+	private static final Log log = LogFactory.getLog(GetFileServlet.class.getName());
 
-	/**
-	 *
-	 */
+	@Serial
 	private static final long serialVersionUID = -8902154436245089036L;
 	private File baseDir = null;
 
@@ -96,7 +95,6 @@ public class GetFileServlet extends HttpServlet
 	 * 
 	 * @param request servlet request
 	 * @param response servlet response
-	 * @throws IOException
 	 */
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
@@ -118,10 +116,6 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Parses a multipart request.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
 	 */
 	void processRequest(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{

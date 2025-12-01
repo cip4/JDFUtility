@@ -83,12 +83,8 @@ public class JDFSchemaUtil
 	private static final String XJDF_SCHEMA_XSD = "/xjdfschema/xjdf.xsd";
 
 	/**
-	 * 
-	 * @param f
-	 * @param v
-	 * @param age the max age of a file in milliseconds before downloading again
-	 * @return
-	 */
+	 *
+     */
 	public static File downloadschema(final File dir, final EnumVersion v, final long age)
 	{
 		final File f = new File(dir, (v.getMajorVersion() == 2 ? "xjdf.xsd" : "JDF.xsd"));

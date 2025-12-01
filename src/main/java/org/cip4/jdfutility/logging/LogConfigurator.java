@@ -89,7 +89,6 @@ import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * @author rainer prosi
- * @date May 18, 2011
  */
 public class LogConfigurator
 {

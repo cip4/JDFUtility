@@ -162,8 +162,7 @@ public class JMFHotFolderServlet extends HttpServlet
 	}
 
 	/**
-	 * @param inc
-	 */
+     */
 	private void cleanup(final int inc)
 	{
 		if (inc % 100 == 0)

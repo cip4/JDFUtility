@@ -69,13 +69,7 @@ public class JDFServletUtil extends Object
 	final static public String baseDir = new File(cwd, WEBAPPS_JDF_UTILITY).getPath();
 
 	/**
-	 * @param dirName
-	 * @param tmpName
-	 * @param prefix
-	 * @param extension
-	 * @param bCatalina
-	 * @return
-	 */
+     */
 	public static File getTmpFile(final String dirName, String tmpName, final String prefix, String extension)
 	{
 		if (tmpName == null)
@@ -121,12 +115,7 @@ public class JDFServletUtil extends Object
 	}
 
 	/**
-	 * @param dirName
-	 * @param fileItem
-	 * @param prefix
-	 * @param extension
-	 * @return
-	 */
+     */
 	public static File getTmpFile(final String dirName, final DiskFileItem fileItem, final String prefix, final String extension)
 	{
 		if (fileItem == null)

@@ -119,9 +119,8 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	/**
 	 * 
 	 * get my server
-	 * 
-	 * @return
-	 */
+	 *
+     */
 	protected JettyServer getServer()
 	{
 		return server;
@@ -140,9 +139,8 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	private JPasswordField keystorePW;
 
 	/**
-	 * 
-	 * @param server
-	 */
+	 *
+     */
 	public JettyFrame(JettyServer server)
 	{
 		super();
@@ -222,9 +220,8 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	/**
 	 * 
 	 * call this in main to wait for an end
-	 * 
-	 * @return
-	 */
+	 *
+     */
 	public int waitCompleted()
 	{
 		ThreadUtil.wait(stopper, 0);
@@ -232,9 +229,8 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	}
 
 	/**
-	 * 
-	 * @return
-	 */
+	 *
+     */
 	protected abstract String getFrameName();
 
 	/**

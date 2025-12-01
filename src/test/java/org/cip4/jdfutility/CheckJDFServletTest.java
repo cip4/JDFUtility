@@ -52,8 +52,7 @@ import org.junit.jupiter.api.Test;
 public class CheckJDFServletTest extends JDFUtilityTestBase
 {
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testCreate() throws Exception
@@ -63,8 +62,7 @@ public class CheckJDFServletTest extends JDFUtilityTestBase
 	}
 
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testDoFix() throws Exception
@@ -79,8 +77,7 @@ public class CheckJDFServletTest extends JDFUtilityTestBase
 	}
 
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testInfo() throws Exception
