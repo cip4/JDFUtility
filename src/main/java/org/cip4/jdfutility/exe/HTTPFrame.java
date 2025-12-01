@@ -74,14 +74,12 @@ import org.cip4.jdfutility.server.ui.JettyFrame;
 /**
  * TODO Please insert comment!
  * @author rainerprosi
- * @date Jan 11, 2011
  */
 public class HTTPFrame extends JettyFrame
 {
 
 	/**
-	 * @param server
-	 */
+     */
 	public HTTPFrame(JettyServer server)
 	{
 		super(server);

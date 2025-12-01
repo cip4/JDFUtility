@@ -47,8 +47,7 @@ import org.junit.jupiter.api.Test;
 public class JDFServletUtilTest extends JDFUtilityTestBase
 {
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testTempFile() throws Exception
@@ -60,8 +59,7 @@ public class JDFServletUtilTest extends JDFUtilityTestBase
 	}
 
 	/**
-	 * @throws Exception
-	 *
+     *
 	 */
 	@Test
 	public void testTempFileExt() throws Exception

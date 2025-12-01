@@ -117,10 +117,6 @@ public class FileItemList
 
 	/**
 	 * returns a pure in memory FileItemList
-	 * 
-	 * @param request
-	 * @param filesize
-	 * @return
 	 */
 	public static FileItemList getMemoryFileItemList(final HttpServletRequest request, final long filesize)
 	{
@@ -134,12 +130,6 @@ public class FileItemList
 		}
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @param filesize
-	 * @return
-	 */
 	public static FileItemList getFileItemList(final HttpServletRequest request, final long filesize)
 	{
 		try
@@ -157,22 +147,16 @@ public class FileItemList
 		this(request, filesize, false);
 	}
 
-	/**
-	 * 
-	 * @param request
-	 * @param filesize
-	 * @throws ServletException
-	 */
 	FileItemList(final HttpServletRequest request, final long filesize, final boolean inMemory) throws ServletException
 	{
 		mapCache = new JDFAttributeMap();
 		reqParameters = new JDFAttributeMap();
-		fileItems = new ArrayList<DiskFileItem>();
+		fileItems = new ArrayList<>();
 		// Create a factory for disk-based file items
 		final DiskFileItemFactory factory = getFactory(inMemory, filesize);
 
 		// Create a new file upload handler
-		final JakartaServletFileUpload<DiskFileItem, DiskFileItemFactory> upload = new JakartaServletFileUpload<DiskFileItem, DiskFileItemFactory>();
+		final JakartaServletFileUpload<DiskFileItem, DiskFileItemFactory> upload = new JakartaServletFileUpload<>();
 		upload.setFileItemFactory(factory);
 		if (request != null)
 		{
@@ -220,12 +204,6 @@ public class FileItemList
 		return b.get();
 	}
 
-	/**
-	 * 
-	 * 
-	 * @return
-	 * 
-	 */
 	public JDFAttributeMap getFieldsFromForm()
 	{
 		if (ContainerUtil.isEmpty(mapCache))
@@ -241,7 +219,7 @@ public class FileItemList
 						mapCache.put(fi.getFieldName(), itemString);
 					}
 				}
-				catch (final Exception e)
+				catch (final Exception ignore)
 				{
 					// nop
 				}
@@ -253,55 +231,36 @@ public class FileItemList
 	}
 
 	/**
-	 * 
 	 * get a form value
-	 * 
-	 * @param key
-	 * @return
 	 */
 	public String getField(final String key)
 	{
-		getFieldsFromForm();
-		return mapCache.getIgnoreCase(key);
+		return getFieldsFromForm().getIgnoreCase(key);
 	}
 
 	/**
-	 * 
 	 * get a form value
-	 * 
-	 * @param key
-	 * @param def
-	 * @return
 	 */
 	public int getIntField(final String key, final int def)
 	{
-		getFieldsFromForm();
-		return StringUtil.parseInt(mapCache.getIgnoreCase(key), def);
+		return StringUtil.parseInt(getFieldsFromForm().getIgnoreCase(key), def);
 	}
 
 	/**
-	 * 
 	 * get a form value
-	 * 
-	 * @param key
-	 * @param def
-	 * @return
 	 */
 	public boolean getBoolField(final String key, final boolean def)
 	{
-		getFieldsFromForm();
-		return StringUtil.parseBoolean(mapCache.getIgnoreCase(key), def);
+		return StringUtil.parseBoolean(getFieldsFromForm().getIgnoreCase(key), def);
 	}
 
 	/**
 	 * @param bFile if true return files
 	 * @param bForm if true return form fields
-	 * @return
-	 * 
 	 */
 	public List<DiskFileItem> getFileList(final boolean bFile, final boolean bForm)
 	{
-		final List<DiskFileItem> retList = new ArrayList<DiskFileItem>();
+		final List<DiskFileItem> retList = new ArrayList<>();
 		if (bFile || bForm)
 		{
 			for (final DiskFileItem f : fileItems)
@@ -317,11 +276,9 @@ public class FileItemList
 	}
 
 	/**
-	 * 
 	 * get the iTh file
 	 * 
 	 * @param i may be<0 to count from end
-	 * @return
 	 */
 	public DiskFileItem getFile(int i)
 	{
@@ -341,11 +298,7 @@ public class FileItemList
 	}
 
 	/**
-	 * 
 	 * get the file attached to formName
-	 * 
-	 * @param formName
-	 * @return
 	 */
 	public DiskFileItem getFile(final String formName)
 	{
@@ -361,11 +314,7 @@ public class FileItemList
 	}
 
 	/**
-	 * 
 	 * get the input stream for formName
-	 * 
-	 * @param formName
-	 * @return
 	 */
 	public InputStream getFileInputStream(final String formName)
 	{
@@ -374,11 +323,9 @@ public class FileItemList
 	}
 
 	/**
-	 * 
 	 * get the input stream for formName
 	 * 
 	 * @param i may be<0 to count from end
-	 * @return
 	 */
 	public InputStream getFileInputStream(final int i)
 	{
@@ -386,12 +333,6 @@ public class FileItemList
 		return getInputStream(fi);
 	}
 
-	/**
-	 * 
-	 * 
-	 * @param fi
-	 * @return
-	 */
 	public static InputStream getInputStream(final DiskFileItem fi)
 	{
 		if (fi != null)

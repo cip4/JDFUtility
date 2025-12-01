@@ -123,10 +123,7 @@ public class CheckJDFServlet extends UtilityServlet
 	{
 
 		/**
-		 * @param utilityServlet
-		 * @param request
-		 * @param response
-		 */
+         */
 		public CheckJDFCall(final UtilityServlet utilityServlet, final HttpServletRequest request, final HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
@@ -135,9 +132,7 @@ public class CheckJDFServlet extends UtilityServlet
 		/**
 		 *
 		 * @see org.cip4.jdfutility.ServletCall#processPost()
-		 * @throws ServletException
-		 * @throws IOException
-		 */
+         */
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
@@ -152,10 +147,7 @@ public class CheckJDFServlet extends UtilityServlet
 	class FixCall extends ServletCall
 	{
 		/**
-		 * @param utilityServlet
-		 * @param request
-		 * @param response
-		 */
+         */
 		public FixCall(final UtilityServlet utilityServlet, final HttpServletRequest request, final HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
@@ -164,9 +156,7 @@ public class CheckJDFServlet extends UtilityServlet
 		/**
 		 *
 		 * @see org.cip4.jdfutility.ServletCall#processPost()
-		 * @throws ServletException
-		 * @throws IOException
-		 */
+         */
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
@@ -179,11 +169,7 @@ public class CheckJDFServlet extends UtilityServlet
 		/**
 		 * Parses a multipart request.
 		 *
-		 * @param request
-		 * @param response
-		 * @throws ServletException
-		 * @throws IOException
-		 *
+         *
 		 */
 		protected void doFix(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 		{
@@ -399,11 +385,7 @@ public class CheckJDFServlet extends UtilityServlet
 	/**
 	 * Parses a multipart request.
 	 *
-	 * @param req
-	 * @param resp
-	 * @throws ServletException
-	 * @throws IOException
-	 */
+     */
 	protected void processMultipartRequest(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException
 	{
 		// Parse the multipart request
@@ -583,10 +565,7 @@ public class CheckJDFServlet extends UtilityServlet
 
 	/**
 	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+     */
 	@Override
 	protected ServletCall getServletCall(final HttpServletRequest request, final HttpServletResponse response)
 	{

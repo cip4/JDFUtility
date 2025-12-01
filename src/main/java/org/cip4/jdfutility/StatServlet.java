@@ -87,10 +87,7 @@ public class StatServlet extends UtilityServlet
 	protected class StatCall extends ServletCall
 	{
 		/**
-		 * @param utilityServlet
-		 * @param request
-		 * @param response
-		 */
+         */
 		public StatCall(UtilityServlet utilityServlet, HttpServletRequest request, HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
@@ -99,9 +96,7 @@ public class StatServlet extends UtilityServlet
 		/**
 		 * 
 		 * @see org.cip4.jdfutility.ServletCall#processPost()
-		 * @throws ServletException
-		 * @throws IOException
-		 */
+         */
 		@Override
 		protected void processPost() throws ServletException, IOException
 		{
@@ -127,10 +122,7 @@ public class StatServlet extends UtilityServlet
 
 	/**
 	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 * @param request
-	 * @param response
-	 * @return
-	*/
+     */
 	@Override
 	protected ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response)
 	{

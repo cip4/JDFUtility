@@ -179,10 +179,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param strPackage
-	 * @param strExtends
-	 * @param strbufResult
-	 */
+     */
 	private static void appendImportAndStartOfClass(final String strJDFAutoFileName, final String strExtends, final StringBuffer strbufResult)
 	{
 		final String strPackage = "org.cip4.jdflib.auto";
@@ -236,10 +233,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param complexTypeName
-	 * @param vAttributes
-	 * @param strbufResult
-	 */
+     */
 	private static void appendAtrInfoTable(final String complexTypeName, final Vector vAttributes, final StringBuffer strbufResult)
 	{
 		// siz > 0 !!!
@@ -394,9 +388,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param vElements
-	 * @param strbufResult
-	 */
+     */
 	private static void appendElemInfoTable(final Vector vElements, final StringBuffer strbufResult)
 	{
 		// vElements.size() > 0 !!!
@@ -443,8 +435,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param strbufResult
-	 */
+     */
 	private static void appendConstructorsAndToString(final String strJDFAutoFileName, final StringBuffer strbufResult)
 	{
 		strbufResult.append(strLineEnd);
@@ -564,11 +555,6 @@ public class JavaCoreStringUtil
 		return baseOf;
 	}
 
-	/**
-	 * @param vAttributes
-	 * @param complexTypeName
-	 * @param strbufResult
-	 */
 	private static void appendEnumTypes(final Vector vAttributes, final String complexTypeName, final StringBuffer strbufResult0)
 	{
 		for (int i = 0; i < vAttributes.size(); i++)
@@ -736,10 +722,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param isEnum
-	 * @param attributeName
-	 * @return
-	 */
+     */
 	public static boolean useEnumAttribute(final boolean isEnum, final String attributeName, final String complexTypeName, final boolean appendList)
 	{
 		if (!isEnum)
@@ -816,10 +799,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param complexTypeName
-	 * @param vAttributes
-	 * @param strbufResult
-	 */
+     */
 	private static void appendAttributeGetterAndSetter(final String complexTypeName, final Vector vAttributes, final StringBuffer strbufResult)
 	{
 		SchemaAttribute schemaAttribute = null;
@@ -1562,10 +1542,7 @@ public class JavaCoreStringUtil
 	}
 
 	/**
-	 * @param strComplexTypeName
-	 * @param vElements
-	 * @param strbufResult
-	 */
+     */
 	private static void appendElementGetterAndSetter(final String strComplexTypeName, final Vector vElements, final StringBuffer strbufResult)
 	{
 		String strElementName;

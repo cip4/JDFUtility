@@ -83,10 +83,7 @@ public class DumpJDFServlet extends UtilityServlet
 	protected class DumpCall extends ServletCall
 	{
 		/**
-		 * @param utilityServlet
-		 * @param request
-		 * @param response
-		 */
+         */
 		public DumpCall(final UtilityServlet utilityServlet, final HttpServletRequest request, final HttpServletResponse response)
 		{
 			super(utilityServlet, request, response);
@@ -237,8 +234,7 @@ public class DumpJDFServlet extends UtilityServlet
 		}
 
 		/**
-		 * @return
-		 */
+         */
 		private ByteArrayIOStream dumpToFile(final Path targetDir) throws IOException
 		{
 			Files.createDirectories(targetDir);
@@ -334,9 +330,7 @@ public class DumpJDFServlet extends UtilityServlet
 		}
 
 		/**
-		 * @param newDir
-		 * @return
-		 */
+         */
 		private DumpDir getCreateDump(final File newDir)
 		{
 			synchronized (subDumps)
@@ -355,9 +349,7 @@ public class DumpJDFServlet extends UtilityServlet
 		}
 
 		/**
-		 * @param bos
-		 * @param req
-		 */
+         */
 		private void forward(final ByteArrayIOStream bos, final HttpServletRequest req)
 		{
 			if (bos == null || req == null || proxyURL == null)
@@ -468,10 +460,7 @@ public class DumpJDFServlet extends UtilityServlet
 
 	/**
 	 * @see org.cip4.jdfutility.UtilityServlet#getServletCall(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+     */
 	@Override
 	protected ServletCall getServletCall(final HttpServletRequest request, final HttpServletResponse response)
 	{

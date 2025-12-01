@@ -241,8 +241,7 @@ public class SchemaProcessor extends BaseElementWalker
 
 		/**
 		 *
-		 * @param e
-		 */
+         */
 		void updateMinOccurs(final KElement e)
 		{
 			if (!isBaseElement(e) && e.hasAttribute("minOccurs"))
@@ -253,9 +252,7 @@ public class SchemaProcessor extends BaseElementWalker
 
 		/**
 		 *
-		 * @param e
-		 * @return
-		 */
+         */
 		boolean isBaseElement(final KElement e)
 		{
 			final Vector<String> elems = knownBaseElements.get(currentElement);

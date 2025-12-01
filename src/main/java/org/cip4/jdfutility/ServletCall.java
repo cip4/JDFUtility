@@ -34,11 +34,8 @@ public abstract class ServletCall
 	protected Log log;
 
 	/**
-	 * 
-	 * @param utilityServlet
-	 * @param request
-	 * @param response
-	 */
+	 *
+     */
 	public ServletCall(UtilityServlet utilityServlet, final HttpServletRequest request, HttpServletResponse response)
 	{
 		super();
@@ -53,9 +50,8 @@ public abstract class ServletCall
 	}
 
 	/**
-	 * 
-	 * @return
-	 */
+	 *
+     */
 	public long getTimeProcessed()
 	{
 		long deltaT = System.currentTimeMillis() - timer.getCreationTime();
@@ -86,8 +82,7 @@ public abstract class ServletCall
 	protected long requestLen;
 
 	/**
-	 * @return
-	 */
+     */
 	public KElement getHTMLRoot()
 	{
 		return doc == null ? null : doc.getRoot();
@@ -155,8 +150,7 @@ public abstract class ServletCall
 	}
 
 	/**
-	 * @param message 
-	 *  
+     *
 	 */
 	protected void errorResponse(String message)
 	{
@@ -171,9 +165,7 @@ public abstract class ServletCall
 	}
 
 	/**
-	 * @throws IOException 
-	 * @throws ServletException 
-	 *  
+     *
 	 */
 	protected void processGet() throws IOException, ServletException
 	{
@@ -192,16 +184,12 @@ public abstract class ServletCall
 	}
 
 	/**
-	 * @throws IOException 
-	 * @throws ServletException 
-	 * 
+     *
 	 */
 	protected abstract void processPost() throws ServletException, IOException;
 
 	/**
-	 * @param request
-	 * @param response
-	 */
+     */
 	protected void setupGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		if (doc != null)

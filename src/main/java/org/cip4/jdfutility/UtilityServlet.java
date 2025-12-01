@@ -101,9 +101,7 @@ public abstract class UtilityServlet extends HttpServlet
 	{
 		/**
 		 *
-		 * @param method
-		 * @param url
-		 */
+         */
 		public RequestStats(final String method, final String url)
 		{
 			super();
@@ -231,10 +229,7 @@ public abstract class UtilityServlet extends HttpServlet
 	}
 
 	/**
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+     */
 	protected ServletCall preparePost(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		numPost++;
@@ -244,17 +239,11 @@ public abstract class UtilityServlet extends HttpServlet
 	}
 
 	/**
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+     */
 	protected abstract ServletCall getServletCall(HttpServletRequest request, HttpServletResponse response);
 
 	/**
-	 * @param request
-	 * @param response
-	 * @return
-	 */
+     */
 	protected ServletCall prepareGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
 		numGet++;
@@ -286,7 +275,6 @@ public abstract class UtilityServlet extends HttpServlet
 	}
 
 	/**
-	 * @param request
 	 * @return the cssURL
 	 */
 	public String getCssURL(final HttpServletRequest request)
@@ -301,9 +289,7 @@ public abstract class UtilityServlet extends HttpServlet
 
 	/**
 	 * @see jakarta.servlet.http.HttpServlet#service(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)
-	 * @throws ServletException
-	 * @throws IOException
-	 */
+     */
 	@Override
 	protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
 	{

@@ -81,7 +81,6 @@ import org.eclipse.jetty.ee10.servlet.ServletHolder;
  * standalone app for bambi using an embedded jetty server
  * 
  * @author rainer prosi
- * @date Dec 9, 2010
  */
 public final class HTTPDump extends JettyServer
 {
@@ -97,9 +96,7 @@ public final class HTTPDump extends JettyServer
 	}
 
 	/**
-	 * @param args
-	 * @throws Exception
-	 */
+     */
 	public static void main(final String[] args) throws Exception
 	{
 		final HTTPDump dump = new HTTPDump();
