@@ -85,12 +85,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileCleaningTracker;
+import org.cip4.jdflib.util.ContainerUtil;
+import org.junit.jupiter.api.Test;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
-
-import org.cip4.jdflib.util.ContainerUtil;
-import org.junit.jupiter.api.Test;
 
 class FileItemListTest extends JDFUtilityTestBase
 {
@@ -169,6 +170,15 @@ class FileItemListTest extends JDFUtilityTestBase
 		l.getFactory(false, 0);
 		l.getFactory(false, 99999);
 		l.getFactory(true, 99999);
+	}
+
+	@Test
+	void testGetTracker() throws Exception
+	{
+		final FileCleaningTracker tracker = new FileCleaningTracker();
+		FileItemList.setTracker(tracker);
+		assertEquals(tracker, FileItemList.getTracker());
+		assertEquals(tracker, new FileItemList(getRequestMock(), 42).getFactory(true, 42).getFileCleaningTracker());
 	}
 
 }

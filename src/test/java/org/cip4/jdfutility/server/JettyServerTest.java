@@ -64,6 +64,7 @@ class JettyServerTest extends JDFUtilityTestBase
 		ns.setPort(getPort());
 		// ns.setSSLPort(443);
 		assertTrue(ns.tryStart());
+		assertNotNull(ns.getJettyServer());
 		ns.stop();
 	}
 
