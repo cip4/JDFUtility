@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -44,17 +44,17 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cip4.jdflib.util.StreamUtil;
+import org.cip4.jdflib.util.StringUtil;
+import org.cip4.jdflib.util.UrlUtil;
+
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import org.apache.commons.text.StringEscapeUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.StreamUtil;
-import org.cip4.jdflib.util.UrlUtil;
 
 /**
  * @author rainer
@@ -92,8 +92,8 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Handles the HTTP <code>GET</code> method.
-	 * 
-	 * @param request servlet request
+	 *
+	 * @param request  servlet request
 	 * @param response servlet response
 	 */
 	@Override
@@ -104,8 +104,8 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Handles the HTTP <code>POST</code> method.
-	 * 
-	 * @param request servlet request
+	 *
+	 * @param request  servlet request
 	 * @param response servlet response
 	 */
 	@Override
@@ -122,16 +122,15 @@ public class GetFileServlet extends HttpServlet
 		final OutputStream os = response.getOutputStream();
 		final String localName = request.getPathInfo();
 		Path localPath = null;
-		try {
+		try
+		{
 			localPath = baseDir.toPath().resolve(localName).normalize();
-		} catch (InvalidPathException ignored) {
+		}
+		catch (final InvalidPathException ignored)
+		{
 		}
 
-		if (
-				localPath != null
-				&& localPath.startsWith(baseDir.toPath().normalize())
-				&& Files.exists(localPath)
-		)
+		if (localPath != null && localPath.startsWith(baseDir.toPath().normalize()) && Files.exists(localPath))
 		{
 			response.setContentType(UrlUtil.getMimeTypeFromURL(localName));
 			Files.copy(localPath, os);
@@ -141,7 +140,7 @@ public class GetFileServlet extends HttpServlet
 			response.setContentType(UrlUtil.TEXT_HTML);
 			response.setStatus(404);
 			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
-			os.write(StringEscapeUtils.escapeHtml4(localName).getBytes());
+			os.write(StringUtil.replaceCharSet(localName, "<>", "_", 0).getBytes());
 			os.write("</HTML>".getBytes());
 		}
 		StreamUtil.close(os);
