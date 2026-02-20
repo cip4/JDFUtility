@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -44,13 +44,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import jakarta.servlet.ServletException;
-
 import org.cip4.jdflib.core.JDFCoreConstants;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
+
+import jakarta.servlet.ServletException;
 
 public class GetFileServletTest
 {
@@ -58,17 +58,17 @@ public class GetFileServletTest
 	@Test
 	public void processRequest() throws ServletException, URISyntaxException, IOException
 	{
-		Path file = Paths.get(GetFileServlet.class.getResource("/data/resourceInfo.jmf").toURI());
+		final Path file = Paths.get(GetFileServlet.class.getResource("/data/resourceInfo.jmf").toURI());
 
-		MockServletConfig config = new MockServletConfig();
+		final MockServletConfig config = new MockServletConfig();
 		config.addInitParameter("rootDir", file.getParent().toString());
 
-		GetFileServlet servlet = new GetFileServlet();
+		final GetFileServlet servlet = new GetFileServlet();
 		servlet.init(config);
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		final MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setPathInfo(file.getFileName().toString());
-		MockHttpServletResponse response = new MockHttpServletResponse();
+		final MockHttpServletResponse response = new MockHttpServletResponse();
 
 		servlet.processRequest(request, response);
 
@@ -80,17 +80,17 @@ public class GetFileServletTest
 	@Test
 	public void processRequestFileNotExists() throws ServletException, URISyntaxException, IOException
 	{
-		Path root = Paths.get(GetFileServlet.class.getResource("/data").toURI());
+		final Path root = Paths.get(GetFileServlet.class.getResource("/data").toURI());
 
-		MockServletConfig config = new MockServletConfig();
+		final MockServletConfig config = new MockServletConfig();
 		config.addInitParameter("rootDir", root.toString());
 
-		GetFileServlet servlet = new GetFileServlet();
+		final GetFileServlet servlet = new GetFileServlet();
 		servlet.init(config);
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		final MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setPathInfo("file_that_does_not_exist.txt");
-		MockHttpServletResponse response = new MockHttpServletResponse();
+		final MockHttpServletResponse response = new MockHttpServletResponse();
 
 		servlet.processRequest(request, response);
 
@@ -102,15 +102,15 @@ public class GetFileServletTest
 	@Test
 	public void processRequestPathTraversal() throws ServletException, IOException
 	{
-		MockServletConfig config = new MockServletConfig();
+		final MockServletConfig config = new MockServletConfig();
 		config.addInitParameter("rootDir", "./");
 
-		GetFileServlet servlet = new GetFileServlet();
+		final GetFileServlet servlet = new GetFileServlet();
 		servlet.init(config);
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		final MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setPathInfo("../attack");
-		MockHttpServletResponse response = new MockHttpServletResponse();
+		final MockHttpServletResponse response = new MockHttpServletResponse();
 
 		servlet.processRequest(request, response);
 
@@ -122,20 +122,20 @@ public class GetFileServletTest
 	@Test
 	public void processRequestInjection() throws ServletException, IOException
 	{
-		MockServletConfig config = new MockServletConfig();
+		final MockServletConfig config = new MockServletConfig();
 		config.addInitParameter("rootDir", "./");
 
-		GetFileServlet servlet = new GetFileServlet();
+		final GetFileServlet servlet = new GetFileServlet();
 		servlet.init(config);
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		final MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setPathInfo("<script>attack</script>");
-		MockHttpServletResponse response = new MockHttpServletResponse();
+		final MockHttpServletResponse response = new MockHttpServletResponse();
 
 		servlet.processRequest(request, response);
 
 		assertEquals(404, response.getStatus());
-		assertEquals("<HTML><H1>Error</H1><br/>Cannot find file: &lt;script&gt;attack&lt;/script&gt;</HTML>", response.getContentAsString());
+		assertEquals("<HTML><H1>Error</H1><br/>Cannot find file: _script_attack_/script_</HTML>", response.getContentAsString());
 		assertEquals("text/html", response.getContentType());
 	}
 }

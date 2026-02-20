@@ -47,6 +47,7 @@ import java.nio.file.Path;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StreamUtil;
+import org.cip4.jdflib.util.StringUtil;
 import org.cip4.jdflib.util.UrlUtil;
 
 import jakarta.servlet.ServletConfig;
@@ -139,7 +140,7 @@ public class GetFileServlet extends HttpServlet
 			response.setContentType(UrlUtil.TEXT_HTML);
 			response.setStatus(404);
 			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
-			os.write(localName.getBytes());
+			os.write(StringUtil.replaceCharSet(localName, "<>", "_", 0).getBytes());
 			os.write("</HTML>".getBytes());
 		}
 		StreamUtil.close(os);
