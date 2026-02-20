@@ -25,6 +25,10 @@ java {
 compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
+ext {
+    jdflibjVersion = '2.+'
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -116,19 +120,30 @@ javadoc {
     }
 }
 
+afterEvaluate {
+    def jdflibj = configurations.runtimeClasspath.resolvedConfiguration.resolvedArtifacts.find {
+        it.moduleVersion.id.group == 'org.cip4.lib.jdf' && it.moduleVersion.id.name == 'JDFLibJ'
+    }
+    if (jdflibj) {
+        ext.jdflibjResolvedVersion = jdflibj.moduleVersion.id.version
+    }
+}
+
 processResources {
-    filesMatching(['**/*.properties']) {
+    def version = project.hasProperty('jdflibjResolvedVersion') ? project.jdflibjResolvedVersion : jdflibjVersion
+    filesMatching(['**/*.properties', '**/index.html']) {
         filter(ReplaceTokens, tokens: [
                 'name': project.properties['description'],
                 'version': project.properties['version'],
                 'artifactId': project.properties['name'],
-                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ')
+                'timestamp': new Date().format('yyyy-MM-dd HH:mm:ssZ'),
+                'jdflibj.version': version
         ])
     }
 }
 
 dependencies {
-    implementation('org.cip4.lib.jdf:JDFLibJ:2.2.8.+') {
+    api('org.cip4.lib.jdf:JDFLibJ:2.+') {
         exclude group: 'xml-apis'
     }
 
@@ -140,9 +155,10 @@ dependencies {
     implementation 'org.apache.commons:commons-fileupload2-jakarta-servlet6:2.+'
     implementation 'jakarta.servlet:jakarta.servlet-api:6.1.0'  
     implementation 	'com.sun.mail:jakarta.mail:2.0.1'
-
+   implementation 'org.apache.commons:commons-lang3:3.18.0'
+ 
     
-    implementation 'org.apache.logging.log4j:log4j-core:2.24.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.25.2'
     implementation 'org.apache.logging.log4j:log4j-jcl:2.25.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
