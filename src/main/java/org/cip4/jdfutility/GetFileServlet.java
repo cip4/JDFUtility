@@ -2,7 +2,7 @@
  * The CIP4 Software License, Version 1.0
  *
  *
- * Copyright (c) 2001-2022 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -44,7 +44,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cip4.jdflib.util.StreamUtil;
@@ -92,8 +91,8 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Handles the HTTP <code>GET</code> method.
-	 * 
-	 * @param request servlet request
+	 *
+	 * @param request  servlet request
 	 * @param response servlet response
 	 */
 	@Override
@@ -104,8 +103,8 @@ public class GetFileServlet extends HttpServlet
 
 	/**
 	 * Handles the HTTP <code>POST</code> method.
-	 * 
-	 * @param request servlet request
+	 *
+	 * @param request  servlet request
 	 * @param response servlet response
 	 */
 	@Override
@@ -140,7 +139,7 @@ public class GetFileServlet extends HttpServlet
 			response.setContentType(UrlUtil.TEXT_HTML);
 			response.setStatus(404);
 			os.write("<HTML><H1>Error</H1><br/>Cannot find file: ".getBytes());
-			os.write(StringEscapeUtils.escapeHtml3(localName).getBytes());
+			os.write(localName.getBytes());
 			os.write("</HTML>".getBytes());
 		}
 		StreamUtil.close(os);
