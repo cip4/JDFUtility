@@ -1,8 +1,8 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2015 The International Cooperation for the Integration of 
- * Processes in  Prepress, Press and Postpress (CIP4).  All rights 
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of
+ * Processes in  Prepress, Press and Postpress (CIP4).  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,17 +18,17 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
- *        The International Cooperation for the Integration of 
+ *        The International Cooperation for the Integration of
  *        Processes in  Prepress, Press and Postpress (www.cip4.org)"
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "CIP4" and "The International Cooperation for the Integration of 
+ * 4. The names "CIP4" and "The International Cooperation for the Integration of
  *    Processes in  Prepress, Press and Postpress" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact info@cip4.org.
  *
  * 5. Products derived from this software may not be called "CIP4",
@@ -54,17 +54,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the The International Cooperation for the Integration 
+ * individuals on behalf of the The International Cooperation for the Integration
  * of Processes in Prepress, Press and Postpress and was
- * originally based on software 
- * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG 
- * copyright (c) 1999-2001, Agfa-Gevaert N.V. 
- *  
- * For more information on The International Cooperation for the 
+ * originally based on software
+ * copyright (c) 1999-2001, Heidelberger Druckmaschinen AG
+ * copyright (c) 1999-2001, Agfa-Gevaert N.V.
+ *
+ * For more information on The International Cooperation for the
  * Integration of Processes in  Prepress, Press and Postpress , please see
  * <http://www.cip4.org/>.
- *  
- * 
+ *
+ *
  */
 package org.cip4.jdfutility.server.ui;
 
@@ -95,7 +95,6 @@ import org.cip4.jdfutility.server.JettyServer.JettySSLData;
 
 /**
  * @author rainer prosi
- *
  */
 public abstract class JettyFrame extends JFrame implements ActionListener
 {
@@ -111,16 +110,14 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	protected final JettyServer server;
 
 	/**
-	 * 
 	 * get my server
-	 *
-     */
+	 */
 	protected JettyServer getServer()
 	{
 		return server;
@@ -130,7 +127,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	private final MyMutex stopper;
 	JTextField portField;
 	JTextField sslPortField;
-	protected final Log log;
+	private final static Log log = LogFactory.getLog(JettyFrame.class);
 	private JCheckBox flakyBox;
 	private JTextField urlField;
 	private JTextField sslField;
@@ -140,15 +137,14 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 
 	/**
 	 *
-     */
+	 */
 	public JettyFrame(JettyServer server)
 	{
 		super();
-		log = LogFactory.getLog(getClass());
 		setTitle(getFrameName());
 		this.server = server;
 		this.stopper = new MyMutex();
-		JPanel panel = createPanel();
+		final JPanel panel = createPanel();
 		button = new JButton("Start Server");
 		button.addActionListener(this);
 		panel.add(button);
@@ -160,20 +156,20 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	{
 		addWindowListener(new StopListener());
 
-		JPanel panel = new JPanel();
-		BoxLayout mgr = new BoxLayout(panel, BoxLayout.Y_AXIS);
+		final JPanel panel = new JPanel();
+		final BoxLayout mgr = new BoxLayout(panel, BoxLayout.Y_AXIS);
 
 		panel.setLayout(mgr);
 		setSize(new Dimension(500, 222));
 
-		JPanel p0 = new JPanel();
+		final JPanel p0 = new JPanel();
 		p0.setLayout(new BoxLayout(p0, BoxLayout.Y_AXIS));
 		p0.add(new JLabel("http web ui address:"));
 		p0.add(new JLabel("please copy / paste one of the next lines into a browser of your choice:"));
 
 		panel.add(p0);
 
-		JPanel p1 = new JPanel();
+		final JPanel p1 = new JPanel();
 		p1.add(new JLabel("port: "));
 		portField = new JTextField();
 		portField.setEditable(true);
@@ -186,7 +182,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 
 		panel.add(p1);
 
-		JPanel p2 = new JPanel();
+		final JPanel p2 = new JPanel();
 
 		p2.add(new JLabel("ssl port: "));
 		sslPortField = new JTextField();
@@ -218,10 +214,8 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	}
 
 	/**
-	 * 
 	 * call this in main to wait for an end
-	 *
-     */
+	 */
 	public int waitCompleted()
 	{
 		ThreadUtil.wait(stopper, 0);
@@ -230,7 +224,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 
 	/**
 	 *
-     */
+	 */
 	protected abstract String getFrameName();
 
 	/**
@@ -248,7 +242,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 				{
 					server.runServer();
 				}
-				catch (Throwable e)
+				catch (final Throwable e)
 				{
 					log.error("Exception cought starting server", e);
 				}
@@ -261,14 +255,14 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected void started()
 	{
 		button.setText("Stop Server");
 		server.setPort(StringUtil.parseInt(portField.getText(), server.getPort()));
 		server.setSSLPort(StringUtil.parseInt(sslPortField.getText(), server.getSSLPort()));
-		JettySSLData ssl = server.getSSLData();
+		final JettySSLData ssl = server.getSSLData();
 		ssl.setAllowFlakySSL(flakyBox.isSelected());
 		ssl.setPassword(new String(keystorePW.getText()));
 		ssl.setKeystoreType((String) keystoreType.getSelectedItem());
@@ -297,7 +291,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private class Stopper extends Thread
 	{
@@ -313,7 +307,9 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		{
 			server.stop();
 			while (server.isStopping())
+			{
 				ThreadUtil.sleep(100);
+			}
 			stopped();
 		}
 	}
@@ -328,7 +324,7 @@ public abstract class JettyFrame extends JFrame implements ActionListener
 		}
 
 		/**
-		 * 
+		 *
 		 */
 		@Override
 		public void run()
