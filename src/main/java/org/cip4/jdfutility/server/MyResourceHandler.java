@@ -103,8 +103,7 @@ public class MyResourceHandler extends ResourceHandler
 
 	/**
 	 * add a base file to the whitelist. after adding one, all others are blocked
-	 *
-     */
+	 */
 	public void addBase(final String base)
 	{
 		whiteList.add(base.toLowerCase());
@@ -119,15 +118,22 @@ public class MyResourceHandler extends ResourceHandler
 	@Override
 	public boolean handle(final Request request, final Response response, final Callback callback) throws Exception
 	{
-		final HttpURI uri = request.getHttpURI();
-		final String uriString = uri.asString();
-		final String newUriString = update(uriString);
-		if (newUriString == null || StringUtil.equals(uriString, newUriString))
+		try
 		{
-			return super.handle(request, response, callback);
+			final HttpURI uri = request.getHttpURI();
+			final String uriString = uri.asString();
+			final String newUriString = update(uriString);
+			if (newUriString == null || StringUtil.equals(uriString, newUriString))
+			{
+				return super.handle(request, response, callback);
+			}
+			final HttpURI newUri = HttpURI.from(newUriString);
+			final Request updated = Request.serveAs(request, newUri);
+			return super.handle(updated, response, callback);
 		}
-		final HttpURI newUri = HttpURI.from(newUriString);
-		final Request updated = Request.serveAs(request, newUri);
-		return super.handle(updated, response, callback);
+		catch (final Exception x)
+		{
+			return false;
+		}
 	}
 }
