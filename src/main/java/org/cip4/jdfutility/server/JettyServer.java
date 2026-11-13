@@ -263,7 +263,8 @@ public abstract class JettyServer
 		final HttpConfiguration httpConfig = new HttpConfiguration();
 		if (sslPort > 0)
 		{
-			if (UrlUtil.urlToFile(sslData.getKeystorePath()).canRead())
+			final File keystorefile = UrlUtil.urlToFile(sslData.getKeystorePath());
+			if (keystorefile != null && keystorefile.canRead())
 			{
 				log.info("Updating ssl port to: " + sslPort);
 
@@ -293,6 +294,7 @@ public abstract class JettyServer
 			else
 			{
 				log.warn("cannot read keystore at: " + sslData.getKeystorePath());
+				sslPort = 0;
 			}
 		}
 
