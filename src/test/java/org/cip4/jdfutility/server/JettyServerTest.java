@@ -41,10 +41,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.security.KeyStore;
+
 import org.cip4.jdflib.util.ThreadUtil;
 import org.cip4.jdfutility.JDFUtilityTestBase;
 import org.cip4.jdfutility.exe.HTTPDump;
 import org.cip4.jdfutility.server.JettyServer.JettySSLData;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.junit.jupiter.api.Test;
 
 class JettyServerTest extends JDFUtilityTestBase
@@ -119,12 +124,88 @@ class JettyServerTest extends JDFUtilityTestBase
 	}
 
 	@Test
-	public void testSSLDataKeystore()
+	public void testSSLDataDefaults()
 	{
 		final HTTPDump ns = new HTTPDump();
 		ns.setSSLPort(443);
 		final JettySSLData sslData = ns.getSSLData();
-		assertNotNull(sslData.getKeystore());
+		assertEquals(KeyStore.getDefaultType(), sslData.getKeystoreType());
+		assertEquals("changeit", sslData.getPassword());
+		assertFalse(sslData.isAllowFlakySSL());
+		assertEquals(JettyServer.getDefaultKeyStorePath(), sslData.getKeystorePath());
+
+	}
+
+	@Test
+	public void testSSLDataSettersRoundTrip()
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setSSLPort(443);
+		final JettySSLData sslData = ns.getSSLData();
+		sslData.setKeystorePath("SENTINEL_PATH");
+		sslData.setKeystoreType("SENTINEL_TYPE");
+		sslData.setPassword("SENTINEL_PASSWORD");
+		assertEquals("SENTINEL_PATH", sslData.getKeystorePath());
+		assertEquals("SENTINEL_TYPE", sslData.getKeystoreType());
+		assertEquals("SENTINEL_PASSWORD", sslData.getPassword());
+
+	}
+
+	@Test
+	public void testSSLDataToStringMasksPassword()
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setSSLPort(443);
+		final JettySSLData sslData = ns.getSSLData();
+		sslData.setKeystorePath("MASK_PATH");
+		sslData.setKeystoreType("MASK_TYPE");
+		sslData.setPassword("SECRET_PWD_123");
+		final String sslString = sslData.toString();
+		assertFalse(sslString.contains("SECRET_PWD_123"));
+		assertTrue(sslString.contains("MASK_PATH"));
+		assertTrue(sslString.contains("MASK_TYPE"));
+
+	}
+
+	@Test
+	public synchronized void testUpdateHTTPConnectorComposition() throws InterruptedException
+	{
+		final HTTPDump ns = new HTTPDump();
+		ns.setPort(getPort());
+		ns.setSSLPort(getPort());
+		assertTrue(ns.tryStart());
+		ns.updateHTTP();
+
+		boolean hasSSLConnector = false;
+		boolean hasPlainConnector = false;
+		for (final Connector connector : ns.getJettyServer().getConnectors())
+		{
+			if (connector instanceof final ServerConnector serverConnector)
+			{
+				boolean serverConnectorHasSSL = false;
+				for (final var connectionFactory : serverConnector.getConnectionFactories())
+				{
+					if (connectionFactory instanceof SslConnectionFactory)
+					{
+						serverConnectorHasSSL = true;
+						break;
+					}
+				}
+				if (serverConnectorHasSSL)
+				{
+					hasSSLConnector = true;
+				}
+				else
+				{
+					hasPlainConnector = true;
+				}
+			}
+		}
+
+		assertTrue(hasSSLConnector);
+		assertTrue(hasPlainConnector);
+		ns.stop();
+		ns.join();
 
 	}
 

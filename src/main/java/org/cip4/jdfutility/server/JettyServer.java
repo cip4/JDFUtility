@@ -1,7 +1,7 @@
 /**
  * The CIP4 Software License, Version 1.0
  *
- * Copyright (c) 2001-2024 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
+ * Copyright (c) 2001-2026 The International Cooperation for the Integration of Processes in Prepress, Press and Postpress (CIP4). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  *
@@ -36,18 +36,16 @@
  */
 package org.cip4.jdfutility.server;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cip4.jdflib.util.FileUtil;
+import org.cip4.jdflib.util.UrlUtil;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler.Abstract;
@@ -122,51 +120,15 @@ public abstract class JettyServer
 
 		/**
 		 * if true, set security levels insanely low - useful for debugging - DO NOT USE IN PRODUCTION
-		 *
-         */
+		 */
 		public void setAllowFlakySSL(final boolean allowFlakySSL)
 		{
 			this.allowFlakySSL = allowFlakySSL;
 		}
 
 		/**
-		 * @return the selected keystore
+		 * @return the selected keystore path
 		 */
-		KeyStore getKeystore()
-		{
-			KeyStore keyStore;
-			try
-			{
-				keyStore = KeyStore.getInstance(keystoreType);
-			}
-			catch (final KeyStoreException e)
-			{
-				log.error("Snafu reading keystore ", e);
-				return null;
-			}
-			final File f = new File(keystorePath);
-			if (f.canRead())
-			{
-				try
-				{
-					log.info("Reading " + f.getAbsolutePath());
-					final BufferedInputStream bufferedInputStream = FileUtil.getBufferedInputStream(f);
-					keyStore.load(bufferedInputStream, password.toCharArray());
-					bufferedInputStream.close();
-					return keyStore;
-				}
-				catch (final Exception e)
-				{
-					log.warn("Cannot load keystore at: " + f.getAbsolutePath(), e);
-				}
-			}
-			else
-			{
-				log.warn("Cannot read " + f.getAbsolutePath());
-			}
-			return null;
-		}
-
 		public String getKeystorePath()
 		{
 			return keystorePath;
@@ -180,13 +142,13 @@ public abstract class JettyServer
 		@Override
 		public String toString()
 		{
-			return "JettySSLData [keystoreType=" + keystoreType + ", keystorePath=" + keystorePath + ", password=" + password + ", allowFlakySSL=" + allowFlakySSL + "]";
+			return "JettySSLData [keystoreType=" + keystoreType + ", keystorePath=" + keystorePath + ", password=***, allowFlakySSL=" + allowFlakySSL + "]";
 		}
 
 	}
 
 	/**
-     */
+	 */
 	public static String getDefaultKeyStorePath()
 	{
 
@@ -211,7 +173,7 @@ public abstract class JettyServer
 	protected final JettySSLData sslData;
 
 	/**
-     */
+	 */
 	public JettyServer(String context, final int port)
 	{
 		super();
@@ -227,9 +189,13 @@ public abstract class JettyServer
 	protected String setContext(String context)
 	{
 		if (context == null)
+		{
 			context = "";
+		}
 		else if (!context.startsWith("/"))
+		{
 			context = "/" + context;
+		}
 		this.context = context;
 		return context;
 	}
@@ -246,18 +212,8 @@ public abstract class JettyServer
 
 	/**
 	 * @param port the ssl port
-     */
-	public void setSSLPort(final int port)
-	{
-		sslPort = port;
-	}
-
-	/**
-	 * @param port the ssl port
-	 * @deprecated use the single argument version
 	 */
-	@Deprecated
-	public void setSSLPort(final int port, final String dummy)
+	public void setSSLPort(final int port)
 	{
 		sslPort = port;
 	}
@@ -282,8 +238,7 @@ public abstract class JettyServer
 
 	/**
 	 * the doing routine to run a jetty server it is generally a bad idea to overwrite this routine - it is not final to allow an empty null server
-	 *
-     */
+	 */
 	public void runServer() throws Exception
 	{
 		if (server != null)
@@ -308,29 +263,37 @@ public abstract class JettyServer
 		final HttpConfiguration httpConfig = new HttpConfiguration();
 		if (sslPort > 0)
 		{
-			log.info("Updating ssl port to: " + sslPort);
+			if (UrlUtil.urlToFile(sslData.getKeystorePath()).canRead())
+			{
+				log.info("Updating ssl port to: " + sslPort);
 
-			httpConfig.setSecurePort(sslPort);
-			httpConfig.setSecureScheme("https");
+				httpConfig.setSecurePort(sslPort);
+				httpConfig.setSecureScheme("https");
 
-			final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
+				final HttpConfiguration httpsConfig = new HttpConfiguration(httpConfig);
 
-			final SecureRequestCustomizer customizer = getRequestCustomizer();
-			customizer.setSniHostCheck(!sslData.allowFlakySSL);
-			customizer.setSniRequired(!sslData.allowFlakySSL);
-			customizer.setStsIncludeSubDomains(sslData.allowFlakySSL);
-			httpsConfig.addCustomizer(customizer);
+				final SecureRequestCustomizer customizer = getRequestCustomizer();
+				customizer.setSniHostCheck(!sslData.allowFlakySSL);
+				customizer.setSniRequired(!sslData.allowFlakySSL);
+				customizer.setStsIncludeSubDomains(sslData.allowFlakySSL);
+				httpsConfig.addCustomizer(customizer);
 
-			final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
-			sslContextFactory.setKeyStore(sslData.getKeystore());
-			sslContextFactory.setKeyStorePassword(sslData.getPassword());
+				final SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+				sslContextFactory.setKeyStorePath(sslData.getKeystorePath());
+				sslContextFactory.setKeyStoreType(sslData.getKeystoreType());
+				sslContextFactory.setKeyStorePassword(sslData.getPassword());
 
-			final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString());
-			final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(httpsConfig);
+				final SslConnectionFactory sslConnectionFactory = new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString());
+				final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(httpsConfig);
 
-			final ServerConnector sslConnector = new ServerConnector(server, sslConnectionFactory, httpConnectionFactory);
-			sslConnector.setPort(sslPort);
-			server.addConnector(sslConnector);
+				final ServerConnector sslConnector = new ServerConnector(server, sslConnectionFactory, httpConnectionFactory);
+				sslConnector.setPort(sslPort);
+				server.addConnector(sslConnector);
+			}
+			else
+			{
+				log.warn("cannot read keystore at: " + sslData.getKeystorePath());
+			}
 		}
 
 		if (thePort > 0 && thePort != sslPort)
@@ -346,15 +309,14 @@ public abstract class JettyServer
 
 	/**
 	 * hook for more or less secure customizers
-	 *
-     */
+	 */
 	protected BambiRequestCustomizer getRequestCustomizer()
 	{
 		return new BambiRequestCustomizer();
 	}
 
 	/**
-     */
+	 */
 	protected Sequence createHandlerList()
 	{
 		final Sequence handlers = new Sequence();
@@ -373,8 +335,7 @@ public abstract class JettyServer
 
 	/**
 	 * create the base handler collection that contains all handlers to be processed multiple times
-	 *
-     */
+	 */
 	protected Sequence createBaseCollection(final Sequence handlers)
 	{
 		final Sequence handlerbase = new Sequence();
@@ -385,8 +346,7 @@ public abstract class JettyServer
 
 	/**
 	 * hook to add more handlers if required
-	 *
-     */
+	 */
 	protected void addMoreHandlers(final Sequence handlers)
 	{
 		// nop
@@ -394,8 +354,7 @@ public abstract class JettyServer
 
 	/**
 	 * hook to add http loggers or other post handling handlers, if required
-	 *
-     */
+	 */
 	protected void addHttpLogger(final Sequence handlerbase)
 	{
 		final RequestLog requestLog = createRequestLog();
@@ -408,8 +367,7 @@ public abstract class JettyServer
 
 	/**
 	 * create a request log - the default method does not
-	 *
-     */
+	 */
 	protected RequestLog createRequestLog()
 	{
 		return null;
@@ -417,16 +375,19 @@ public abstract class JettyServer
 
 	/**
 	 * get the base url of this server
-	 *
-     */
+	 */
 	public String getBaseURL(final boolean ssl)
 	{
 		try
 		{
 			if (ssl)
+			{
 				return sslPort <= 0 ? null : "https://" + InetAddress.getLocalHost().getHostName() + ":" + sslPort + context;
+			}
 			else
+			{
 				return thePort <= 0 ? null : "http://" + InetAddress.getLocalHost().getHostName() + ":" + thePort + context;
+			}
 		}
 		catch (final UnknownHostException e)
 		{
@@ -437,14 +398,15 @@ public abstract class JettyServer
 
 	/**
 	 * get the base urls of this server
-	 *
-     */
+	 */
 	public String getBaseURL()
 	{
 		final String http = getBaseURL(false);
 		final String ssl = getBaseURL(true);
 		if (http == null)
+		{
 			return ssl;
+		}
 		return http;
 	}
 
@@ -476,7 +438,7 @@ public abstract class JettyServer
 	}
 
 	/**
-     */
+	 */
 	protected ResourceHandler createResourceHandler()
 	{
 		final ResourceHandler resourceHandler = new org.cip4.jdfutility.server.MyResourceHandler(context, getHome());
@@ -492,11 +454,11 @@ public abstract class JettyServer
 	protected abstract String getHome();
 
 	/**
-     */
+	 */
 	protected abstract int getDefaultPort();
 
 	/**
-     */
+	 */
 	protected abstract ServletContextHandler createServletHandler();
 
 	/**
@@ -572,13 +534,14 @@ public abstract class JettyServer
 	public void destroy()
 	{
 		if (server != null)
+		{
 			server.destroy();
+		}
 	}
 
 	/**
 	 * get the port number the port is always a singleton in a jetty environment
-	 *
-     */
+	 */
 	public int getPort()
 	{
 		return thePort;
@@ -586,7 +549,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isRunning()
-     */
+	 */
 	public boolean isRunning()
 	{
 		return server != null && server.isRunning();
@@ -594,7 +557,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStarted()
-     */
+	 */
 	public boolean isStarted()
 	{
 		return server != null && server.isStarted();
@@ -602,7 +565,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStarting()
-     */
+	 */
 	public boolean isStarting()
 	{
 		return server != null && server.isStarting();
@@ -610,7 +573,7 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStopped()
-     */
+	 */
 	public boolean isStopped()
 	{
 		return server == null || server.isStopped();
@@ -618,14 +581,14 @@ public abstract class JettyServer
 
 	/**
 	 * @see #JettyServer.isStopping()
-     */
+	 */
 	public boolean isStopping()
 	{
 		return server != null && server.isStopping();
 	}
 
 	/**
-     */
+	 */
 	public static JettyServer getServer()
 	{
 		return theServer;
@@ -670,15 +633,14 @@ public abstract class JettyServer
 
 	/**
 	 * get the server type as a string
-	 *
-     */
+	 */
 	public String getServerType()
 	{
 		return getClass().getSimpleName();
 	}
 
 	/**
-     */
+	 */
 	public static void setServer(final JettyServer server)
 	{
 		theServer = server;
